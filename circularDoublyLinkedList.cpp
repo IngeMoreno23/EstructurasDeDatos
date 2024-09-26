@@ -11,9 +11,7 @@ Cristian Ricardo Luque Arámbula A01741850
 #include "linkedList.cpp"
 
 template <class T>
-class HDCLinkedList{
-
-    Node<T> *head; // automaticamente privado
+class HDCLinkedList: public LinkedList<T>{
 
     private:
         int size;

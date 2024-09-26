@@ -1,36 +1,16 @@
+#pragma once
+
 #include <iostream>
-/*
-Aprendizajes de esta tarea. Una clase al utilizar plantillas se debe poner en formato node<T>
 
-
-*/
-
-/*
-
-
-        Node<T>* getPrevious();
-        Node<T>* getNext();
-        T& getData();
-        
-        void setNext(Node<T>* next);
-        void setPrevious(Node<T>* previous);
-        void setData(T data);
-
-        void operator= (const Node<T>& nodeToCopy);
-        void operator= (const T newData);
-
-        int operator>(const Node<T>& nodeB);
-
-        void print();
-*/
 template <class T>
 class Node{
     public:
         Node(T data);
         Node(const Node<T>& nodeToCopy);
-        ~Node();
+        virtual ~Node();
 
         Node<T>* getNext();
+        T getData() const;
         T& getData();
 
         void setNext(Node<T>* next);
@@ -42,7 +22,7 @@ class Node{
         int operator>(const Node<T>& nodeB);
         void print();
 
-    private:
+    protected:
         Node<T> *next;
         T data;
 
@@ -75,7 +55,6 @@ Node<T>::Node(const Node<T>& nodeToCopy){
 
 template <class T>
 Node<T>::~Node(){
-    delete this;
 }
 
 template <class T>
@@ -83,7 +62,21 @@ Node<T>* Node<T>::getNext(){
     return next;
 }
 
-template <class T> // TENGO DUDA AQUÍ. Por referencia? Supongo que sí, para poder modificarlo.
+// TENGO DUDA AQUÍ. Por referencia? Supongo que sí, para poder modificarlo. Pero se puede modificar con el setter. 
+/*
+Pero esto da problemas cuando una instancia del objeto const es utilizada como parametro como en el caso del paso const & de lista enlazada en la que se tiene esta lista constante y uno de los nodos regresa un dato por referencia.
+
+Entonces creo que es un poco innecesario pasar este dato por referencia, porque igual si tengo el objeto y necesito cambiar data, puedo hacerlo con los setters.
+
+Igual se tiene que declarar como const para que la instancia del objeto tome este método como alternativa
+*/
+
+template <class T> 
+T Node<T>::getData() const {
+    return data;
+}
+
+template <class T>
 T& Node<T>::getData(){
     return data;
 }
