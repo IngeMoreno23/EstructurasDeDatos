@@ -13,11 +13,11 @@ operator=(param)
 */
 
 template <class T>
-LinkedList<T>::LinkedList<T>():head(nullptr),size(0){}
+LinkedList<T>::LinkedList():head(nullptr),size(0){}
 
 // iteración por rango en una estructura de datos. Permite recibir estructuras sin tamaño fijo como parámetro
 template <class T>
-LinkedList<T>::LinkedList<T>(std::initializer_list<T> elements){
+LinkedList<T>::LinkedList(std::initializer_list<T> elements){
     
     if(elements.size() == 0){
         head=nullptr;
@@ -42,14 +42,14 @@ LinkedList<T>::LinkedList<T>(std::initializer_list<T> elements){
 }
 
 template <class T> //IMPORTANTISIMO DECLARAR QUE HEAD ES NULLPTR, PORQUE SE ESTÁ INICIALIZANDO APENAS LA LISTA. 
-LinkedList<T>:: LinkedList<T>(const LinkedList<T>& listToCopy):head(nullptr), size(0){
+LinkedList<T>:: LinkedList(const LinkedList<T>& listToCopy):head(nullptr), size(0){
 
     // *this=listToCopy; // Usar *this para referirse al objeto y poder mandar llamar a la sobrecarga de asignación. 
     operator=(listToCopy);
 }
 
 template <class T> 
-LinkedList<T>::~LinkedList<T>(){
+LinkedList<T>::~LinkedList(){
     while(head!=nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
         Node<T> *temp=head; 
         head=head->getNext();

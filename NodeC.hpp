@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Node.hpp"
+#include "Node.cpp"
 
 template <class T>
 class NodeC: public Node<T>{

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "NodeC.hpp"
-#include "LinkedList.hpp"
+#include "NodeC.cpp"
+#include "LinkedList.cpp"
 
 template <class T>
 class HDCLinkedList: public LinkedList<T>{

@@ -5,6 +5,8 @@
 
 #include "HDCLinkedList.hpp"
 
+#include "LinkedList.cpp"
+
 template <class T>
 HDCLinkedList<T>::HDCLinkedList():LinkedList<T>(){
 }
