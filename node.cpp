@@ -2,6 +2,11 @@
 
 #include <iostream>
 
+/*
+Aprendizajes 
+node<T>
+
+*/
 template <class T>
 class Node{
     public:

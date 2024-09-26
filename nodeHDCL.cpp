@@ -1,12 +1,7 @@
 #pragma once
 
 #include <iostream>
-
 #include "node.cpp"
-
-/*
-Aprendizajes de esta tarea. Una clase al utilizar plantillas se debe poner en formato node<T>
-*/
 
 template <class T>
 class NodeC: public Node<T>{

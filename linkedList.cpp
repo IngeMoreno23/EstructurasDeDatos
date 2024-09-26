@@ -3,6 +3,14 @@
 #include <iostream>
 #include "node.cpp" 
 
+/*
+Aprendizajes. const 
+rvalue, lvalue
+*this
+operator=(param)
+
+*/
+
 template <class T>
 class LinkedList{
     
