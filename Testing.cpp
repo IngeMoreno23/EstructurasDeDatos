@@ -126,7 +126,7 @@ int main(){
     listaVacia.print();
 
     std::cout<<"\nAppending new data to empty list (Hello world)\n";
-    listaVacia.append("Hello world");
+    //listaVacia.append("Hello world");
     listaVacia.print();
 
     std::cout<<"\nAppending new node to list 1 (4)\n";

@@ -12,26 +12,26 @@ HDCLinkedList<T>::HDCLinkedList():LinkedList<T>(){
 // iteración por rango en una estructura de datos. Permite recibir estructuras sin tamaño fijo como parámetro
 template <class T>
 HDCLinkedList<T>::HDCLinkedList(std::initializer_list<T> elements){
-
-    size=0;
+    
+    this->size=0;
     
     if(elements.size() == 0){
-        head=nullptr;
+        this->head=nullptr;
     } else{
         auto iterador=elements.begin(); // crea un iterador que detecta automáticamente el tipo. 
 
-        head = new NodeC<T> (*iterador); // new (parametros). Manda a llamar al constructor que toma const T& como parámetro
-        NodeC<T>* currentNode= head;
+        this->head = new NodeC<T> (*iterador); // new (parametros). Manda a llamar al constructor que toma const T& como parámetro
+        NodeC<T>* currentNode= this->head;
         for (; iterador !=elements.end(); ++iterador){ // se puede no inicializar nada en for
 
             NodeC<T>* nextNode = new NodeC<T> (*iterador); 
             currentNode->setNext(nextNode);
             nextNode->setPrevious(currentNode);
             currentNode=nextNode;
-            size++;
+            this->size++;
         }
         
-        currentNode->setNext(head);
+        currentNode->setNext(this->head);
         head->setPrevious(currentNode);
     }
 }
@@ -43,12 +43,12 @@ HDCLinkedList<T>:: HDCLinkedList(const HDCLinkedList<T>& listToCopy){
 
 template <class T> 
 HDCLinkedList<T>::~HDCLinkedList(){
-    while(head!=nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
-        NodeC<T> *temp=head; 
-        head=head->getNext();
+    while(this->head!=nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
+        NodeC<T> *temp=this->head; 
+        this->head=head->getNext();
         delete temp; // No se borra el apuntador, se borra lo almacenado en la dirección.
     }
-    size=0; // Por propósitos de consistencia, checar si una lista ha sido borrada o actualizaciones futuras al código. 
+    this->size=0; // Por propósitos de consistencia, checar si una lista ha sido borrada o actualizaciones futuras al código. 
 }
 
 // se pone const HDCLinkedList <T>& para realizar múltiples asignaciones
@@ -67,7 +67,7 @@ const HDCLinkedList<T>& HDCLinkedList<T>::operator=(const HDCLinkedList<T> & lis
 
     // Resulta que no se declara el nodeC<T> * para todos, el asterisco debe ir antes de cada variable
     NodeC<T>* currentNodeCopy=listToCopy.head, *currentNode = new NodeC<T> (currentNodeCopy->getData());
-    head=currentNode;
+    this->head=currentNode;
 
     currentNodeCopy= currentNodeCopy->getNext();
 
@@ -79,19 +79,19 @@ const HDCLinkedList<T>& HDCLinkedList<T>::operator=(const HDCLinkedList<T> & lis
         currentNodeCopy=currentNodeCopy->getNext();
         currentNode=nextNode;
     }
-    currentNode->setNext(head);
+    currentNode->setNext(this->head);
     head->setPrevious(currentNode);
 
-    size=listToCopy.size;
+    this->size=listToCopy.size;
     return *this;
 }
 
 
 template<class T>
 void HDCLinkedList<T>::append(const NodeC<T>& nodeToAppend){
-    if(head==nullptr){
+    if(this->head==nullptr){
         NodeC<T>* newNode=new NodeC<T> (nodeToAppend.getData());
-        head=newNode;
+        this->head=newNode;
         newNode->setPrevious(newNode);
         newNode->setNext(newNode);
         return;
@@ -99,10 +99,10 @@ void HDCLinkedList<T>::append(const NodeC<T>& nodeToAppend){
 
     NodeC<T>* newNode=new NodeC<T> (nodeToAppend.getData());
     head->getPrevious()->setNext(newNode);
-    newNode->setNext(head);
+    newNode->setNext(this->head);
     newNode->setPrevious(head->getPrevious());
 
-    size++;
+    this->size++;
     // A menos que justo se asigne un valor en la memoria manualmente antes de mandar llamar esta función, ahí sí tiene sentido solo hacer que el último nodo apunte a esa función. 
 }
 
@@ -113,8 +113,8 @@ void HDCLinkedList<T>::append(const HDCLinkedList<T>& listToAppend){
         return;
     }
     
-    NodeC<T>* currentNode=head, currentNodeCopy=listToAppend.head;
-    while(currentNode->getNext() != head){
+    NodeC<T>* currentNode=this->head, currentNodeCopy=listToAppend.head;
+    while(currentNode->getNext() != this->head){
         currentNode= currentNode->getNext();
     }
     
@@ -128,10 +128,10 @@ void HDCLinkedList<T>::append(const HDCLinkedList<T>& listToAppend){
         currentNodeCopy= currentNodeCopy->getNext();
     }
     
-    currentNode->setNext(head);
+    currentNode->setNext(this->head);
     head->setPrevious(currentNode);
 
-    size+=listToAppend.size;
+    this->size+=listToAppend.size;
 
 }
 
@@ -145,7 +145,7 @@ void HDCLinkedList<T>::merge(HDCLinkedList<T>& listToAppend){
     temp->setNext(listToAppend.head);
     listToAppend.head->setPrevious(temp);
 
-    size+=listToAppend.size;
+    this->size+=listToAppend.size;
 
     listToAppend.head=nullptr;
     listToAppend.size=0;
@@ -157,15 +157,15 @@ void HDCLinkedList<T>::merge(HDCLinkedList<T>& listToAppend){
 }
 
 template <class T>
-void HDCLinkedList<T>::insert(const NodeC<T>& nodeToInsert, int position){
-    if(position >= size || position < 1){
+void HDCLinkedList<T>::insert(const NodeC<T>& nodeToInsert, int index){
+    if(index >= this->size || index < 0){
         std::cerr<<"Out of range, appending instead";
         append(nodeToInsert);
         return;
     }
 
-    NodeC<T>* currentNode=head;
-    for(int i = 1; i <= position; i++){
+    NodeC<T>* currentNode=this->head;
+    for(int i = 1; i <= index; i++){
         currentNode= currentNode->getNext();
     }
 
@@ -173,7 +173,7 @@ void HDCLinkedList<T>::insert(const NodeC<T>& nodeToInsert, int position){
     NodeC<T>* newNode = new NodeC<T> (nodeToInsert.getData());
     newNode->setNext(currentNode->getNext());
     currentNode->setNext(newNode);
-    size++;
+    this->size++;
 
 }
 
@@ -181,28 +181,28 @@ template <class T>
 void HDCLinkedList<T>::pop(){
     
     NodeC<T>* temp= head-> getPrevious();
-    temp->getPrevious()->setNext(head);
+    temp->getPrevious()->setNext(this->head);
     delete temp;
 
 }
 
 template <class T>
 void HDCLinkedList<T>::erase(int position){
-    if(position >= size || position < 1 || head==nullptr){
+    if(position >= this->size || position < 1 || this->head==nullptr){
         std::cerr<<"Out of range";
         return;
-    } else if (size==1){
-        delete head; 
-        head=nullptr;
-        size=0;
+    } else if (this->size==1){
+        delete this->head; 
+        this->head=nullptr;
+        this->size=0;
         return;
     }
 
 
-    NodeC<T>* currentNode=head; // una variable que guarda un apuntador. NO es memoria dinámica.
+    NodeC<T>* currentNode=this->head; // una variable que guarda un apuntador. NO es memoria dinámica.
 
     if (position == 1){
-        head=currentNode->getNext();
+        this->head=currentNode->getNext();
         delete currentNode; // se puede borrar con delete el contenido de una variable que almacena un apuntador, aún cuando esta variable en particular no fue la que asignó memoria con new.
     } else{
         for(int i=0;i<=position; i++){
@@ -213,6 +213,6 @@ void HDCLinkedList<T>::erase(int position){
         currentNode->setNext(temp->getNext());
         delete temp;
     }
-    size--;
+    this->size--;
     
 }
