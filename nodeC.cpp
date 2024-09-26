@@ -1,22 +1,10 @@
 #pragma once
 
 #include <iostream>
-#include "node.cpp"
 
-template <class T>
-class NodeC: public Node<T>{
-    public:
-        NodeC(T data);
-        ~NodeC();
+#include "NodeC.hpp"
 
-        NodeC<T>* getPrevious();
-        
-        void setPrevious(NodeC<T>* previous);
-
-    private:
-        NodeC<T> *previous;
-
-};
+#include "Node.cpp"
 
 template <class T>
 NodeC<T>::NodeC(T data): Node<T>(data){

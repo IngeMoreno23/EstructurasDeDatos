@@ -1,7 +1,8 @@
 #pragma once
 
 #include <iostream>
-#include "node.cpp" 
+#include "Node.cpp" 
+#include "LinkedList.hpp"
 
 /*
 Aprendizajes. const 
@@ -12,57 +13,11 @@ operator=(param)
 */
 
 template <class T>
-class LinkedList{
-    
-    protected:
-        int size;
-        Node<T> *head; // automaticamente privado
-
-    public: 
-        // Constructors
-        LinkedList();
-        LinkedList(const LinkedList<T>& listToCopy);
-        LinkedList(std::initializer_list<T> elements);
-        ~LinkedList();
-
-        // Operators 
-        LinkedList<T>& operator=(const LinkedList<T>& listToCopy);
-        T& operator[](unsigned int index); 
-
-        // Addition with list terminology (nodes, other lists)
-        void insert(const Node<T>& nodeToInsert, int position);
-
-        void append(const Node<T>& nodeToAppend);
-        void append(const LinkedList<T>& listToAppend); // Agrega los elementos de la segunda lista sin borrarla
-
-        void merge(LinkedList<T>& listToMerge); // Conecta el último elemento de la primera al primero de la segunda. 
-
-        // Data addition 
-        void append(T data);
-        void insert(T data, int index);
-
-
-        void erase(int position);
-        void update(T data, int position);
-
-        //information
-        int length() const; // Declarada constante puesto que se accede a esta en la sobrecarga del operador de asignación. Y regresar un valor no constante en una instancia constante causa errores. 
-        bool isEmpty();
-        int search(T data);
-
-        void print();
-        void exchange(int position1, int position2);
-        void invert();
-        void empty();
-        void ordMerge(LinkedList<T> &l, int n);
-};
-
-template <class T>
-LinkedList<T>::LinkedList():head(nullptr),size(0){}
+LinkedList<T>::LinkedList<T>():head(nullptr),size(0){}
 
 // iteración por rango en una estructura de datos. Permite recibir estructuras sin tamaño fijo como parámetro
 template <class T>
-LinkedList<T>::LinkedList(std::initializer_list<T> elements){
+LinkedList<T>::LinkedList<T>(std::initializer_list<T> elements){
     
     if(elements.size() == 0){
         head=nullptr;
@@ -87,14 +42,14 @@ LinkedList<T>::LinkedList(std::initializer_list<T> elements){
 }
 
 template <class T> //IMPORTANTISIMO DECLARAR QUE HEAD ES NULLPTR, PORQUE SE ESTÁ INICIALIZANDO APENAS LA LISTA. 
-LinkedList<T>:: LinkedList(const LinkedList<T>& listToCopy):head(nullptr), size(0){
+LinkedList<T>:: LinkedList<T>(const LinkedList<T>& listToCopy):head(nullptr), size(0){
 
     // *this=listToCopy; // Usar *this para referirse al objeto y poder mandar llamar a la sobrecarga de asignación. 
     operator=(listToCopy);
 }
 
 template <class T> 
-LinkedList<T>::~LinkedList(){
+LinkedList<T>::~LinkedList<T>(){
     while(head!=nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
         Node<T> *temp=head; 
         head=head->getNext();
