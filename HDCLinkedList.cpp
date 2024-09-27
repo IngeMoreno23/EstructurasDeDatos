@@ -51,6 +51,13 @@ HDCLinkedList<T>::HDCLinkedList(std::initializer_list<T> elements){
 
 template <class T>
 HDCLinkedList<T>:: HDCLinkedList(const HDCLinkedList<T>& listToCopy){
+    this->head=new NodeC<T>;
+
+    this->head->setNext(this->head);
+    this->head->setPrevious(this->head);
+        
+    LinkedList<T>::syncHead(); // se emplea para que apunten los dos heads apunten al mismo lugar, solo que el apuntador en LinkedList solo tendrá acceso a los atributos privados, protegidos y públicos (y por ende maneja node, y no node c), y lo que está en HDCLink maneja el apuntador con nodeC
+
     *this=listToCopy; // Usar *this para referirse al objeto y poder mandar llamar a la sobrecarga de asignación. 
 }
 
@@ -128,20 +135,18 @@ void HDCLinkedList<T>::append(const HDCLinkedList<T>& listToAppend){
     }
     
     NodeC<T>* currentNode=this->head->getPrevious(), *currentNodeCopy=listToAppend.head;
-    
-    while(currentNodeCopy->getNext() != listToAppend.head)
-    {
+    do{
         NodeC<T>* nextNode= new NodeC<T> (currentNodeCopy->getData());
         currentNode->setNext(nextNode);
         nextNode->setPrevious(currentNode);
         currentNode=nextNode;
         
         currentNodeCopy= static_cast<NodeC<T>*>(currentNodeCopy->getNext());
-    }
+    } while(currentNodeCopy != listToAppend.head);
     
     currentNode->setNext(this->head);
+    currentNode->setPrevious(this->head->getPrevious());
     this->head->setPrevious(currentNode);
-
     this->size+=listToAppend.size;
 
 }
@@ -151,14 +156,19 @@ void HDCLinkedList<T>::merge(HDCLinkedList<T>& listToAppend){
     if (listToAppend.size == 0){
         return;
     }
-    
+    NodeC<T>* listToAppendHeadCopy= new NodeC<T> (listToAppend.head->getData());    
     NodeC<T>* temp=this->head->getPrevious();
-    temp->setNext(listToAppend.head);
-    listToAppend.head->setPrevious(temp);
 
+    temp->setNext(listToAppendHeadCopy);
+    listToAppend.head->getPrevious()->setNext(this->head);
+    
+    listToAppendHeadCopy->setPrevious(temp);
+    this->head->setPrevious(listToAppend.head->getPrevious());
+    listToAppendHeadCopy->setNext(listToAppend.head->getNext());
     this->size+=listToAppend.size;
 
-    listToAppend.head=nullptr;
+    listToAppend.head->setNext(nullptr);
+    listToAppend.head->setPrevious(nullptr);
     listToAppend.size=0;
 
     // Considero que no es necesario borrar manualmente la lista segunda. Puesto que esta solo contiene variables, size, head;
@@ -176,7 +186,7 @@ void HDCLinkedList<T>::insert(const NodeC<T>& nodeToInsert, int index){
     }
 
     NodeC<T>* currentNode=this->head;
-    for(int i = 1; i <= index; i++){
+    for(int i = 1; i < index; i++){
         currentNode= static_cast<NodeC<T>*>(currentNode->getNext());
     }
 
@@ -233,18 +243,15 @@ void HDCLinkedList<T>::print(){
     NodeC<T>* currentNode= this->head;
 
     std::cout<<"size= "<<this->size<<" elements: ";
-    if (currentNode->getNext() == this->head){
+    if (currentNode->getNext() == this->head || this->head->getNext() == nullptr){
         return;
     }
-    while(currentNode->getNext()!=this->head){
+    do{
         std::cout<<currentNode->getData()<<" ";
         currentNode=static_cast<NodeC<T>*>(currentNode->getNext());
-    }
-    std::cout<<currentNode->getData()<<" ";
+    }while(currentNode!=this->head);
     std::cout<<"\n";
 }
-
-
 
 
 /*
@@ -252,5 +259,19 @@ Tuve que hacer un método getHead porque la cabeza (atributo privado tanto en la
 
 template <class T>
 void HDCLinkedList<T>::append(T data) {
-    append(new NodeC<T>(data));
+    NodeC<T>* temp = new NodeC<T> (data);
+    append(*temp);
+    delete temp;
+}
+
+template <class T>
+void HDCLinkedList<T>::empty(){
+
+    while (head->getNext()!=head)
+    {
+        Node<T> *temp=this->head; 
+        this->head=static_cast<NodeC<T>*>(this->head->getNext());
+        delete temp; // No se borra el apuntador, se borra lo almacenado en la dirección.
+    }
+    
 }

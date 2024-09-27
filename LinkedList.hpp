@@ -43,7 +43,7 @@ class LinkedList{
         void print();
         void exchange(int position1, int position2);
         void invert();
-        void empty();
+        virtual void empty();
         void ordMerge(LinkedList<T> &l, int n);
 
         virtual Node<T>* getHead() {return head;};

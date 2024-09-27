@@ -123,9 +123,9 @@ int main(){
     lista2.print();
     std::cout<<"empty list : ";
     listaVacia.print();
-    std::string txt="Hello world";
 
     std::cout<<"\nAppending new data to empty list (Hello world)\n";
+    std::string txt="Hello world";
     listaVacia.append(txt); // No tengo idea por qué este en particular no se puede, y el de int de abajo sí. Ya supe, era porque lo tomaba como un arreglo de caracteres y no un string, así como se había declarado el tipo de dato de la lista. 
 
     // Creo que es porque lo agrega como Node a un NodeC. Eso es un problema. SI SE MANDÓ A LLAMAR AL APPEND DE LINKEDLIST, Y LO INICIALIZA COMO NODE normal

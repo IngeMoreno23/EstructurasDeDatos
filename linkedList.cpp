@@ -128,7 +128,9 @@ void LinkedList<T>::insert(T data, int index){
 
 template <class T>
 void LinkedList<T>::append(T data){
-    append(*new Node<T> (data));
+    Node<T>* temp=new Node<T> (data);
+    append(*temp);
+    delete temp;
 }
 
 template<class T>
@@ -176,9 +178,8 @@ void LinkedList<T>::append(const LinkedList<T>& listToAppend){
 
 template <class T>
 void LinkedList<T>::empty(){
-
     while(head!=nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
-        Node<T> *temp=head; 
+        Node<T> *temp=this->head; 
         head=head->getNext();
         delete temp; // No se borra el apuntador, se borra lo almacenado en la dirección.
     }

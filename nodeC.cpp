@@ -18,8 +18,6 @@ NodeC<T>::NodeC(T data): Node<T>(data){
 
 template <class T>
 NodeC<T>::~NodeC(){ // CAMBIAR ESTO 
-    delete previous;
-    // delete this;
 }
 
 template<class T>
