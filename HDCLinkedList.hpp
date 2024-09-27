@@ -24,4 +24,9 @@ class HDCLinkedList: public LinkedList<T>{
 
         void pop();
         void erase(int position);
+        void print();
+
+        NodeC<T>* getHead() { return static_cast<NodeC<T>*>(this->head); };
+    private:
+        NodeC<T>* head;
 };

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include "LinkedList.cpp"
+#include "linkedList.cpp"
 #include "HDCLinkedList.cpp"
 #include "NodeC.cpp"
 #include "Node.cpp"
@@ -126,7 +126,8 @@ int main(){
     listaVacia.print();
 
     std::cout<<"\nAppending new data to empty list (Hello world)\n";
-    //listaVacia.append("Hello world");
+    // listaVacia.append("Hello world"); // No tengo idea por qué este en particular no se puede, y el de int de abajo sí
+    // Creo que es porque lo agrega como Node a un NodeC. Eso es un problema. SI SE MANDÓ A LLAMAR AL APPEND DE LINKEDLIST, Y LO INICIALIZA COMO NODE normal
     listaVacia.print();
 
     std::cout<<"\nAppending new node to list 1 (4)\n";
@@ -138,7 +139,7 @@ int main(){
     lista.append(7);
     lista.print();
 
-    std::cout<<"\nIndividual testing. Accesing list 1 through indexes 0 to 5\n";
+    std::cout<<"\nIndividual testing. Accesing list 1 through indexes 0 to 5\n"; // Aquí al sobrecargarlo, como va al operator[] de linkedList normal, como que empieza a buscar a partir de la cabeza que no sé por qué, si es privada, se tiene acceso a ella. Supongo que es porque no puse this->head
 
     std::cout<<lista[0]<<" ";
     std::cout<<lista[1]<<" ";

@@ -4,17 +4,16 @@
 
 template <class T>
 class LinkedList{
-    
+    private:
+        Node<T> *head; // automaticamente privado
     protected:
         int size;
-        Node<T> *head; // automaticamente privado
-
     public: 
         // Constructors
         LinkedList();
         LinkedList(const LinkedList<T>& listToCopy);
         LinkedList(std::initializer_list<T> elements);
-        ~LinkedList();
+        virtual ~LinkedList();
 
         // Operators 
         LinkedList<T>& operator=(const LinkedList<T>& listToCopy);
@@ -46,4 +45,6 @@ class LinkedList{
         void invert();
         void empty();
         void ordMerge(LinkedList<T> &l, int n);
+
+        virtual Node<T>* getHead() {return head;};
 };

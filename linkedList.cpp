@@ -2,7 +2,9 @@
 
 #include <iostream>
 #include "Node.cpp" 
+#include "NodeC.cpp"
 #include "LinkedList.hpp"
+#include "HDCLinkedList.hpp"
 
 /*
 Aprendizajes. const 
@@ -104,7 +106,9 @@ T& LinkedList<T>::operator[](unsigned int index){
         throw(std::invalid_argument("Out of range"));
     }
 
-    Node<T>* currentNode=head;
+    Node<T>* currentNode= this->getHead();
+
+
     for(int i=0; i < index; i++){
         currentNode=currentNode->getNext();
     }
@@ -312,9 +316,9 @@ bool LinkedList<T>::isEmpty(){
 
 template <class T>
 int LinkedList<T>::search(T data){
-    Node<T>* currentNode=head;
+    Node<T>* currentNode=getHead();
     int i=0;
-    while(currentNode->getNext()!=nullptr){
+    while(currentNode->getNext()!=nullptr || currentNode->getNext()==head){
         if (currentNode->getData() == data){
             return i;
         }
@@ -344,8 +348,9 @@ void LinkedList<T>::invert(){
 
 template <class T>
 void LinkedList<T>::print(){
-    Node<T>* currentNode=head;
-    std::cout<<"size= "<<size<<" elements: ";
+    Node<T>* currentNode= this->head;
+
+    std::cout<<"size= "<<this->size<<" elements: ";
     while(currentNode!=nullptr){
         std::cout<<currentNode->getData()<<" ";
         currentNode=currentNode->getNext();
