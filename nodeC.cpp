@@ -6,13 +6,18 @@
 
 #include "Node.cpp"
 
+template<class T>
+NodeC<T>::NodeC():Node<T>(T()){
+// Valor primitivo. Si son numéricos es cero, si es un string es uno vacío. 
+}
+
 template <class T>
 NodeC<T>::NodeC(T data): Node<T>(data){
     previous=nullptr;
 }
 
 template <class T>
-NodeC<T>::~NodeC(){
+NodeC<T>::~NodeC(){ // CAMBIAR ESTO 
     delete previous;
     // delete this;
 }

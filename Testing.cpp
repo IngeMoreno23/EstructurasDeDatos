@@ -47,7 +47,6 @@ int main(){
             std::cout<<"\nerror in access\n";
         }
 
-
         lista.append(lista2);
         std::cout<<"\nAppending list 2 to list 1. New size: "<<lista.length()<<std::endl;
 
@@ -116,7 +115,7 @@ int main(){
 
     HDCLinkedList<int> lista={2,3,5};
     HDCLinkedList<int> lista2=lista;
-    HDCLinkedList<std::string> listaVacia;
+    HDCLinkedList<std::string> listaVacia; 
     
     std::cout<<"list 1: ";
     lista.print();
@@ -124,9 +123,11 @@ int main(){
     lista2.print();
     std::cout<<"empty list : ";
     listaVacia.print();
+    std::string txt="Hello world";
 
     std::cout<<"\nAppending new data to empty list (Hello world)\n";
-    // listaVacia.append("Hello world"); // No tengo idea por qué este en particular no se puede, y el de int de abajo sí
+    listaVacia.append(txt); // No tengo idea por qué este en particular no se puede, y el de int de abajo sí. Ya supe, era porque lo tomaba como un arreglo de caracteres y no un string, así como se había declarado el tipo de dato de la lista. 
+
     // Creo que es porque lo agrega como Node a un NodeC. Eso es un problema. SI SE MANDÓ A LLAMAR AL APPEND DE LINKEDLIST, Y LO INICIALIZA COMO NODE normal
     listaVacia.print();
 
@@ -136,7 +137,7 @@ int main(){
     lista.print();
 
     std::cout<<"\nAppending new data to list 1 (7)\n";
-    lista.append(7);
+    lista.append(7); //CHECAR ESTO. PORQUE CREO QUE SE AÑADE COMO NODE normal Y NO COMO NODEC. 
     lista.print();
 
     std::cout<<"\nIndividual testing. Accesing list 1 through indexes 0 to 5\n"; // Aquí al sobrecargarlo, como va al operator[] de linkedList normal, como que empieza a buscar a partir de la cabeza que no sé por qué, si es privada, se tiene acceso a ella. Supongo que es porque no puse this->head
@@ -166,8 +167,7 @@ int main(){
     std::cout<<"\nOrdering list 1\n";
     try{
         lista.ordMerge(lista, lista.length());
-    } catch(std::invalid_argument)
-    {
+    } catch(std::invalid_argument){
         std::cout<<"error";
     }
 

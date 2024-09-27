@@ -10,12 +10,15 @@
 
 template <class T>
 HDCLinkedList<T>::HDCLinkedList():LinkedList<T>(){ 
-    this->size=0;
-    this->head->setNext(head);
-    this->head->setPrevious(head);
+    this->head=new NodeC<T>;
+
+    this->head->setNext(this->head);
+    this->head->setPrevious(this->head);
+        
+    LinkedList<T>::syncHead(); // se emplea para que apunten los dos heads apunten al mismo lugar, solo que el apuntador en LinkedList solo tendrá acceso a los atributos privados, protegidos y públicos (y por ende maneja node, y no node c), y lo que está en HDCLink maneja el apuntador con nodeC
+
 }
 
-// iteración por rango en una estructura de datos. Permite recibir estructuras sin tamaño fijo como parámetro
 template <class T>
 HDCLinkedList<T>::HDCLinkedList(std::initializer_list<T> elements){
     
@@ -124,10 +127,7 @@ void HDCLinkedList<T>::append(const HDCLinkedList<T>& listToAppend){
         return;
     }
     
-    NodeC<T>* currentNode=this->head, * currentNodeCopy=listToAppend.head;
-    while(currentNode->getNext() != this->head){
-        currentNode= static_cast<NodeC<T>*>(currentNode->getNext());
-    }
+    NodeC<T>* currentNode=this->head->getPrevious(), *currentNodeCopy=listToAppend.head;
     
     while(currentNodeCopy->getNext() != listToAppend.head)
     {
@@ -242,4 +242,15 @@ void HDCLinkedList<T>::print(){
     }
     std::cout<<currentNode->getData()<<" ";
     std::cout<<"\n";
+}
+
+
+
+
+/*
+Tuve que hacer un método getHead porque la cabeza (atributo privado tanto en la clase base como en la derivada), sí puede ser accedida como atributo privado a partir de la clase base, si se está en un método de la clase base. */
+
+template <class T>
+void HDCLinkedList<T>::append(T data) {
+    append(new NodeC<T>(data));
 }

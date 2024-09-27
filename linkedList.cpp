@@ -97,6 +97,11 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T> & listToCopy){
     return *this;
 }
 
+template <class T>
+void LinkedList<T>::syncHead(){
+    this->head= this->getHead();
+}
+
 // Paso por referencia para no realizar copias y para poder modificar el valor directamente.
 template <class T>
 T& LinkedList<T>::operator[](unsigned int index){
@@ -107,7 +112,7 @@ T& LinkedList<T>::operator[](unsigned int index){
     }
 
     Node<T>* currentNode= this->getHead();
-
+// Cuando se toma el nodeC con apuntador de node no se puede acceder a previous, al parecer. 
 
     for(int i=0; i < index; i++){
         currentNode=currentNode->getNext();

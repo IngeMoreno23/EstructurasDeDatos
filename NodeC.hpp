@@ -6,6 +6,7 @@ template <class T>
 class NodeC: public Node<T>{
     public:
         NodeC(T data);
+        NodeC();
         virtual ~NodeC();
 
         NodeC<T>* getPrevious();

@@ -19,6 +19,7 @@ class HDCLinkedList: public LinkedList<T>{
         // Addition
         void insert(const NodeC<T>& nodeToInsert, int position);
         void append(const NodeC<T>& nodeToAppend);
+        void append(T data) override;
         void append(const HDCLinkedList<T>& listToAppend); // Agrega los elementos de la segunda lista sin borrarla
         void merge(HDCLinkedList<T>& listToMerge); // Conecta el último elemento de la primera al primero de la segunda. 
 
@@ -26,7 +27,7 @@ class HDCLinkedList: public LinkedList<T>{
         void erase(int position);
         void print();
 
-        NodeC<T>* getHead() { return static_cast<NodeC<T>*>(this->head); };
+        Node<T>* getHead() { return static_cast<Node<T>*>(this->head); };
     private:
         NodeC<T>* head;
 };

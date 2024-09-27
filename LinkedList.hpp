@@ -28,12 +28,12 @@ class LinkedList{
         void merge(LinkedList<T>& listToMerge); // Conecta el último elemento de la primera al primero de la segunda. 
 
         // Data addition 
-        void append(T data);
-        void insert(T data, int index);
+        virtual void append(T data);
+        virtual void insert(T data, int index);
 
 
-        void erase(int position);
-        void update(T data, int position);
+        virtual void erase(int position);
+        virtual void update(T data, int position);
 
         //information
         int length() const; // Declarada constante puesto que se accede a esta en la sobrecarga del operador de asignación. Y regresar un valor no constante en una instancia constante causa errores. 
@@ -47,4 +47,5 @@ class LinkedList{
         void ordMerge(LinkedList<T> &l, int n);
 
         virtual Node<T>* getHead() {return head;};
+        void syncHead();
 };
