@@ -10,6 +10,8 @@
 
 template <class T>
 HDCLinkedList<T>::HDCLinkedList():LinkedList<T>(){ 
+    this->head = new NodeC<T>;
+
     this->head->setNext(this->head);
     this->head->setPrevious(this->head);
         
@@ -221,8 +223,8 @@ void HDCLinkedList<T>::pop(){
 }
 
 template <class T>
-void HDCLinkedList<T>::erase(int position){
-    if(position >= this->size || position < 0 || this->head==nullptr){
+void HDCLinkedList<T>::erase(int index){
+    if(index >= this->size || index < 0 || this->head==nullptr){
         std::cerr<<"Out of range";
         return;
     } else if (this->size==1){
@@ -235,11 +237,11 @@ void HDCLinkedList<T>::erase(int position){
 
     NodeC<T>* currentNode=static_cast<NodeC<T>*>(this->head); // una variable que guarda un apuntador. NO es memoria dinámica.
 
-    if (position == 1){
+    if (index == 1){
         this->head=static_cast<NodeC<T>*>(currentNode->getNext());
         delete currentNode; // se puede borrar con delete el contenido de una variable que almacena un apuntador, aún cuando esta variable en particular no fue la que asignó memoria con new.
     } else{
-        for(int i=0;i<=position; i++){
+        for(int i=0;i <= index; i++){
             currentNode=static_cast<NodeC<T>*>(currentNode->getNext());
         }
         NodeC<T>*temp =static_cast<NodeC<T>*>(currentNode->getNext());

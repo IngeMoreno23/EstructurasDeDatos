@@ -52,12 +52,16 @@ LinkedList<T>:: LinkedList(const LinkedList<T>& listToCopy):head(nullptr), size(
 
 template <class T> 
 LinkedList<T>::~LinkedList(){
-    while(head!=nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
-        Node<T> *temp=head; 
-        head=head->getNext();
-        delete temp; // No se borra el apuntador, se borra lo almacenado en la dirección.
+    if (size != 0){
+
+        while(head!=nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
+            Node<T> *temp=head; 
+            head=head->getNext();
+            delete temp; // No se borra el apuntador, se borra lo almacenado en la dirección.
+        }
+        size=0; // Por propósitos de consistencia, checar si una lista ha sido borrada o actualizaciones futuras al código. 
+
     }
-    size=0; // Por propósitos de consistencia, checar si una lista ha sido borrada o actualizaciones futuras al código. 
 }
 
 template <class T>
@@ -272,6 +276,7 @@ void LinkedList<T>::update(T data, int index){
     }
     currentNode->setData(data);
     */
+
     operator[](index)=data;
 }
 
@@ -324,9 +329,10 @@ bool LinkedList<T>::isEmpty(){
 
 template <class T>
 int LinkedList<T>::search(T data){
+    syncHead();
     Node<T>* currentNode=this->head;
     int i=0;
-    while(currentNode->getNext()!=nullptr || currentNode->getNext()==head){
+    while(currentNode->getNext() != nullptr && currentNode->getNext() != head ){
         if (currentNode->getData() == data){
             return i;
         }
@@ -337,17 +343,17 @@ int LinkedList<T>::search(T data){
 }
 
 template <class T>
-void LinkedList<T>::exchange(int positionA, int positionB){
-    T buffer= operator[](positionA);
-    operator[](positionA)=operator[](positionB);
-    operator[](positionB)=buffer;
+void LinkedList<T>::exchange(int indexA, int indexB){
+    T buffer= operator[](indexA);
+    operator[](indexA)=operator[](indexB);
+    operator[](indexB)=buffer;
     // Esto es posible porque paso por referencia desde la sobrecarga de operador y desde el nodo. 
     // Supongo que también se puede hacer yendo uno por uno. o con el operador []
 }
 
 template <class T>
 void LinkedList<T>::invert(){
-    int positionA=0, half= (size % 2 ==0) ? size/2: 1 + size/2;
+    int positionA =0, half= (size % 2 ==0) ? size/2: 1 + size/2;
     while(positionA < half){
         exchange(positionA,size-positionA-1);
         positionA++;
@@ -356,10 +362,10 @@ void LinkedList<T>::invert(){
 
 template <class T>
 void LinkedList<T>::print(){
-    Node<T>* currentNode= this->head;
+    Node<T>* currentNode = this->head;
 
     std::cout<<"size= "<<this->size<<" elements: ";
-    while(currentNode!=nullptr){
+    while(currentNode != nullptr){
         std::cout<<currentNode->getData()<<" ";
         currentNode=currentNode->getNext();
     }
@@ -367,4 +373,10 @@ void LinkedList<T>::print(){
 }
 
 template <class T>
-Node<T>* LinkedList<T>::getHead() {return head;}
+Node<T>* LinkedList<T>::getHead() {
+    return head;}
+
+template <class T>
+T& LinkedList<T>::at(int position){
+    return operator[](position-1);
+}
