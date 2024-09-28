@@ -46,6 +46,6 @@ class LinkedList{
         virtual void empty();
         void ordMerge(LinkedList<T> &l, int n);
 
-        virtual Node<T>* getHead() {return head;};
+        virtual Node<T>* getHead();
         void syncHead();
 };

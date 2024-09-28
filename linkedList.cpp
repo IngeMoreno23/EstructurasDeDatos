@@ -99,7 +99,9 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T> & listToCopy){
 
 template <class T>
 void LinkedList<T>::syncHead(){
-    this->head= this->getHead();
+    // this->head= this->getHead();
+    this->head= dynamic_cast<Node<T>*>(this->getHead());
+
 }
 
 // Paso por referencia para no realizar copias y para poder modificar el valor directamente.
@@ -110,8 +112,8 @@ T& LinkedList<T>::operator[](unsigned int index){
         std::cout<<"Index "<<index<<" is out of range";
         throw(std::invalid_argument("Out of range"));
     }
-
-    Node<T>* currentNode= this->getHead();
+    syncHead();
+    Node<T>* currentNode= this->head;
 // Cuando se toma el nodeC con apuntador de node no se puede acceder a previous, al parecer. 
 
     for(int i=0; i < index; i++){
@@ -322,7 +324,7 @@ bool LinkedList<T>::isEmpty(){
 
 template <class T>
 int LinkedList<T>::search(T data){
-    Node<T>* currentNode=getHead();
+    Node<T>* currentNode=this->head;
     int i=0;
     while(currentNode->getNext()!=nullptr || currentNode->getNext()==head){
         if (currentNode->getData() == data){
@@ -363,3 +365,6 @@ void LinkedList<T>::print(){
     }
     std::cout<<"\n";
 }
+
+template <class T>
+Node<T>* LinkedList<T>::getHead() {return head;}

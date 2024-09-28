@@ -10,8 +10,6 @@
 
 template <class T>
 HDCLinkedList<T>::HDCLinkedList():LinkedList<T>(){ 
-    this->head=new NodeC<T>;
-
     this->head->setNext(this->head);
     this->head->setPrevious(this->head);
         
@@ -62,12 +60,20 @@ HDCLinkedList<T>:: HDCLinkedList(const HDCLinkedList<T>& listToCopy){
 }
 
 template <class T> 
-HDCLinkedList<T>::~HDCLinkedList(){
-    while(this->head != nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
-        NodeC<T> *temp=this->head; 
-        this->head = static_cast<NodeC<T>*>(this->head->getNext()); // Creo que hay otra manera dehacer esto. Y daba error this->head=this->head->getNext(); supongo que porque head es nodeC y getNext regresa un node
+HDCLinkedList<T>::~HDCLinkedList() {
+    if(this->size==0){
+        return;
+    }
+
+    NodeC<T>* current=this->head;
+
+    do{
+        Node<T> *temp=current; 
+        current=static_cast<NodeC<T>*>(current->getNext());
         delete temp; // No se borra el apuntador, se borra lo almacenado en la dirección.
     }
+    while (current != this->head);
+
     this->size=0; // Por propósitos de consistencia, checar si una lista ha sido borrada o actualizaciones futuras al código. 
 }
 
@@ -103,17 +109,20 @@ const HDCLinkedList<T>& HDCLinkedList<T>::operator=(const HDCLinkedList<T> & lis
     this->head->setPrevious(currentNode);
 
     this->size=listToCopy.size;
+
+    LinkedList<T>::syncHead();
     return *this;
 }
 
 
 template<class T>
 void HDCLinkedList<T>::append(const NodeC<T>& nodeToAppend){
-    if(this->head == nullptr){
+    if(static_cast<NodeC<T>*>(this->head->getNext()) == this->head){
         NodeC<T>* newNode=new NodeC<T> (nodeToAppend.getData());
         this->head=newNode;
-        newNode->setPrevious(newNode);
-        newNode->setNext(newNode);
+        newNode->setPrevious(this->head);
+        newNode->setNext(this->head);
+        this->size++;
         return;
     }
 
@@ -193,6 +202,10 @@ void HDCLinkedList<T>::insert(const NodeC<T>& nodeToInsert, int index){
     // nodeToInsert.setNext(currentNode -> getNext()); Antes usaba este código, pero me di cuenta que es mejor asignar la memoria nuevamente. Aunque esto también se puede hacer antes de llamar a la función, siento que hacerlo desde la función es más sólido. 
     NodeC<T>* newNode = new NodeC<T> (nodeToInsert.getData());
     newNode->setNext(currentNode->getNext());
+    newNode->setPrevious(currentNode);
+    
+    static_cast <NodeC<T>*> (newNode->getNext()) -> setPrevious(newNode);
+
     currentNode->setNext(newNode);
     this->size++;
 
@@ -240,12 +253,14 @@ void HDCLinkedList<T>::erase(int position){
 
 template <class T>
 void HDCLinkedList<T>::print(){
+    if (this->size==0){
+        std::cout<<"size= "<<this->size<<" elements: ";
+        return;
+    }
     NodeC<T>* currentNode= this->head;
 
     std::cout<<"size= "<<this->size<<" elements: ";
-    if (currentNode->getNext() == this->head || this->head->getNext() == nullptr){
-        return;
-    }
+
     do{
         std::cout<<currentNode->getData()<<" ";
         currentNode=static_cast<NodeC<T>*>(currentNode->getNext());
@@ -266,12 +281,21 @@ void HDCLinkedList<T>::append(T data) {
 
 template <class T>
 void HDCLinkedList<T>::empty(){
+    if(this->size==0){
+        return;
+    }
 
-    while (head->getNext()!=head)
-    {
-        Node<T> *temp=this->head; 
-        this->head=static_cast<NodeC<T>*>(this->head->getNext());
+    NodeC<T>* current=this->head;
+
+    do{
+        Node<T> *temp=current; 
+        current=static_cast<NodeC<T>*>(current->getNext());
         delete temp; // No se borra el apuntador, se borra lo almacenado en la dirección.
     }
-    
+    while (current != this->head);
+
+    this->size=0;
 }
+
+template <class T>
+NodeC<T>* HDCLinkedList<T>::getHead() { return this->head; };

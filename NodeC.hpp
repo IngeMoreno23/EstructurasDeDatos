@@ -7,7 +7,7 @@ class NodeC: public Node<T>{
     public:
         NodeC(T data);
         NodeC();
-        virtual ~NodeC();
+        ~NodeC() override;
 
         NodeC<T>* getPrevious();
         

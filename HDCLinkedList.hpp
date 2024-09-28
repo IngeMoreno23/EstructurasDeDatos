@@ -11,7 +11,7 @@ class HDCLinkedList: public LinkedList<T>{
         HDCLinkedList();
         HDCLinkedList(const HDCLinkedList<T>& listToCopy);
         HDCLinkedList(std::initializer_list<T> elements);
-        ~HDCLinkedList();
+        ~HDCLinkedList() override;
 
         // Operators 
         const HDCLinkedList<T>& operator=(const HDCLinkedList<T>& listToCopy);
@@ -28,7 +28,7 @@ class HDCLinkedList: public LinkedList<T>{
         void print();
         void empty() override;
 
-        Node<T>* getHead() { return static_cast<Node<T>*>(this->head); };
+        NodeC<T>* getHead();
     private:
         NodeC<T>* head;
 };
