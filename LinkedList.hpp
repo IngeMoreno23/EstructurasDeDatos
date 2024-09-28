@@ -5,7 +5,7 @@
 template <class T>
 class LinkedList{
     private:
-        Node<T> *head; // automaticamente privado
+        Node<T> *head;
     protected:
         int size;
     public: 

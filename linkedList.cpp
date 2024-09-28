@@ -6,18 +6,9 @@
 #include "LinkedList.hpp"
 #include "HDCLinkedList.hpp"
 
-/*
-Aprendizajes. const 
-rvalue, lvalue
-*this
-operator=(param)
-
-*/
-
 template <class T>
 LinkedList<T>::LinkedList():head(nullptr),size(0){}
 
-// iteración por rango en una estructura de datos. Permite recibir estructuras sin tamaño fijo como parámetro
 template <class T>
 LinkedList<T>::LinkedList(std::initializer_list<T> elements){
     
@@ -43,10 +34,8 @@ LinkedList<T>::LinkedList(std::initializer_list<T> elements){
     }
 }
 
-template <class T> //IMPORTANTISIMO DECLARAR QUE HEAD ES NULLPTR, PORQUE SE ESTÁ INICIALIZANDO APENAS LA LISTA. 
+template <class T> 
 LinkedList<T>:: LinkedList(const LinkedList<T>& listToCopy):head(nullptr), size(0){
-
-    // *this=listToCopy; // Usar *this para referirse al objeto y poder mandar llamar a la sobrecarga de asignación. 
     operator=(listToCopy);
 }
 
@@ -54,58 +43,57 @@ template <class T>
 LinkedList<T>::~LinkedList(){
     if (size != 0){
 
-        while(head!=nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
+        while(head != nullptr){ 
             Node<T> *temp=head; 
             head=head->getNext();
-            delete temp; // No se borra el apuntador, se borra lo almacenado en la dirección.
+            delete temp; 
         }
-        size=0; // Por propósitos de consistencia, checar si una lista ha sido borrada o actualizaciones futuras al código. 
-
+        size=0;
     }
 }
 
 template <class T>
 LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T> & listToCopy){
-    if (this == &listToCopy){ // Aquí se comparan los apuntadores. si el apuntador al objeto es el mismo al apuntador de la lista que se mandó, se regresa, pues es el mismo objeto.
+    if (this == &listToCopy){ 
         return *this;
     }
     
-    while(head!=nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
-        Node<T> *temp=head; 
-        head=head->getNext();
-        delete temp; // No se borra el apuntador, se borra lo almacenado en la dirección.
+    while(head != nullptr){ 
+        Node<T> *temp = head; 
+        head = head->getNext();
+        delete temp;
     }
     
     size=0;
 
-    if (listToCopy.head==nullptr){
+    if (listToCopy.head == nullptr){
         return *this;
     }
 
-    // Resulta que no se declara el node<T> * para todos, el asterisco debe ir antes de cada variable
-    Node<T>* currentNodeCopy=listToCopy.head, *currentNode = new Node<T> (currentNodeCopy->getData());
+    Node<T>* currentNodeCopy = listToCopy.head, *currentNode = new Node<T> (currentNodeCopy->getData());
     head=currentNode;
 
-    currentNodeCopy= currentNodeCopy->getNext();
+    currentNodeCopy = currentNodeCopy->getNext();
 
     while(currentNodeCopy != nullptr){
 
-        Node<T>* nextNode= new Node<T> (currentNodeCopy->getData()); //usar los getters.
+        Node<T>* nextNode = new Node<T> (currentNodeCopy->getData()); //usar los getters.
         currentNode->setNext(nextNode);
-        currentNodeCopy=currentNodeCopy->getNext();
-        currentNode=nextNode;
+        currentNodeCopy = currentNodeCopy->getNext();
+        currentNode = nextNode;
     }
+
     currentNode->setNext(nullptr);
-    size=listToCopy.length();
+    size = listToCopy.length();
     
     return *this;
 }
 
+
+// se emplea para que apunten los dos heads apunten al mismo lugar, solo que el apuntador en LinkedList solo tendrá acceso a los atributos privados, protegidos y públicos (y por ende maneja node, y no node c), y lo que está en HDCLink maneja el apuntador con nodeC
 template <class T>
 void LinkedList<T>::syncHead(){
-    // this->head= this->getHead();
-    this->head= dynamic_cast<Node<T>*>(this->getHead());
-
+    this->head = dynamic_cast<Node<T>*>(this->getHead());
 }
 
 // Paso por referencia para no realizar copias y para poder modificar el valor directamente.
@@ -117,10 +105,9 @@ T& LinkedList<T>::operator[](unsigned int index){
         throw(std::invalid_argument("Out of range"));
     }
     syncHead();
-    Node<T>* currentNode= this->head;
-// Cuando se toma el nodeC con apuntador de node no se puede acceder a previous, al parecer. 
+    Node<T>* currentNode = this->head;
 
-    for(int i=0; i < index; i++){
+    for(int i = 0; i < index; i++){
         currentNode=currentNode->getNext();
     }
 
@@ -134,22 +121,22 @@ void LinkedList<T>::insert(T data, int index){
 
 template <class T>
 void LinkedList<T>::append(T data){
-    Node<T>* temp=new Node<T> (data);
+    Node<T>* temp = new Node<T> (data);
     append(*temp);
     delete temp;
 }
 
 template<class T>
 void LinkedList<T>::append(const Node<T>& nodeToAppend){
-    if(head==nullptr){
-        head=new Node<T> (nodeToAppend.getData());
+    if(head == nullptr){
+        head = new Node<T> (nodeToAppend.getData());
         size++;
         return;
     }
 
-    Node<T>* currentNode=head;
-    while(currentNode->getNext()!= nullptr){
-        currentNode= currentNode->getNext();
+    Node<T>* currentNode = head;
+    while(currentNode->getNext() != nullptr){
+        currentNode = currentNode->getNext();
     }
 
     // Es super necesario crear un nuevo nodo aquí, puesto que el que se manda por referencia puede salir de ámbito y borrarse. 
@@ -164,18 +151,18 @@ void LinkedList<T>::append(const LinkedList<T>& listToAppend){
         return;
     }
     
-    Node<T>* currentNode=head, * currentNodeCopy=listToAppend.head;
+    Node<T>* currentNode=head, * currentNodeCopy = listToAppend.head;
     while(currentNode->getNext() != nullptr){
         currentNode= currentNode->getNext();
     }
     
-    while(currentNodeCopy!=nullptr)
+    while(currentNodeCopy != nullptr)
     {
-        Node<T>* nextNode= new Node<T> (currentNodeCopy->getData());
+        Node<T>* nextNode = new Node<T> (currentNodeCopy->getData());
         currentNode->setNext(nextNode);
-        currentNode=nextNode;
+        currentNode = nextNode;
         
-        currentNodeCopy= currentNodeCopy->getNext();
+        currentNodeCopy = currentNodeCopy->getNext();
     }
     
     size+=listToAppend.size;
@@ -184,7 +171,7 @@ void LinkedList<T>::append(const LinkedList<T>& listToAppend){
 
 template <class T>
 void LinkedList<T>::empty(){
-    while(head!=nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
+    while(head != nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
         Node<T> *temp=this->head; 
         head=head->getNext();
         delete temp; // No se borra el apuntador, se borra lo almacenado en la dirección.
@@ -218,9 +205,9 @@ void LinkedList<T>::insert(const Node<T>& nodeToInsert, int position){
         return;
     }
 
-    Node<T>* currentNode=head;
+    Node<T>* currentNode = head;
     for(int i = 0; i < position - 1; i++){
-        currentNode= currentNode->getNext();
+        currentNode = currentNode->getNext();
     }
 
     // nodeToInsert.setNext(currentNode -> getNext()); Antes usaba este código, pero me di cuenta que es mejor asignar la memoria nuevamente. Aunque esto también se puede hacer antes de llamar a la función, siento que hacerlo desde la función es más sólido. 
@@ -233,10 +220,10 @@ void LinkedList<T>::insert(const Node<T>& nodeToInsert, int position){
 
 template <class T>
 void LinkedList<T>::erase(int index){
-    if(index >= size || index < 0 || head==nullptr){
+    if(index >= size || index < 0 || head == nullptr){
         std::cerr<<"Out of range";
         return;
-    } else if (size==1){
+    } else if (size == 1){
         delete head; 
         head=nullptr;
         size=0;
@@ -250,10 +237,10 @@ void LinkedList<T>::erase(int index){
         head=currentNode->getNext();
         delete currentNode; // se puede borrar con delete el contenido de una variable que almacena un apuntador, aún cuando esta variable en particular no fue la que asignó memoria con new.
     } else{
-        for(int i=0;i<index-1; i++){
+        for(int i=0;i < index-1; i++){
             currentNode=currentNode->getNext();
         }
-        Node<T>*temp =currentNode->getNext();
+        Node<T>*temp = currentNode->getNext();
         currentNode->setNext(temp->getNext());
         delete temp;
     }
@@ -267,15 +254,6 @@ void LinkedList<T>::update(T data, int index){
     if(index < 0 || index >= size){
         return; 
     }
-
-    /* EN CASO DE QUE GETDATA() NO PASE POR REFERENCIA
-    Node<T>* currentNode=head;
-    
-    for (int i=0; i < index; i++){
-        currentNode=currentNode->getNext();
-    }
-    currentNode->setData(data);
-    */
 
     operator[](index)=data;
 }
@@ -320,8 +298,7 @@ int LinkedList<T>::length() const {
 
 template <class T>
 bool LinkedList<T>::isEmpty(){
-    
-    if (head==nullptr){
+    if (head == nullptr){
         return true;
     }
     return false;
@@ -331,6 +308,7 @@ template <class T>
 int LinkedList<T>::search(T data){
     syncHead();
     Node<T>* currentNode=this->head;
+
     int i=0;
     while(currentNode->getNext() != nullptr && currentNode->getNext() != head ){
         if (currentNode->getData() == data){
@@ -344,16 +322,14 @@ int LinkedList<T>::search(T data){
 
 template <class T>
 void LinkedList<T>::exchange(int indexA, int indexB){
-    T buffer= operator[](indexA);
-    operator[](indexA)=operator[](indexB);
-    operator[](indexB)=buffer;
-    // Esto es posible porque paso por referencia desde la sobrecarga de operador y desde el nodo. 
-    // Supongo que también se puede hacer yendo uno por uno. o con el operador []
+    T buffer = operator[](indexA);
+    operator[](indexA) = operator[](indexB);
+    operator[](indexB) = buffer;
 }
 
 template <class T>
 void LinkedList<T>::invert(){
-    int positionA =0, half= (size % 2 ==0) ? size/2: 1 + size/2;
+    int positionA = 0, half = (size % 2 ==0) ? size/2: 1 + size/2;
     while(positionA < half){
         exchange(positionA,size-positionA-1);
         positionA++;
@@ -374,7 +350,8 @@ void LinkedList<T>::print(){
 
 template <class T>
 Node<T>* LinkedList<T>::getHead() {
-    return head;}
+    return head;
+}
 
 template <class T>
 T& LinkedList<T>::at(int position){

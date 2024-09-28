@@ -37,15 +37,6 @@ Node<T>* Node<T>::getNext(){
     return next;
 }
 
-// TENGO DUDA AQUÍ. Por referencia? Supongo que sí, para poder modificarlo. Pero se puede modificar con el setter. 
-/*
-Pero esto da problemas cuando una instancia del objeto const es utilizada como parametro como en el caso del paso const & de lista enlazada en la que se tiene esta lista constante y uno de los nodos regresa un dato por referencia.
-
-Entonces creo que es un poco innecesario pasar este dato por referencia, porque igual si tengo el objeto y necesito cambiar data, puedo hacerlo con los setters.
-
-Igual se tiene que declarar como const para que la instancia del objeto tome este método como alternativa
-*/
-
 template <class T> 
 T Node<T>::getData() const {
     return data;
@@ -77,10 +68,3 @@ void Node<T>::print(){
     std::cout<<data;
 }
 
-
-
-/*
-Aprendizajes 
-node<T>
-
-*/
