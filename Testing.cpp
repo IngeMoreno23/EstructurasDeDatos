@@ -6,29 +6,54 @@
 #include "NodeC.cpp"
 #include "Node.cpp"
 
-// Aqui no la paso por referencia aunque sea recomendado, porque la funcion ordenar ordena la lista, no regresa una copia. Entonces creo una lista identica a la que se pasa por parametros, regreso esta copia ordenada. 
+/*
+PARAMETROS: Lista que se desea invertir.
+METODO: Remplaza los datos de la posición actual y la posición size-posición actual, remplazando el primer elemento y el último hasta llegar a la mitad de la lista.
+ORDEN: O(n).
+RETURN: Regresa la lista actual con los datos de los nodos remplazados de inicio a fin.
+*/
 template <class T>
 HDCLinkedList<T> invertir(HDCLinkedList<T> lista){
     lista.invert();
     return lista;
 }
 
-// Internamente, la lista maneja indices, pero por especificación en clase, fuera de la operación [], el usuario solo puede acceder a la lista con posiciones, usando el metodo at
+/*
+PARAMETROS: Rebibe una lista enlazada y un dato a buscar dentro de los nodos de esa lista.
+METODO: Compara el dato de cada nodo en la lista hasta encontrar uno que coincida.
+ORDEN: O(n).
+RETURN: Regresa la posición del primer nodo que coincida con el dato, si no se encuentra, regresa 0.
+*/
 template <class T>
 int buscar(HDCLinkedList<T>& lista, T data){
     return (lista.search(data)+1);
 }
 
+/*
+PARAMETROS: Recibe una lista enlazada, un dato del tipo de dato del nodo y una posición del nodo en la lista.
+METODO: Verifica que la lista no este vacia, y que index este en el rango del primer elemento y size.
+Remplaza el dato del nodo en la posición del argumento con el dato recibido en el argumento
+ORDEN: O(n).
+RETURN: Regresa la lista enlazada actual con un nodo extra en la posición indicada.
+*/
 template <class T>
 void update(HDCLinkedList<T>& lista, int position, T data){
     lista.update(data, position-1);
 }
 
+/*
+PARAMETROS: Rebibe la lista a ordenar.
+METODO: Utiliza el algoritmo divide y venceras, que separa la lista a la mitad varias veces hasta tener listas de 1 nodo, compara los datos de estos nodos
+y acomoda los nodos de menor a mayor de forma recursiva hasta ordenarlos en la lista original.
+ORDEN: O(nlog(n)).
+RETURN: Regresa la lista enlazada con sus nodos ordenados de menor a mayor según sus datos.
+*/
 template <class T>
 HDCLinkedList<T> ordenar(HDCLinkedList<T> lista){
     lista.ordMerge(lista,lista.length());
     return lista;
 }
+
 template <class T>
 void testLista(HDCLinkedList<T>& lista){
     std::cout<<"Lista original: ";
@@ -181,6 +206,7 @@ int main(){
 
         lista2.empty();
         listaVacia.empty();
+        std::cout<<std::endl;
     }
 
 
