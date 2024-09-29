@@ -74,6 +74,12 @@ HDCLinkedList<T>::~HDCLinkedList() {
     this->size=0; 
 }
 
+/*
+PARAMETROS: Rebibe una lista doble circular (listToCopy) por referencia.
+METODO: Vacia la lista actual y crea nuevos nodos copiando el dato de los nodos del listToCopy.
+ORDEN: O(n).
+RETURN: Regresa como referencia la lista doble circular actual.
+*/
 template <class T>
 const HDCLinkedList<T>& HDCLinkedList<T>::operator=(const HDCLinkedList<T> & listToCopy){
     if (this == &listToCopy){ 
@@ -108,7 +114,12 @@ const HDCLinkedList<T>& HDCLinkedList<T>::operator=(const HDCLinkedList<T> & lis
     return *this;
 }
 
-
+/*
+PARAMETROS: Recibe un nodo del tipo de dato de la lista enlazada.
+METODO: Busca el último elemento de la lista que apunta a un nullptr y hace que este elemento apunte al nodo que recibió como argumento.
+ORDEN: O(n).
+RETURN: Se añade un nodo a la lista enlazada.
+*/
 template<class T>
 void HDCLinkedList<T>::append(const NodeC<T>& nodeToAppend){
     if(this->head->getNext() == nullptr){
@@ -129,6 +140,12 @@ void HDCLinkedList<T>::append(const NodeC<T>& nodeToAppend){
     this->size++;
 }
 
+/*
+PARAMETROS: Recibe una lista enlazada circular doble (listToAppend) del tipo de dato de la lista enlazada actual.
+METODO: Copia los elementos de listToAppend al final de la lista enlazada actual.
+ORDEN: O(n).
+RETURN: Regresa la lista enlazada actual con copias de los nodos de listToAppend al final.
+*/
 template <class T>
 void HDCLinkedList<T>::append(const HDCLinkedList<T>& listToAppend){
     if (listToAppend.size == 0){
@@ -156,6 +173,12 @@ void HDCLinkedList<T>::append(const HDCLinkedList<T>& listToAppend){
 
 }
 
+/*
+PARAMETROS: Recibe una lista enlazada circular doble (listToAppend) del tipo de dato de la lista enlazada actual.
+METODO: El último elementos de la lista enlazada actual apunta al primero de la listToAppend. listToAppend ahora no apunta a ningun nodo.
+ORDEN: O(1).
+RETURN: Regresa la lista enlazada actual con los nodos de listToAppend al final.
+*/
 template <class T>
 void HDCLinkedList<T>::merge(HDCLinkedList<T>& listToAppend){
     if (listToAppend.size == 0){
@@ -177,6 +200,13 @@ void HDCLinkedList<T>::merge(HDCLinkedList<T>& listToAppend){
     listToAppend.size=0;
 }
 
+/*
+PARAMETROS: Recibe un nodo y una posición en donde insertar el nodo.
+METODO: Verifica que la posición se encuentre entre el primer elemento y el tamaño de la lista, si es así, busca el elemento anterior a esa posición
+a hace que ese nodo apunte al nuevo nodo, y el nuevo nodo apunte a la posición del siguiente nodo. Si no cumple la condición añade al final.
+ORDEN: O(n).
+RETURN: Regresa la lista enlazada actual con un nodo extra en la posición indicada.
+*/
 template <class T>
 void HDCLinkedList<T>::insert(const NodeC<T>& nodeToInsert, int index){
     if(index >= this->size || index < 0){
@@ -202,6 +232,12 @@ void HDCLinkedList<T>::insert(const NodeC<T>& nodeToInsert, int index){
 
 }
 
+/*
+PARAMETROS: Nada.
+METODO: Obtiene el ultimo nodo (nodo anterior a cabeza) y el anterior a este, el nodo anterior ahora apunta a la cabeza y eliminamos el último nodo.
+ORDEN: O(1).
+RETURN: Regresa la lista enlazada actual sin el último nodo.
+*/
 template <class T>
 void HDCLinkedList<T>::pop(){
     
@@ -211,6 +247,13 @@ void HDCLinkedList<T>::pop(){
 
 }
 
+/*
+PARAMETROS: Recibe la posición de un nodo a eliminar.
+METODO: Verifica que la lista no este vacia, y que index este en el rango del primer elemento y size. Busca el nodo en esa posición y lo elimina,
+el nodo anterior ahora apunta al nodo al que apuntaba el nodo que se elimino y el siguiente también apunta a él.
+ORDEN: O(n).
+RETURN: Regresa la lista enlazada actual con el nodo de esa posición eliminado.
+*/
 template <class T>
 void HDCLinkedList<T>::erase(int index){
     if(index >= this->size || index < 0 || this->head==nullptr){
@@ -242,6 +285,12 @@ void HDCLinkedList<T>::erase(int index){
     
 }
 
+/*
+PARAMETROS: Nada.
+METODO: Recorre cada nodo desde head hasta llegar a el mismo e imprime los datos de cada nodo en la consola.
+ORDEN: O(n).
+RETURN: Imprime los datos de los nodos de la lista en la consola.
+*/
 template <class T>
 void HDCLinkedList<T>::print(){
     if (this->size == 0){
@@ -259,6 +308,12 @@ void HDCLinkedList<T>::print(){
     std::cout<<"\n";
 }
 
+/*
+PARAMETROS: Recibe un dato del tipo de dato de la lista enlazada doble circular.
+METODO: Crea un nodo y llama a la función append con ese nuevo nodo como argumento.
+ORDEN: O(1).
+RETURN: Se añade un nodo a la lista enlazada.
+*/
 template <class T>
 void HDCLinkedList<T>::append(T data) {
     NodeC<T>* temp = new NodeC<T> (data);
@@ -266,6 +321,12 @@ void HDCLinkedList<T>::append(T data) {
     delete temp;
 }
 
+/*
+PARAMETROS: Ninguno.
+METODO: Elimina los nodos de la lista enlazada actual desde el primer elemento al último.
+ORDEN: O(n).
+RETURN: Lista enlazada actual sin apuntar a ningún nodo.
+*/
 template <class T>
 void HDCLinkedList<T>::empty(){
     if(this->size == 0){
