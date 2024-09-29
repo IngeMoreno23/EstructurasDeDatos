@@ -96,7 +96,12 @@ void LinkedList<T>::syncHead(){
     this->head = dynamic_cast<Node<T>*>(this->getHead());
 }
 
-// Paso por referencia para no realizar copias y para poder modificar el valor directamente.
+/*
+PARAMETROS: Recibe una posición del nodo en la lista.
+METODO: Verifica que la lista no este vacia, y que index este en el rango del primer elemento y size.
+ORDEN: O(n).
+RETURN: Regresa como referencia del dato del nodo para que pueda ser modificado.
+*/
 template <class T>
 T& LinkedList<T>::operator[](unsigned int index){
 
@@ -119,6 +124,12 @@ void LinkedList<T>::insert(T data, int index){
     insert(* new Node<T> (data), index);
 }
 
+/*
+PARAMETROS: Recibe un dato del tipo de dato de la lista enlazada.
+METODO: Crea un nodo y llama a la función append con ese nuevo nodo como argumento.
+ORDEN: O(1).
+RETURN: Se añade un nodo a la lista enlazada.
+*/
 template <class T>
 void LinkedList<T>::append(T data){
     Node<T>* temp = new Node<T> (data);
@@ -126,6 +137,12 @@ void LinkedList<T>::append(T data){
     delete temp;
 }
 
+/*
+PARAMETROS: Recibe un nodo del tipo de dato de la lista enlazada.
+METODO: Busca el último elemento de la lista que apunta a un nullptr y hace que este elemento apunte al nodo que recibió como argumento.
+ORDEN: O(n).
+RETURN: Se añade un nodo a la lista enlazada.
+*/
 template<class T>
 void LinkedList<T>::append(const Node<T>& nodeToAppend){
     if(head == nullptr){
@@ -145,6 +162,12 @@ void LinkedList<T>::append(const Node<T>& nodeToAppend){
     // A menos que justo se asigne un valor en la memoria manualmente antes de mandar llamar esta función, ahí sí tiene sentido solo hacer que el último nodo apunte a esa función. 
 }
 
+/*
+PARAMETROS: Recibe una lista enlazada (listToAppend) del tipo de dato de la lista enlazada actual.
+METODO: Copia los elementos de listToAppend al final de la lista enlazada actual.
+ORDEN: O(n).
+RETURN: Regresa la lista enlazada actual con copias de los nodos de listToAppend al final.
+*/
 template <class T>
 void LinkedList<T>::append(const LinkedList<T>& listToAppend){
     if (listToAppend.size == 0){
@@ -169,6 +192,12 @@ void LinkedList<T>::append(const LinkedList<T>& listToAppend){
 
 }
 
+/*
+PARAMETROS: Ninguno.
+METODO: Elimina los nodos de la lista enlazada actual desde el primer elemento al último.
+ORDEN: O(n).
+RETURN: Lista enlazada actual sin apuntar a ningún nodo.
+*/
 template <class T>
 void LinkedList<T>::empty(){
     while(head != nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
@@ -178,6 +207,13 @@ void LinkedList<T>::empty(){
     }
     size=0;
 }
+
+/*
+PARAMETROS: Recibe una lista enlazada (listToAppend) del tipo de dato de la lista enlazada actual.
+METODO: El último elementos de la lista enlazada actual apunta al primero de la listToAppend. listToAppend ahora no apunta a ningun nodo.
+ORDEN: O(n).
+RETURN: Regresa la lista enlazada actual con los nodos de listToAppend al final.
+*/
 template <class T>
 void LinkedList<T>::merge(LinkedList<T>& listToAppend){
     if (listToAppend.size == 0){
@@ -197,6 +233,13 @@ void LinkedList<T>::merge(LinkedList<T>& listToAppend){
 
 }
 
+/*
+PARAMETROS: Recibe un nodo y una posición en donde insertar el nodo.
+METODO: Verifica que la posición se encuentre entre el primer elemento y el tamaño de la lista, si es así, busca el elemento anterior a esa posición
+a hace que ese nodo apunte al nuevo nodo, y el nuevo nodo apunte a la posición del siguiente nodo. Si no cumple la condición añade al final.
+ORDEN: O(n).
+RETURN: Regresa la lista enlazada actual con un nodo extra en la posición indicada.
+*/
 template <class T>
 void LinkedList<T>::insert(const Node<T>& nodeToInsert, int position){
     if(position >= size || position < 0){
@@ -210,7 +253,6 @@ void LinkedList<T>::insert(const Node<T>& nodeToInsert, int position){
         currentNode = currentNode->getNext();
     }
 
-    // nodeToInsert.setNext(currentNode -> getNext()); Antes usaba este código, pero me di cuenta que es mejor asignar la memoria nuevamente. Aunque esto también se puede hacer antes de llamar a la función, siento que hacerlo desde la función es más sólido. 
     Node<T>* newNode = new Node<T> (nodeToInsert.getData());
     newNode->setNext(currentNode->getNext());
     currentNode->setNext(newNode);
@@ -218,6 +260,13 @@ void LinkedList<T>::insert(const Node<T>& nodeToInsert, int position){
 
 }
 
+/*
+PARAMETROS: Recibe la posición de un nodo a eliminar.
+METODO: Verifica que la lista no este vacia, y que index este en el rango del primer elemento y size. Busca el nodo en esa posición y lo elimina,
+el nodo anterior ahora apunta al nodo al que apuntaba el nodo que se elimino.
+ORDEN: O(n).
+RETURN: Regresa la lista enlazada actual con el nodo de esa posición eliminado.
+*/
 template <class T>
 void LinkedList<T>::erase(int index){
     if(index >= size || index < 0 || head == nullptr){
@@ -248,6 +297,13 @@ void LinkedList<T>::erase(int index){
     
 }
 
+/*
+PARAMETROS: Recibe un dato del tipo de dato del nodo y una posición del nodo en la lista.
+METODO: Verifica que la lista no este vacia, y que index este en el rango del primer elemento y size.
+Remplaza el dato del nodo en la posición del argumento con el dato recibido en el argumento
+ORDEN: O(n).
+RETURN: Regresa la lista enlazada actual con un nodo extra en la posición indicada.
+*/
 template <class T>
 void LinkedList<T>::update(T data, int index){
 
@@ -258,6 +314,13 @@ void LinkedList<T>::update(T data, int index){
     operator[](index)=data;
 }
 
+/*
+PARAMETROS: Rebibe la lista a ordenar y su número de nodos.
+METODO: Utiliza el algoritmo divide y venceras, que separa la lista a la mitad varias veces hasta tener listas de 1 nodo, compara los datos de estos nodos
+y acomoda los nodos de menor a mayor de forma recursiva hasta ordenarlos en la lista original.
+ORDEN: O(nlog(n)).
+RETURN: Regresa la lista enlazada con sus nodos ordenados de menor a mayor según sus datos.
+*/
 template <class T>
 void LinkedList<T>::ordMerge(LinkedList<T> &l, int n){
     if (n == 1) return;
@@ -304,6 +367,12 @@ bool LinkedList<T>::isEmpty(){
     return false;
 }
 
+/*
+PARAMETROS: Rebibe un dato a buscar en la lista enlazada actual.
+METODO: Compara el dato de cada nodo en la lista hasta encontrar uno que coincida.
+ORDEN: O(n).
+RETURN: Regresa la posición del primer nodo que coincida con el dato, si no se encuentra, regresa -1.
+*/
 template <class T>
 int LinkedList<T>::search(T data){
     syncHead();
@@ -320,6 +389,12 @@ int LinkedList<T>::search(T data){
     return -1;
 }
 
+/*
+PARAMETROS: Rebibe 2 posiciones de nodos de la lista enlazada actual que intercambiaran de valor.
+METODO: Busca la el dato de los 2 nodos que se quieren cambiar, y remplaza solo los datos que contienen.
+ORDEN: O(n).
+RETURN: Regresa la lista actual con 2 nodos que intercambiaron su valor.
+*/
 template <class T>
 void LinkedList<T>::exchange(int indexA, int indexB){
     T buffer = operator[](indexA);
@@ -327,6 +402,12 @@ void LinkedList<T>::exchange(int indexA, int indexB){
     operator[](indexB) = buffer;
 }
 
+/*
+PARAMETROS: Nada.
+METODO: Remplaza los datos de la posición actual y la posición size-posición actual, remplazando el primer elemento y el último hasta llegar a la mitad de la lista.
+ORDEN: O(n).
+RETURN: Regresa la lista actual con los datos de los nodos remplazados de inicio a fin.
+*/
 template <class T>
 void LinkedList<T>::invert(){
     int positionA = 0, half = (size % 2 ==0) ? size/2: 1 + size/2;
@@ -336,6 +417,12 @@ void LinkedList<T>::invert(){
     }
 }
 
+/*
+PARAMETROS: Nada.
+METODO: Recorre cada nodo e imprime los datos de cada uno en la consola.
+ORDEN: O(n).
+RETURN: Imprime los datos de los nodos de la lista en la consola.
+*/
 template <class T>
 void LinkedList<T>::print(){
     Node<T>* currentNode = this->head;
@@ -353,6 +440,12 @@ Node<T>* LinkedList<T>::getHead() {
     return head;
 }
 
+/*
+PARAMETROS: Recibe una posición del nodo en la lista.
+METODO: Verifica que la lista no este vacia, y que index este en el rango del primer elemento y size.
+ORDEN: O(n).
+RETURN: Regresa como referencia del dato del nodo para que pueda ser modificado.
+*/
 template <class T>
 T& LinkedList<T>::at(int position){
     return operator[](position-1);
