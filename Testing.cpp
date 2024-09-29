@@ -29,26 +29,53 @@ HDCLinkedList<T> ordenar(HDCLinkedList<T> lista){
     lista.ordMerge(lista,lista.length());
     return lista;
 }
-
-int main(){
-    
-    HDCLinkedList<int> lista = {53,20,1,19};
-    HDCLinkedList<int> nuevaLista = invertir(lista), nuevaLista2 = ordenar(lista);
+template <class T>
+void testLista(HDCLinkedList<T>& lista){
     std::cout<<"Lista original: ";
     lista.print();
+    try{
+        int valorACambiar=5000, posicion=2;
+        update(lista,posicion,valorACambiar);
+        std::cout<<"Cambio en la posición 2\n";
+        lista.print();
+    } catch (std::invalid_argument){
+        std::cout<<"Hubo un error intentado actualizar el valor\n";
+    }
 
-    update(lista, 2,5000);
-    std::cout<<"Cambio en la posición 2\n";
-    lista.print();
+    try{
+        int valorABuscar = 2;
+        int posicion = buscar(lista,2);
+    } catch (std::invalid_argument){
+        
+        std::cout<<"Hubo un error buscando el valor"<<std::endl;
+    }
+    
+    try{
+        int valorABuscar = 19;
+        int posicion = buscar(lista,valorABuscar);
+    } catch (std::invalid_argument){
+        std::cout<<"Hubo un error buscando el valor"<<std::endl;
+    }
 
-    int posicion = buscar(lista,2), posicion2 = buscar(lista,19);
+    HDCLinkedList<int> nuevaLista = invertir(lista), nuevaLista2 = ordenar(lista);
+
+    int posicion2 = buscar(lista,19);
     std::cout<<"Lista original invertida: ";
     nuevaLista.print();
     std::cout<<"Lista original ordenada: ";
     nuevaLista2.print(); 
+}
+
+int main(){
+    
+    HDCLinkedList<int> lista = {53,20,1,19};   
+    testLista(lista);
 
 
-        // Doblemente enlazada pruebas
+
+
+
+    // Doblemente enlazada pruebas
 
     {
         HDCLinkedList<int> lista={2,3,5};

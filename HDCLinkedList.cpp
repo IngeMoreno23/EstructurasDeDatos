@@ -63,17 +63,13 @@ HDCLinkedList<T>:: HDCLinkedList(const HDCLinkedList<T>& listToCopy){
 template <class T> 
 HDCLinkedList<T>::~HDCLinkedList() {
     if(this->size == 0){
+        delete this->head;
         return;
     }
 
-    NodeC<T>* current = this->head;
-
-    do{
-        Node<T> *temp = current; 
-        current = static_cast<NodeC<T>*>(current->getNext());
-        delete temp; 
-    }
-    while (current != this->head);
+    empty();
+    
+    delete this->head;
 
     this->size=0; 
 }
@@ -143,6 +139,7 @@ void HDCLinkedList<T>::append(const HDCLinkedList<T>& listToAppend){
     if(currentNode == nullptr){
         currentNode = this->head;
     }
+    
     do{
         NodeC<T>* nextNode = new NodeC<T> (currentNodeCopy->getData());
         currentNode->setNext(nextNode);
@@ -277,12 +274,14 @@ void HDCLinkedList<T>::empty(){
 
     NodeC<T>* current = this->head;
 
-    do{
+    while ( current != this->head){
         Node<T> *temp = current; 
         current = static_cast<NodeC<T>*>(current->getNext());
         delete temp; 
     }
-    while (current != this->head);
+
+    head->setNext(nullptr);
+    head->setPrevious(nullptr);    
 
     this->size=0;
 }
