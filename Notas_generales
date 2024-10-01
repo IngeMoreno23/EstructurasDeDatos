@@ -1,0 +1,5 @@
+
+
+/*
+El valor T() es como inicializar std::string() pero para un valor plantilla, creo. Por ello, T() da el valor nulo por defecto del tipo de dato especificado. 
+*/
