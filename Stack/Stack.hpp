@@ -1,19 +1,27 @@
+#pragma once 
+
 #include <iostream>
+#include "exceptions.cpp"
 
 template <class T>
 class Stack{
     public:
         Stack();
         Stack(std::initializer_list<T> list);
-        Stack(int capacity);
-        
-        
+        Stack(int _capacity);
+        ~Stack();
+
+        Stack(const Stack<T>& copyStack);
+        const Stack<T>& operator =(const Stack<T>& copyStack);
+
+        void push(T data);
+
+        bool isFull();
+        bool isEmpty();
+        T pop();
+        T top();
     private:
-        int capacity, top; 
+        int capacity, stackTop; 
         T* elements;
 
 };
-
-template <class T>
-Stack<T>::Stack():capacity(10), top(-1), elements(new T[10]){
-}
