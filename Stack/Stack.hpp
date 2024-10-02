@@ -19,9 +19,9 @@ class Stack{
         bool isFull();
         bool isEmpty();
         T pop();
-        T top();
+        T peek();
     private:
-        int capacity, stackTop; 
+        int capacity, top; 
         T* elements;
 
 };

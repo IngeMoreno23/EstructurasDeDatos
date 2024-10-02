@@ -20,7 +20,7 @@ Puedes acceder a los metodos privados de un objeto si estás dentro de la clase,
 
 
 entonces cuando yo mando a llamar throw(out_of_range("msg error ")), estoy instanciando un objeto. 
-
+la excepción se trata como un objeto, porque lo es
 
 
 

@@ -13,7 +13,7 @@ class Tree{
     public:
         Tree();
         Tree(const Tree<T>&);
-        operator=(const Tree<T>&);
+        const Tree<T> operator=(const Tree<T>&);
         memberST(T data, Node<T>* actNode);
         addNode(Node<T> nodeAdd)
 };
@@ -27,4 +27,9 @@ Tree<T>::Tree(){
 template <class T>
 Tree<T>::Tree(const Tree<T>& treeCopy){
 
+}
+
+template <class T>
+const Tree<T> Tree<T>::operator=(const Tree<T> &treeCopy){
+    
 }
