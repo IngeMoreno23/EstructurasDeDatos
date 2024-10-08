@@ -8,6 +8,7 @@ class Node{
 
         Node<T> *left, *right;
         T data;
+        int height;
 
 };
 
@@ -16,6 +17,7 @@ Node<T>::Node(){
     left=nullptr; 
     right=nullptr;
     data=T();
+    height=0;
 }
 
 template <class T>

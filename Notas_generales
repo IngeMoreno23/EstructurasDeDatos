@@ -14,7 +14,7 @@ MyClass obj = MyClass(10, "example");  // Inicialización por asignación
 MyClass* obj = new MyClass();  // Llamada al constructor por defecto
 MyClass* obj = new MyClass;  // Llamada al constructor por defecto
 
-Puedes acceder a los metodos privados de un objeto si estás dentro de la clase, aunque el método haya sido llamado por otro objeto de la misma clase
+Puedes acceder a los metodos/atributos privados de un objeto si estás dentro de la clase, aunque el método haya sido llamado por otro objeto de la misma clase
 
 
 

@@ -28,11 +28,11 @@ template <class T>
 const Queue<T> Queue<T>::operator=(const Queue<T> & queueCopy){
     delete[] content;
 
-    capacity=queueCopy.capacity;
-    bottom=queueCopy.bottom;
-    top=queueCopy.top;
+    this->capacity=queueCopy.capacity;
+    this->bottom=queueCopy.bottom;
+    this->top=queueCopy.top;
 
-    content= new T[capacity];
+    content= new T[this->capacity];
 }
 
 template <class T>
@@ -49,23 +49,6 @@ template <class T>
 bool Queue<T>::isEmpty(){
     return (top == -1) ? true : false;
 }
-
-/*
-template <class T>
-T Queue<T>::deQueue(){
-    if(isEmpty()){
-        throw(out_of_range("The queue is empty"));
-    }
-    
-    if(top == bottom){
-        int tempTop=top;
-        top = bottom = -1;
-        return content[tempTop];
-    }
-
-    return content[top++];
-}
-*/
 
 template <class T>
 T Queue<T>::deQueue(){
@@ -113,3 +96,15 @@ void Queue<T>::print(){
     }
     std::cout<<std::endl;
 }
+
+template <class T>
+Queue<T>::Queue(const Stack<T>& stack){
+    bottom=-1;
+    top=-1;
+    capacity=stack.capacity;
+    content=new T[stack.capacity];
+
+    for(int i=0; i <= stack.top; i++){
+        enQueue(stack.elements[i]);
+    }
+};

@@ -1,5 +1,8 @@
 #pragma once
-#include "Stack.cpp"
+#include "..\Stack\Stack.hpp"
+
+template <class T>
+class Stack;
 
 template <class T>
 class Queue{
@@ -7,6 +10,8 @@ class Queue{
         Queue();
         Queue(std::initializer_list<T> list);
         Queue(int _capacity);
+        Queue(const Stack<T>& stack);
+
         ~Queue();
 
         Queue(const Queue<T>& queueCopy);
@@ -22,10 +27,9 @@ class Queue{
         T getBottom();
         void print();
 
-        const Stack<T> & toStack();
-        const Queue<T> operator=(const Stack<T>& stackCopy);
-
+        // const Queue<T> operator=(const Stack<T>& stackCopy);
     private:
-        int top, bottom, capacity;
         T* content; 
+        int top, bottom, capacity; 
+        friend class Stack<T>;
 };
