@@ -75,6 +75,11 @@
         "unordered_map": "cpp",
         "xhash": "cpp",
         "coroutine": "cpp",
-        "resumable": "cpp"
+        "resumable": "cpp",
+        "*.tcc": "cpp",
+        "memory_resource": "cpp",
+        "string_view": "cpp",
+        "variant": "cpp",
+        "fstream": "cpp"
     }
 }
