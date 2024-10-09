@@ -80,6 +80,12 @@
         "memory_resource": "cpp",
         "string_view": "cpp",
         "variant": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "text_encoding": "cpp",
+        "random": "cpp",
+        "semaphore": "cpp",
+        "cwctype": "cpp",
+        "numeric": "cpp",
+        "numbers": "cpp"
     }
 }
