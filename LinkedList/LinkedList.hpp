@@ -4,10 +4,9 @@
 
 template <class T>
 class LinkedList{
-    private:
-        Node<T> *head;
     protected:
         int size;
+        Node<T> *head;
     public: 
         // Constructors
         LinkedList();
@@ -43,7 +42,4 @@ class LinkedList{
         void invert();
         virtual void empty();
         void ordMerge(LinkedList<T> &l, int n);
-
-        virtual Node<T>* getHead();
-        void syncHead();
 };

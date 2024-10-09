@@ -89,13 +89,6 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T> & listToCopy){
     return *this;
 }
 
-
-// se emplea para que apunten los dos heads apunten al mismo lugar, solo que el apuntador en LinkedList solo tendrá acceso a los atributos privados, protegidos y públicos (y por ende maneja node, y no node c), y lo que está en HDCLink maneja el apuntador con nodeC
-template <class T>
-void LinkedList<T>::syncHead(){
-    this->head = dynamic_cast<Node<T>*>(this->getHead());
-}
-
 /*
 PARAMETROS: Recibe una posición del nodo en la lista.
 METODO: Verifica que la lista no este vacia, y que index este en el rango del primer elemento y size.
@@ -109,7 +102,6 @@ T& LinkedList<T>::operator[](unsigned int index){
         std::cout<<"Index "<<index<<" is out of range";
         throw(std::invalid_argument("Out of range"));
     }
-    syncHead();
     Node<T>* currentNode = this->head;
 
     for(int i = 0; i < index; i++){
@@ -375,7 +367,6 @@ RETURN: Regresa la posición del primer nodo que coincida con el dato, si no se 
 */
 template <class T>
 int LinkedList<T>::search(T data){
-    syncHead();
     Node<T>* currentNode=this->head;
 
     int i=0;
@@ -433,11 +424,6 @@ void LinkedList<T>::print(){
         currentNode=currentNode->getNext();
     }
     std::cout<<"\n";
-}
-
-template <class T>
-Node<T>* LinkedList<T>::getHead() {
-    return head;
 }
 
 /*

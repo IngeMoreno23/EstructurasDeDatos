@@ -27,8 +27,4 @@ class HDCLinkedList: public LinkedList<T>{
         void erase(int index);
         void print();
         void empty() override;
-
-        NodeC<T>* getHead();
-    private:
-        NodeC<T>* head;
 };

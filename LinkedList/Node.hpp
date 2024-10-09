@@ -19,7 +19,12 @@ class Node{
 
         int operator>(const Node<T>& nodeB);
         void print();
-
+/*
+        virtual void setNext(Node<T>* next) = 0;
+        virtual Node<T>* getNext() const = 0;
+        virtual void setPrevious(Node<T>* previous) = 0;
+        virtual Node<T>* getPrevious() const = 0;
+*/
     protected:
         Node<T> *next;
         T data;

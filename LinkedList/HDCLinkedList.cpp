@@ -15,7 +15,6 @@ HDCLinkedList<T>::HDCLinkedList():LinkedList<T>(){
     this->head->setNext(nullptr);
     this->head->setPrevious(nullptr);
         
-    LinkedList<T>::syncHead(); 
 }
 
 template <class T>
@@ -29,8 +28,8 @@ HDCLinkedList<T>::HDCLinkedList(std::initializer_list<T> elements){
         auto iterador = elements.begin(); 
 
         this->head = new NodeC<T> (*iterador); 
-        NodeC<T>* currentNode = this->head;
-        currentNode->setPrevious(head);
+        NodeC<T>* currentNode = static_cast<NodeC<T>*>(this->head);
+        currentNode->setPrevious(static_cast<NodeC<T>*>(this->head));
         iterador++;
         this->size = 1;
 
@@ -44,7 +43,7 @@ HDCLinkedList<T>::HDCLinkedList(std::initializer_list<T> elements){
         }
         
         currentNode->setNext(this->head);
-        this->head->setPrevious(currentNode);
+        static_cast<NodeC<T>*>(this->head)->setPrevious(currentNode);
     }
 }
 
@@ -53,10 +52,8 @@ HDCLinkedList<T>:: HDCLinkedList(const HDCLinkedList<T>& listToCopy){
     this->head = new NodeC<T>;
 
     this->head->setNext(this->head);
-    this->head->setPrevious(this->head);
+    static_cast<NodeC<T>*>(this->head)->setPrevious(static_cast<NodeC<T>*>(this->head));
         
-    LinkedList<T>::syncHead(); 
-
     *this = listToCopy; // Usar *this para referirse al objeto y poder mandar llamar a la sobrecarga de asignación. 
 }
 
@@ -92,7 +89,7 @@ const HDCLinkedList<T>& HDCLinkedList<T>::operator=(const HDCLinkedList<T> & lis
         return *this;
     }
 
-    NodeC<T>* currentNodeCopy = listToCopy.head, *currentNode = new NodeC<T> (currentNodeCopy->getData());
+    NodeC<T>* currentNodeCopy = static_cast<NodeC<T>*>(listToCopy.head), *currentNode = new NodeC<T> (currentNodeCopy->getData());
     this->head = currentNode;
 
     currentNodeCopy = static_cast<NodeC<T>*>(currentNodeCopy->getNext());
@@ -106,11 +103,10 @@ const HDCLinkedList<T>& HDCLinkedList<T>::operator=(const HDCLinkedList<T> & lis
         currentNode=nextNode;
     }
     currentNode->setNext(this->head);
-    this->head->setPrevious(currentNode);
+    static_cast<NodeC<T>*>(this->head)->setPrevious(currentNode);
 
     this->size = listToCopy.size;
 
-    LinkedList<T>::syncHead();
     return *this;
 }
 
@@ -125,26 +121,25 @@ void HDCLinkedList<T>::append(const NodeC<T>& nodeToAppend){
     if(this->head->getNext() == nullptr){
         NodeC<T>* newNode=new NodeC<T> (nodeToAppend.getData());
         this->head=newNode;
-        newNode->setPrevious(this->head);
+        newNode->setPrevious(static_cast<NodeC<T>*>(this->head));
         newNode->setNext(this->head);
         this->size++;
         return;
     }
 
     NodeC<T>* newNode=new NodeC<T> (nodeToAppend.getData());
-    this->head->getPrevious()->setNext(newNode);
+    static_cast<NodeC<T>*>(this->head)->getPrevious()->setNext(newNode);
     newNode->setNext(this->head);
-    newNode->setPrevious(head->getPrevious());
-    this->head->setPrevious(newNode);
-
+    newNode->setPrevious(static_cast<NodeC<T>*>(this->head)->getPrevious());
+    static_cast<NodeC<T>*> (static_cast<NodeC<T>*>(this->head))->setPrevious(newNode);
     this->size++;
 }
 
 /*
-PARAMETROS: Recibe una lista enlazada circular doble (listToAppend) del tipo de dato de la lista enlazada actual.
-METODO: Copia los elementos de listToAppend al final de la lista enlazada actual.
-ORDEN: O(n).
-RETURN: Regresa la lista enlazada actual con copias de los nodos de listToAppend al final.
+> PARAMETROS: Recibe una lista enlazada circular doble (listToAppend) del tipo de dato de la lista enlazada actual.
+> METODO: Copia los elementos de listToAppend al final de la lista enlazada actual.
+> ORDEN: O(n).
+> RETURN: Regresa la lista enlazada actual con copias de los nodos de listToAppend al final.
 */
 template <class T>
 void HDCLinkedList<T>::append(const HDCLinkedList<T>& listToAppend){
@@ -185,13 +180,13 @@ void HDCLinkedList<T>::merge(HDCLinkedList<T>& listToAppend){
         return;
     }
     NodeC<T>* listToAppendHeadCopy = new NodeC<T> (listToAppend.head->getData());    
-    NodeC<T>* temp = this->head->getPrevious();
+    NodeC<T>* temp = static_cast<NodeC<T>*>(this->head)->getPrevious();
 
     temp->setNext(listToAppendHeadCopy);
     listToAppend.head->getPrevious()->setNext(this->head);
     
     listToAppendHeadCopy->setPrevious(temp);
-    this->head->setPrevious(listToAppend.head->getPrevious());
+    this->head->setPrevious(static_cast<NodeC<T>*>(listToAppend.head)->getPrevious()); // cambié aquí
     listToAppendHeadCopy->setNext(listToAppend.head->getNext());
     this->size+=listToAppend.size;
 
@@ -297,7 +292,7 @@ void HDCLinkedList<T>::print(){
         std::cout<<"size= "<<this->size<<" elements: ";
         return;
     }
-    NodeC<T>* currentNode = this->head;
+    NodeC<T>* currentNode = static_cast<NodeC<T>*>(this->head);
 
     std::cout<<"size= "<<this->size<<" elements: ";
 
@@ -333,7 +328,7 @@ void HDCLinkedList<T>::empty(){
         return;
     }
 
-    NodeC<T>* current = this->head;
+    NodeC<T>* current = static_cast<NodeC<T>*>(this->head);
 
     while ( current != this->head){
         Node<T> *temp = current; 
@@ -341,13 +336,8 @@ void HDCLinkedList<T>::empty(){
         delete temp; 
     }
 
-    head->setNext(nullptr);
-    head->setPrevious(nullptr);    
+    this->head->setNext(nullptr);
+    static_cast<NodeC<T>*>(this->head)->setPrevious(nullptr);    
 
     this->size=0;
 }
-
-
-// La cabeza (atributo privado tanto en la clase base como en la derivada), sí puede ser accedida como atributo privado a partir de la clase base, si se está en un método de la clase base. */
-template <class T>
-NodeC<T>* HDCLinkedList<T>::getHead() { return this->head; };
