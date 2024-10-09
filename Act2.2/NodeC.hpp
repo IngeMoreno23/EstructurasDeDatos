@@ -12,6 +12,7 @@ class NodeC: public Node<T>{
         NodeC<T>* getPrevious();
         
         void setPrevious(NodeC<T>* previous);
+        NodeC<T>* getNext();
 
     private:
         NodeC<T> *previous;

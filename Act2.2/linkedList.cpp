@@ -312,14 +312,15 @@ LinkedList<T> &LinkedList<T>::filterIP(std::string data1, std::string data2){
 }
 
 template <class T>
-int busquedaBinaria(const LinkedList<T>& l, std::string clave){
+int busquedaBinaria(const LinkedList<T>& l, std::string clave, bool upper){
     int inicio=0, final=l.length(), ultimaInstancia=0;
     
     while (inicio <= final){
         int mitad = inicio+(final-inicio)/2;
-        int comparacion = obtainIp(l[mitad])>clave;
+        std::string ip = obtainIp(l[mitad]);
+        int comparacion = ip > clave;
 
-        if (comparacion == 2){
+        if (upper ){
             ultimaInstancia=mitad;
         }
         if (comparacion){
@@ -331,11 +332,10 @@ int busquedaBinaria(const LinkedList<T>& l, std::string clave){
     return ultimaInstancia;
 }
 
-template <class T>
 int operator>( std::string& a,  std::string& b){
-    std::stringstream ssStr1(a), ssStr2(b);
-
     int numAct1=0, numAct2=0;
+
+    std::stringstream ssStr1(a), ssStr2(b);
     while(ssStr1>>numAct1 && ssStr2 >> numAct2)
     {    
         if (numAct1>numAct2){
@@ -349,39 +349,13 @@ int operator>( std::string& a,  std::string& b){
     return 0;
 }
 
-std::string& obtainIp(const std::string& str){
+std::string obtainIp(const std::string& str){
     std::stringstream ssStr(str);
     std::string ip;
     for(int i=0; i<4; i++){
         ssStr>>ip;
     }
     return ip;
-}
-
-
-template <class T>
-int LinkedList<T>::cmpIP(T& data1, T& data2){
-    std::string str1 = data1, str2 = data2, ip1, ip2;
-    std::stringstream ssStr1(str1), ssStr2(str2);
-    std::string temp;
-
-    int numAct1=0, numAct2=0;
-    for(int i=0; i<3; i++){
-        ssStr1>>temp;
-        ssStr2>>temp;
-    }
-    while(ssStr1>>numAct1 && ssStr2 >> numAct2)
-    {    
-
-        if (numAct1>numAct2){
-            return 1;
-        } else if (numAct2>numAct1) {
-            return 0;
-        }
-        ssStr1.ignore();
-        ssStr2.ignore();
-    }
-    return 0;
 }
 
 
@@ -408,7 +382,8 @@ void LinkedList<T>::ordMerge(LinkedList<T> &l, int n) {
     int i = 0, j = 0, k = 0;
 
     while (i < mitad && j < n - mitad) {
-        if (cmpIP(l1[i],l2[j])>0) {
+        std::string a = obtainIp(l1[i]), b=obtainIp(l2[j]);
+        if (a>b) {
             l[k] = l2[j];
             j++;
         } else {

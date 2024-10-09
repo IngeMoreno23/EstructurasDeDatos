@@ -3,8 +3,6 @@
 #include "HDCLinkedList.cpp"
 
 int main(){
-    HDCLinkedList<std::string> casoPrueba({"Jun 5 04:12:47 1.6.378.65:6772 Failed password for root", "Jun 20 15:08:11 1.36.968.91:4437 Failed password for root"});
-    casoPrueba.print();
     std::ifstream bitacoraIn("bitacora.txt");
     HDCLinkedList<std::string> linkedList;
 
@@ -19,10 +17,6 @@ int main(){
         bitacoraIn.close();
     }
 
-    //
-    casoPrueba.ordMerge(casoPrueba, casoPrueba.length());
-    casoPrueba.print();
-    //
     linkedList.ordMerge(linkedList, linkedList.length());
 
     std::ofstream bitacoraOut("bitacoraOut.txt");
@@ -38,6 +32,5 @@ int main(){
 
         bitacoraOut.close();
     }
-    
     return 0;
 }

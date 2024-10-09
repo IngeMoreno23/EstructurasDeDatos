@@ -31,3 +31,10 @@ template<class T>
 void NodeC<T>::setPrevious(NodeC<T>* previous){
     this-> previous = previous;
 }
+
+/*
+template <class T>
+NodeC<T>* NodeC<T>::getNext(){
+    return this->next;
+}
+*/

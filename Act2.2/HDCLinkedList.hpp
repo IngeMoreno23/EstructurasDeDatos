@@ -22,7 +22,6 @@ class HDCLinkedList: public LinkedList<T>{
         void append(T data) override;
         void append(const HDCLinkedList<T>& listToAppend); // Agrega los elementos de la segunda lista sin borrarla
         void merge(HDCLinkedList<T>& listToMerge); // Conecta el último elemento de la primera al primero de la segunda. 
-
         void pop();
         void erase(int index);
         void print();
