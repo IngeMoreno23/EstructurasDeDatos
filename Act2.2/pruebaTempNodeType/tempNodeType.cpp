@@ -1,14 +1,10 @@
-#include "DoubleLL.hpp"
-#include "SimpleLL.hpp"
-#include "SimpleNode.hpp"
-#include "ops.cpp"
+#include "BaseLL.hpp"
+
 #include <iostream>
 #include <fstream>
 #include <string>
 
 int main(){
-    SimpleLL<int> linkedList;
-    /*
     std::ifstream bitacoraIn("bitacora.txt");
     DoubleLL<std::string> linkedList;
 
@@ -24,7 +20,6 @@ int main(){
     }
 
     ordMerge(linkedList, linkedList.length());
-
     std::ofstream bitacoraOut("bitacoraOut.txt");
     if(!bitacoraOut.is_open()){
         std::cerr << "No se pudo abrir el documento bitacoraOut.txt" << std::endl;
@@ -39,5 +34,5 @@ int main(){
         bitacoraOut.close();
     }
     return 0;
-    */
+
 }
