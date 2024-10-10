@@ -118,7 +118,7 @@ void SimpleLL<T>::insert(T data, int index){
 
 template <class T>
 void SimpleLL<T>::append(T data){
-    SimpleNode<T>* temp = SimpleNode<T> (data);
+    SimpleNode<T>* temp = new SimpleNode<T> (data);
     this->append(*temp);
     delete temp;
 }

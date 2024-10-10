@@ -1,6 +1,5 @@
-#include "DoubleLL.hpp"
+#include "DoubleLL.cpp"
 #include "SimpleLL.hpp"
-#include "operations.cpp"
 #include <iostream>
 #include <fstream>
 #include <string>

@@ -1,6 +1,6 @@
 #include "DoubleLL.hpp"
-#include "operations.cpp"
-
+#include "BaseLL.hpp"
+#include "ops.cpp"
 template <class T>
 DoubleLL<T>::DoubleLL(){ 
     this->head = nullptr;
@@ -230,7 +230,7 @@ void DoubleLL<T>::insert(T data, int index){
 
 template <class T>
 void DoubleLL<T>::append(T data){
-    DoubleNode<T>* temp = DoubleNode<T> (data);
+    DoubleNode<T>* temp = new DoubleNode<T> (data);
     this->append(*temp);
     delete temp;
 }

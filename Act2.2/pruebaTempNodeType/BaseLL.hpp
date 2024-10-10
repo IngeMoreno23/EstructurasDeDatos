@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SimpleNode.cpp"
+#include "SimpleNode.hpp"
 #include <string>
 
 template <class T, class NodeType>
