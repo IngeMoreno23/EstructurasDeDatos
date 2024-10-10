@@ -1,8 +1,9 @@
 #include "BaseLL.hpp"
+#include "DoubleLL.hpp"
 #include <string>
 
-template <class T, class NodeType>
-int busquedaBinaria(const BaseLL<T,NodeType>& l, std::string clave, bool upper){
+template <class T>
+int busquedaBinaria(const DoubleLL<T>& l, std::string clave, bool upper){
     int inicio=0, final=l.length(), ultimaInstancia=0;
     
     while (inicio <= final){
@@ -49,12 +50,12 @@ std::string obtainIp(const std::string& str){
 }
 
 
-template <class T,class NodeType>
-void ordMerge(BaseLL<T,NodeType> &l, int n) {
+template <class T>
+void ordMerge(DoubleLL<T> &l, int n) {
     if (n == 1) return;
 
     int mitad = n / 2;
-    BaseLL<T,NodeType> l1, l2;
+    DoubleLL<T> l1, l2;
     
     for (int i = 0; i < mitad; i++) l1.append(l[i]);
     for (int i = mitad; i < n; i++) l2.append(l[i]);

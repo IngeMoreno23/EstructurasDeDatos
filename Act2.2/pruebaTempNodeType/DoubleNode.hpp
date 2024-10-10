@@ -1,21 +1,21 @@
 #pragma once
 
-#include "SimpleNode.cpp"
+#include "SimpleNode.hpp"
 
 template <class T>
 class DoubleNode: public SimpleNode<T>{
     public:
         DoubleNode(T _data);
         DoubleNode();
-        ~DoubleNode() override;
+        ~DoubleNode();
 
         DoubleNode<T>* getPrevious();
         void setPrevious(DoubleNode<T>* prev);
 
         DoubleNode<T>* getNext();
-        void setNext(DoubleNode<T>* next);
+        virtual void setNext(DoubleNode<T>* next);
 
     private:
-        DoubleNode<T> *prev, *next;
+        DoubleNode<T> *prev;
 
 };

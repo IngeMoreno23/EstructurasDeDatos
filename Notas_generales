@@ -26,4 +26,65 @@ la excepción se trata como un objeto, porque lo es
 
 Variables globales. struct. Hash map. grafos. 
 Él inspira más confianza. tmb laqe 
+
+Para acceder a métodos con clases plantillas
+static_cast<Derived<T>*>(this)->templateMethod(42);
+
+
+AUTO ES UN TIPO DE DATO DE RETORNO
+
+SE PUEDE CAMBIAR EL TIPO DE DATO DE RETORNO EN UNA FUNCIÓN
+
+SE PUEDEN TENER  PARA QUE NODE PUEDA VALER DISTINTAS COSAS. Y SE PUEDEN EJECUTAR FUNCIONES EN PARTICULAR PARA 
+template <class T, class Node>
+
+
+Con if constexpr y auto, puedes cambiar el tipo de retorno dinámicamente dentro de una única función plantilla, sin necesidad de múltiples versiones de la misma.
+
+
+if constexpr permite que el código se compile dependiendo de si la condición es verdadera o no en tiempo de compilación.
+En este caso, si el tipo es integral, la función retornará un entero; si no, retornará un double. El tipo de retorno se deduce automáticamente usando auto.
+
+Tipos de retorno idénticos: La sobrecarga funciona si el tipo de retorno es el mismo, pero difieren en los tipos o el número de parámetros.
+Funciones con diferentes firmas: C++ permite sobrecargar métodos en clases derivadas si las firmas (lista de parámetros) son diferentes. En este caso, no habrá problemas de ambigüedad.
+Herencia y resolución de nombres: Si un método de la clase derivada tiene el mismo nombre que uno en la clase base pero diferente firma, las versiones en la clase derivada "esconden" las de la clase base, a menos que se use explícitamente el nombre de la clase base o la palabra clave using para traer las versiones de la clase base al alcance.
+
+
+
+class Base {
+public:
+    int process(int x) {
+        std::cout << "Base: process(int)" << std::endl;
+        return x * 2;
+    }
+};
+
+class Derived : public Base {
+public:
+    using Base::process;  // Trae la versión de la clase base al alcance de la clase derivada
+
+    int process(double x) {
+        std::cout << "Derived: process(double)" << std::endl;
+        return static_cast<int>(x * 3.5);
+    }
+};
+
+
+Sobrecarga: Puedes sobrecargar funciones en una clase derivada, siempre que las firmas (lista de parámetros) sean diferentes, aunque el tipo de retorno coincida.
+Tipo de retorno: El tipo de retorno debe coincidir para que sea considerada una sobrecarga. Si los tipos de retorno son diferentes, no será una sobrecarga, sino una reescritura o ocultación de la función.
+Traer métodos de la clase base: Usa using Base::function_name para hacer visible la sobrecarga de la clase base si deseas que ambas versiones (base y derivada) sean accesibles.
+
+Se puede hacer un nodo base que deduzca los tipos de retorno
+
+Puedo hacer una clase
+
+3. Método virtual puro
+Si deseas obligar a que solo las clases derivadas implementen un comportamiento, puedes declarar un método virtual puro en la clase base. Esto asegura que todas las clases derivadas tengan que implementar ese método.
+
+
+
+
+Sobrecarga: Te permite definir varias funciones con el mismo nombre, pero con diferentes listas de parámetros. Esto es lo que estás mencionando cuando dices que los parámetros pueden ser distintos.
+Sobreescritura (override): Significa que una clase derivada proporciona una nueva implementación para una función virtual definida en una clase base. Para que sea una sobrescritura válida, la firma de la función (nombre, tipo de retorno y lista de parámetros) debe coincidir exactamente con la de la clase base.
+
 */

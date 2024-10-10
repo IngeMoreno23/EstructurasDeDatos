@@ -3,14 +3,15 @@
 template<class T>
 DoubleNode<T>::DoubleNode(){
     prev=nullptr;
-    next=nullptr;
-    data=T();
+    this->next=nullptr;
+    this->data=T();
 };
 
 template<class T>
-DoubleNode<T>::DoubleNode(T _data):data(_data){
+DoubleNode<T>::DoubleNode(T _data){
+    this->data=_data;
     prev=nullptr;
-    next=nullptr;
+    this->next=nullptr;
 };
 
 template <class T>
@@ -28,7 +29,7 @@ void DoubleNode<T>::setPrevious(DoubleNode<T>* previous){
 
 template <class T>
 DoubleNode<T>* DoubleNode<T>::getNext(){
-    return next;
+    return static_cast<DoubleNode<T>*>(this->next);
 }
 
 template <class T>

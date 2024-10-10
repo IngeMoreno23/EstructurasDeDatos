@@ -2,15 +2,14 @@
 #include <sstream>
 #include <cstring>
 #include "BaseLL.hpp"
+#include "SimpleNode.hpp"
+#include "DoubleNode.hpp"
 
 template <class T, class NodeType>
-BaseLL<T, NodeType>::BaseLL():head(nullptr), size(0){
-
-}
+BaseLL<T, NodeType>::BaseLL():head(nullptr), size(0){}
 
 template <class T, class NodeType>
 BaseLL<T, NodeType>::BaseLL(std::initializer_list<T> elements){
-
 
     if(elements.size() == 0){
         head=nullptr;
@@ -34,7 +33,6 @@ BaseLL<T, NodeType>::BaseLL(std::initializer_list<T> elements){
     }
 }
 
-
 template <class T, class NodeType> 
 BaseLL<T, NodeType>:: BaseLL(const BaseLL<T, NodeType>& listToCopy):head(nullptr), size(0){
     operator=(listToCopy);
@@ -54,24 +52,18 @@ BaseLL<T, NodeType>:: ~BaseLL(){
 }
 
 template <class T, class NodeType>
-BaseLL<T, NodeType>& BaseLL<T, NodeType>::operator=(const BaseLL<T, NodeType>& listToCopy){
+auto & BaseLL<T, NodeType>::operator=(const BaseLL<T, NodeType>& listToCopy){
 
     if (this == &listToCopy){ 
         return *this;
     }
-    
-    while(head != nullptr){ 
-        NodeType *temp = head; 
-        head = head->getNext();
-        delete temp;
-    }
-    
-    size=0;
 
+    empty();
+    
     if (listToCopy.head == nullptr){
         return *this;
     }
-
+    
     NodeType* currentNodeCopy = listToCopy.head, *currentNode = new NodeType (currentNodeCopy->getData());
     head=currentNode;
 
@@ -79,8 +71,9 @@ BaseLL<T, NodeType>& BaseLL<T, NodeType>::operator=(const BaseLL<T, NodeType>& l
 
     while(currentNodeCopy != nullptr){
 
-        NodeType* nextNode = new NodeType (currentNodeCopy->getData()); //usar los getters.
+        NodeType* nextNode = new NodeType (currentNodeCopy.data); //usar los getters.
         currentNode->setNext(nextNode);
+
         currentNodeCopy = currentNodeCopy->getNext();
         currentNode = nextNode;
     }
@@ -105,18 +98,6 @@ T& BaseLL<T, NodeType>::operator[](unsigned int index){
     }
 
     return currentNode->getData();
-}
-
-template <class T, class NodeType>
-void BaseLL<T, NodeType>::insert(T data, int index){
-    insert(* new NodeType (data), index);
-}
-
-template <class T, class NodeType>
-void BaseLL<T, NodeType>::append(T data){
-    NodeType* temp = new NodeType (data);
-    append(*temp);
-    delete temp;
 }
 
 template <class T, class NodeType>
@@ -154,7 +135,6 @@ NodeType* BaseLL<T, NodeType>::getNode(int index){
 
     return currentNode; 
 }
-
 
 template <class T, class NodeType>
 int BaseLL<T,NodeType>::length() const {
