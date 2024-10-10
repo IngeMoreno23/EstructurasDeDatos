@@ -70,7 +70,7 @@ void DoubleLL<T>::empty(){
         current = current->getNext();
         delete temp; 
     }while ( current != this->head);
-    
+
     this->head=new DoubleNode<T> (T());
     this->size=0;
 }
@@ -276,7 +276,7 @@ void DoubleLL<T>::print(){
 
     std::cout<<"size= "<<this->size<<" elements: ";
     do{
-        std::cout<<currentNode->getData()<<" ";
+        std::cout<<currentNode->getData()<<"\n";
         currentNode=currentNode->getNext();
     } while(currentNode -> getNext() != this->head);
     std::cout<<std::endl;

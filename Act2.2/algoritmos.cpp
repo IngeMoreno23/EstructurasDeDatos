@@ -67,30 +67,34 @@ void ordMerge(DoubleLL<T> &l, int n) { // el segundo iterador está localizado a
     int i = 0, j = 0, k = 0;
     it1=l1.begin();
     it2=l2.begin();
+    class DoubleLL<T>::Iterator it= l.begin();
 
     while (i < mitad && j < n - mitad) {
         std::string a = obtainIp(*it1), b=obtainIp(*it2);
         if (a>b) {
-            l.append(*it2);
+            *it=*it2;
             ++it2;
-            i++;
-        } else {
-            l.append(*it1);
-            ++it1;
             j++;
+        } else {
+            *it=*it1;
+            ++it1;
+            i++;
         }
+        ++it;
         k++;
     }
 
     while (i < mitad) {
-        l.append(*it1);
+        *it = *it1;
+        ++it;
         ++it1;
         i++;
         k++;
     }
 
     while (j < n - mitad) {
-        l.append(*it2);
+        *it = *it2;
+        ++it;
         ++it2;
         j++;
         k++;
