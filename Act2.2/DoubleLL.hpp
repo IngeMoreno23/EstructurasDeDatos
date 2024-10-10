@@ -1,4 +1,5 @@
 #pragma once
+#include "BaseLL.hpp"
 #include "DoubleNode.hpp"
 #include <stdexcept>
 
@@ -45,7 +46,9 @@ class DoubleLL:public BaseLL<T, DoubleNode<T>>{
 
 template <class T>
 DoubleLL<T>::DoubleLL(){ 
-    this->head = nullptr;        
+    this->head =new DoubleNode<T> (T());        
+    this->head->setNext(this->head);
+    this->head->setPrevious(this->head);
 }
 
 template <class T> 
@@ -62,15 +65,13 @@ void DoubleLL<T>::empty(){
 
     DoubleNode<T>* current = this->head;
 
-    while ( current != this->head){
+    do{
         DoubleNode<T> *temp = current; 
         current = current->getNext();
         delete temp; 
-    }
-    this->head->setNext(nullptr);
-    this->head->setPrevious(nullptr);   
-    this->head =nullptr;
- 
+    }while ( current != this->head);
+    
+    this->head=new DoubleNode<T> (T());
     this->size=0;
 }
 
@@ -105,7 +106,7 @@ DoubleLL<T>::DoubleLL(std::initializer_list<T> elements){
 
 template <class T>
 DoubleLL<T>:: DoubleLL(const DoubleLL<T>& listToCopy){
-    this->head = new DoubleNode<T>;
+    this->head = new DoubleNode<T> (T());
 
     this->head->setNext(this->head);
     this->head->setPrevious(this->head);
@@ -115,19 +116,15 @@ DoubleLL<T>:: DoubleLL(const DoubleLL<T>& listToCopy){
 
 template <class T>
 void DoubleLL<T>::append(const DoubleNode<T>& nodeToAppend){
-    if(this->head == nullptr){
-        DoubleNode<T>* newNode=new DoubleNode<T> (nodeToAppend.getData());
-        this->head=newNode;
-        newNode->setPrevious(this->head);
-        newNode->setNext(this->head);
-        this->size++;
-        return;
+    DoubleNode<T>* newNode = (this->size == 0) ? this->head : new DoubleNode<T> (nodeToAppend.getData());
+    if(this->size == 0){
+        this->head->setData(nodeToAppend.getData());
+    } else {
+        this->head->getPrevious()->setNext(newNode);
+        newNode->setPrevious(this->head->getPrevious());
     }
 
-    DoubleNode<T>* newNode=new DoubleNode<T> (nodeToAppend.getData());
-    this->head->getPrevious()->setNext(newNode);
     newNode->setNext(this->head);
-    newNode->setPrevious(this->head->getPrevious());
     this->head->setPrevious(newNode);
     this->size++;
 }
@@ -140,8 +137,8 @@ void DoubleLL<T>::append(const DoubleLL<T>& listToAppend){
     
     DoubleNode<T>* currentNode=this->head->getPrevious(), *currentNodeCopy=listToAppend.head;
 
-    if(this->head == nullptr){
-        this -> head = new DoubleNode<T> (listToAppend.head->getData());
+    if(this->size == 0){
+        this -> head -> setData(listToAppend.head->getData());
         currentNode=this->head;
         this->head->setNext(currentNode);
         this->head->setPrevious(currentNode);
@@ -151,6 +148,7 @@ void DoubleLL<T>::append(const DoubleLL<T>& listToAppend){
         nextNode->setPrevious(currentNode);
         currentNode = nextNode;
     }
+
     currentNodeCopy= currentNodeCopy->getNext();
 
     while(currentNodeCopy != listToAppend.head){
@@ -268,9 +266,8 @@ void DoubleLL<T>::insert(T data, int index){
 
 template <class T>
 void DoubleLL<T>::append(T data){
-    DoubleNode<T>* temp = new DoubleNode<T> (data);
-    this->append(*temp);
-    delete temp;
+    DoubleNode<T> temp(data);
+    this->append(temp);
 }
 
 template <class T>
@@ -278,10 +275,10 @@ void DoubleLL<T>::print(){
     DoubleNode<T>* currentNode = this->head;
 
     std::cout<<"size= "<<this->size<<" elements: ";
-    while(currentNode != nullptr){
+    do{
         std::cout<<currentNode->getData()<<" ";
         currentNode=currentNode->getNext();
-    }
+    } while(currentNode -> getNext() != this->head);
     std::cout<<std::endl;
 }
 

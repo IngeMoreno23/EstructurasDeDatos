@@ -229,29 +229,3 @@ void BaseLL<T,NodeType>::print(){
     std::cout<<std::endl;
 }
 
-
-#include "SimpleLL.hpp"
-#include "DoubleLL.hpp"
-
-template <class T>
-int busquedaBinaria(const DoubleLL<T>& l, std::string clave, bool upper){
-    int inicio=0, final=l.length(), ultimaInstancia=0;
-    
-    while (inicio <= final){
-        int mitad = inicio+(final-inicio)/2;
-        std::string ip = obtainIp(l[mitad]);
-        int comparacion = ip > clave;
-
-        if (upper){
-            ultimaInstancia=mitad;
-        }
-        if (comparacion){
-            final = mitad-1;
-        } else{
-            inicio = mitad+1;
-        }
-    }
-    return ultimaInstancia;
-}
-
-#include "algoritmos.cpp"

@@ -1,4 +1,5 @@
 #include "BaseLL.hpp"
+#include "algoritmos.cpp"
 #include <iostream>
 #include <fstream>
 #include <string>

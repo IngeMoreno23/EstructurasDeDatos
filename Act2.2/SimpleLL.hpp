@@ -1,5 +1,6 @@
 #pragma once
 #include "SimpleNode.hpp"
+#include "BaseLL.hpp"
 
 template <class T>
 class SimpleLL:public BaseLL<T, SimpleNode<T>>{
