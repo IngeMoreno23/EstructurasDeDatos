@@ -87,4 +87,10 @@ Si deseas obligar a que solo las clases derivadas implementen un comportamiento,
 Sobrecarga: Te permite definir varias funciones con el mismo nombre, pero con diferentes listas de parámetros. Esto es lo que estás mencionando cuando dices que los parámetros pueden ser distintos.
 Sobreescritura (override): Significa que una clase derivada proporciona una nueva implementación para una función virtual definida en una clase base. Para que sea una sobrescritura válida, la firma de la función (nombre, tipo de retorno y lista de parámetros) debe coincidir exactamente con la de la clase base.
 
+
+La razón por la que el código tiene que estar en el mismo archivo (tanto la declaración como la definición) es porque los templates son solo un "molde" hasta que son instanciados con un tipo concreto. El compilador necesita tanto la declaración como la definición de la plantilla en el momento de la compilación para generar el código correspondiente.
+
+Si quieres separar declaración y definición, existe una técnica llamada inclusión explícita de implementación, en la cual separas en dos archivos, pero aseguras que la implementación esté disponible para el compilador mediante la inclusión del archivo .cpp al final del archivo de cabecera.
+
+Sí importa el orden en el que se incluyen los archivos en el cpp. Porque puede ser que tenga la definición de esa clase.
 */

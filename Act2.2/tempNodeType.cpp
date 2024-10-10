@@ -1,10 +1,11 @@
+#include "BaseLL.hpp"
 #include <iostream>
 #include <fstream>
-#include "HDCLinkedList.cpp"
+#include <string>
 
 int main(){
     std::ifstream bitacoraIn("bitacora.txt");
-    HDCLinkedList<std::string> linkedList;
+    DoubleLL<std::string> linkedList;
 
     if(!bitacoraIn.is_open()){
         std::cerr << "No se pudo abrir el documento bitacora.txt" << std::endl;
@@ -17,8 +18,7 @@ int main(){
         bitacoraIn.close();
     }
 
-    linkedList.ordMerge(linkedList, linkedList.length());
-
+    ordMerge(linkedList, linkedList.length());
     std::ofstream bitacoraOut("bitacoraOut.txt");
     if(!bitacoraOut.is_open()){
         std::cerr << "No se pudo abrir el documento bitacoraOut.txt" << std::endl;
@@ -33,4 +33,5 @@ int main(){
         bitacoraOut.close();
     }
     return 0;
+
 }
