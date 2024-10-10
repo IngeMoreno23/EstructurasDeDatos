@@ -1,6 +1,9 @@
 #include "DoubleLL.hpp"
 #include "BaseLL.hpp"
 #include "ops.cpp"
+#include "DoubleNode.hpp"
+
+
 template <class T>
 DoubleLL<T>::DoubleLL(){ 
     this->head = nullptr;

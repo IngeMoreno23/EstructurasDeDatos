@@ -1,4 +1,6 @@
 #include "DoubleLL.hpp"
+#include <sstream>
+#include <cstring>
 
 template <class T>
 int busquedaBinaria(const DoubleLL<T>& l, std::string clave, bool upper){

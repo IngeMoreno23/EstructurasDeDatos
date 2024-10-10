@@ -1,10 +1,14 @@
-#include "DoubleLL.cpp"
+#include "DoubleLL.hpp"
 #include "SimpleLL.hpp"
+#include "SimpleNode.hpp"
+#include "ops.cpp"
 #include <iostream>
 #include <fstream>
 #include <string>
 
 int main(){
+    SimpleLL<int> linkedList;
+    /*
     std::ifstream bitacoraIn("bitacora.txt");
     DoubleLL<std::string> linkedList;
 
@@ -35,4 +39,5 @@ int main(){
         bitacoraOut.close();
     }
     return 0;
+    */
 }

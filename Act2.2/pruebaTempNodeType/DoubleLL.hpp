@@ -1,5 +1,6 @@
 #pragma once
-#include "BaseLL.cpp"
+#include "BaseLL.hpp"
+#include "DoubleNode.hpp"
 
 template<class T>
 class DoubleLL:public BaseLL<T, DoubleNode<T>>{
@@ -7,7 +8,7 @@ class DoubleLL:public BaseLL<T, DoubleNode<T>>{
         DoubleLL();
         DoubleLL(const DoubleLL<T>& listToCopy);
         DoubleLL(std::initializer_list<T> elements);
-        ~DoubleLL();
+        ~DoubleLL() override;
 
         const DoubleLL<T>& operator=(DoubleLL<T> & listToCopy);
 

@@ -1,7 +1,6 @@
 #include "SimpleNode.hpp"
 #include <iostream>
-#include <sstream>
-#include <cstring>
+
 
 template <class T>
 SimpleNode<T>::SimpleNode(T data){
