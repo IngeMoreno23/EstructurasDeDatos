@@ -307,11 +307,6 @@ void LinkedList<T>::update(T data, int index){
 }
 
 template <class T>
-LinkedList<T> &LinkedList<T>::filterIP(std::string data1, std::string data2){
-    return *this;
-}
-
-template <class T>
 int busquedaBinaria(const LinkedList<T>& l, std::string clave){
     int inicio=0, final=l.length(), ultimaInstancia=0;
     
@@ -331,9 +326,13 @@ int busquedaBinaria(const LinkedList<T>& l, std::string clave){
     return ultimaInstancia;
 }
 
-template <class T>
 int operator>( std::string& a,  std::string& b){
     std::stringstream ssStr1(a), ssStr2(b);
+    std::string temp;
+    for(int i=0; i<4; i++){
+        ssStr>>temp;
+    }
+    return temp;
 
     int numAct1=0, numAct2=0;
     while(ssStr1>>numAct1 && ssStr2 >> numAct2)
@@ -349,7 +348,7 @@ int operator>( std::string& a,  std::string& b){
     return 0;
 }
 
-std::string& obtainIp(const std::string& str){
+std::string obtainIp(std::string& str){
     std::stringstream ssStr(str);
     std::string ip;
     for(int i=0; i<4; i++){
@@ -408,7 +407,7 @@ void LinkedList<T>::ordMerge(LinkedList<T> &l, int n) {
     int i = 0, j = 0, k = 0;
 
     while (i < mitad && j < n - mitad) {
-        if (cmpIP(l1[i],l2[j])>0) {
+        if (obtainIp(l1[i]) > obtainIp(l2[j])) {
             l[k] = l2[j];
             j++;
         } else {

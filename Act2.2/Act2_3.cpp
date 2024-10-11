@@ -38,6 +38,7 @@ int main(){
 
         bitacoraOut.close();
     }
+    bitacoraOut.close();
     
     return 0;
 }
