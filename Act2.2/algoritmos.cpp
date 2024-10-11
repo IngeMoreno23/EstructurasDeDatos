@@ -2,13 +2,24 @@
 #include <string>
 #include <sstream>
 
+
+std::string obtainIp(const std::string& str){
+    std::stringstream ssStr(str);
+    std::string ip;
+    for(int i=0; i<4; i++){
+        ssStr>>ip;
+    }
+    return ip;
+}
+
 template <class T>
-int busquedaBinaria(const DoubleLL<T>& l, std::string clave, int lastChange){
-    int inicio=0, final=l.length(), ultimaInstancia=0;
-    
-    while (inicio <= final){
-        int mitad = inicio+(final-inicio)/2;
-        std::string ip = obtainIp(l[mitad]);
+int busquedaBinaria(DoubleLL<T>& l, std::string clave){
+    int inicio=0, final=l.length();
+    int mitad = inicio+(final-inicio)/2;
+
+    class DoubleLL<T>::Iterator it=l.begin() + mitad;
+    while (inicio <= final && *it != clave){
+        std::string ip = obtainIp(*it);
         int comparacion = ip > clave;
 
         if (comparacion){
@@ -16,8 +27,11 @@ int busquedaBinaria(const DoubleLL<T>& l, std::string clave, int lastChange){
         } else{
             inicio = mitad+1;
         }
+
+        mitad = inicio + (final-inicio)/2;
+        it = (comparacion) ? it-mitad : it + mitad;
     }
-    return ultimaInstancia;
+    return mitad;
 }
 
 int operator>( std::string& a,  std::string& b){
@@ -35,15 +49,6 @@ int operator>( std::string& a,  std::string& b){
         ssStr2.ignore();
     }
     return 0;
-}
-
-std::string obtainIp(const std::string& str){
-    std::stringstream ssStr(str);
-    std::string ip;
-    for(int i=0; i<4; i++){
-        ssStr>>ip;
-    }
-    return ip;
 }
 
 template <class T>
