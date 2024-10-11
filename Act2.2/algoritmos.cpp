@@ -2,7 +2,6 @@
 #include <string>
 #include <sstream>
 
-
 std::string obtainIp(const std::string& str){
     std::stringstream ssStr(str);
     std::string ip;
@@ -32,33 +31,36 @@ int operator>( std::string& a,  std::string& b){
 
 template <class T>
 int busquedaBinaria(DoubleLL<T>& l, std::string clave){
-    int inicio=0, final=l.length();
+    int inicio=0, final=l.length()-1;
     int mitad = inicio+(final-inicio)/2;
-
     class DoubleLL<T>::Iterator it=l.begin() + mitad;
-    while (inicio <= final && *it != clave){
+    while (inicio <= final){
         std::string ip = obtainIp(*it);
         int comparacion = ip > clave;
 
         if (comparacion){
             final = mitad-1;
+            mitad = inicio + (final-inicio)/2;
+            it= it - 1 - ((final-inicio)/2 +(((final-inicio) % 2) == 1)*(1) );
+        } else if (ip == clave){
+            return mitad;
         } else{
             inicio = mitad+1;
+            mitad = inicio + (final-inicio)/2;
+            it= it + 1 + (final-inicio)/2;
         }
-
-        mitad = inicio + (final-inicio)/2;
-        it = (comparacion) ? it-mitad : it + mitad;
     }
+    
     return mitad;
 }
 
 template <class T>
-void ordMerge(DoubleLL<T> &l, int n) { // el segundo iterador está localizado a la mitad. Se planea incluirlo como parámetro para que no se tenga que desplazar a la mitad desde la izquierda
+void ordMerge(DoubleLL<T> &l, typename DoubleLL<T>::Iterator itHalf, int n) { // el segundo iterador está localizado a la mitad. Se planea incluirlo como parámetro para que no se tenga que desplazar a la mitad desde la izquierda
     if (n == 1) return;
-
     int mitad = n / 2;
+
     DoubleLL<T> l1, l2;
-    class DoubleLL<T>::Iterator it1= l.begin(), it2= l.begin()+mitad;
+    class DoubleLL<T>::Iterator it1= l.begin(), it2= itHalf, itHalfCopy=itHalf;
 
     for (int i = 0; i < mitad; i++, ++it1) {
         l1.append(*it1); // esta función consume mucho menos con una lista doblemente enlazada.
@@ -66,9 +68,10 @@ void ordMerge(DoubleLL<T> &l, int n) { // el segundo iterador está localizado a
     for (int i = mitad; i < n; i++, ++it2) {
         l2.append(*it2);
     }
-
-    ordMerge(l1, mitad);
-    ordMerge(l2, n - mitad);
+    //0 mitad  mitAct
+    // mitadAct mitad n
+    ordMerge(l1, itHalf - (mitad - mitad/ 2), mitad); // Parí chayotes aquí. Resulta que el valor de ithalf cambiaba, así que tuve que hacer una copia.
+    ordMerge(l2, itHalfCopy + (n - mitad)/2, n - mitad);
 
     int i = 0, j = 0, k = 0;
     it1=l1.begin();
