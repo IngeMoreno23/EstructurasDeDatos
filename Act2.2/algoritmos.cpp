@@ -12,6 +12,24 @@ std::string obtainIp(const std::string& str){
     return ip;
 }
 
+int operator>( std::string& a,  std::string& b){
+    int numAct1=0, numAct2=0;
+
+    std::stringstream ssStr1(a), ssStr2(b);
+    while(ssStr1>>numAct1 && ssStr2 >> numAct2)
+    {    
+        if (numAct1>numAct2){
+            return 1;
+        } else if (numAct2>numAct1) {
+            return 0;
+        }
+        ssStr1.ignore();
+        ssStr2.ignore();
+    }
+    return 0;
+}
+
+
 template <class T>
 int busquedaBinaria(DoubleLL<T>& l, std::string clave){
     int inicio=0, final=l.length();
@@ -34,25 +52,8 @@ int busquedaBinaria(DoubleLL<T>& l, std::string clave){
     return mitad;
 }
 
-int operator>( std::string& a,  std::string& b){
-    int numAct1=0, numAct2=0;
-
-    std::stringstream ssStr1(a), ssStr2(b);
-    while(ssStr1>>numAct1 && ssStr2 >> numAct2)
-    {    
-        if (numAct1>numAct2){
-            return 1;
-        } else if (numAct2>numAct1) {
-            return 0;
-        }
-        ssStr1.ignore();
-        ssStr2.ignore();
-    }
-    return 0;
-}
-
 template <class T>
-void ordMerge(DoubleLL<T> &l, int n) { // el segundo iterador está localizado a la mitad
+void ordMerge(DoubleLL<T> &l, int n) { // el segundo iterador está localizado a la mitad. Se planea incluirlo como parámetro para que no se tenga que desplazar a la mitad desde la izquierda
     if (n == 1) return;
 
     int mitad = n / 2;
