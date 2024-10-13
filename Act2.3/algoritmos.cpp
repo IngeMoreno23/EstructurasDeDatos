@@ -11,6 +11,15 @@ std::string obtainIp(const std::string& str){
     return ip;
 }
 
+std::string obtainPort(const std::string& str){
+    std::stringstream ssStr(str);
+    std::string port;
+    for(int i=0; i<4; i++){
+        ssStr>>port;
+    }
+    return port.substr(port.find(':')+1,port.find(' '));
+}
+
 int operator>( std::string& a,  std::string& b){
     int numAct1=0, numAct2=0;
 
@@ -68,9 +77,8 @@ void ordMerge(DoubleLL<T> &l, typename DoubleLL<T>::Iterator itHalf, int n) { //
     for (int i = mitad; i < n; i++, ++it2) {
         l2.append(*it2);
     }
-    //0 mitad  mitAct
-    // mitadAct mitad n
-    ordMerge(l1, itHalf - (mitad - mitad/ 2), mitad); // Parí chayotes aquí. Resulta que el valor de ithalf cambiaba, así que tuve que hacer una copia.
+
+    ordMerge(l1, itHalf - (mitad - mitad/ 2), mitad); // Resulta que el valor de ithalf cambiaba, así que tuve que hacer una copia.
     ordMerge(l2, itHalfCopy + (n - mitad)/2, n - mitad);
 
     int i = 0, j = 0, k = 0;

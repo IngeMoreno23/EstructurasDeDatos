@@ -4,6 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <map>
+#include <tuple>
 
 #include "BaseLL.hpp"
 #include "SimpleLL.hpp"
@@ -35,6 +36,7 @@ std::string nextIP(std::string& ip){
 }
 
 int main(){
+
     std::ifstream bitacoraIn("bitacora.txt");
     DoubleLL<std::string> linkedList;
 
@@ -63,17 +65,21 @@ int main(){
         
     int posInic=busquedaBinaria(linkedList, ipInicial), posFin=busquedaBinaria(linkedList, ipFinal);
     class DoubleLL<std::string>::Iterator it=linkedList.begin()+posInic, itFinal= linkedList.begin()+posFin;
-    if(posInic != posFin && !(it != itFinal)){
-        --itFinal;
-    }
+
     std::map <int, DoubleLL<std::string>, std::greater<int>> frequenceLists;
     std::ofstream bitacoraOut("bitacoraOut.txt");
-    std::ofstream bitacoraOutAccessDesc("bitacoraOutAccessDesc.txt");
+    std::ofstream bitacoraOutAccessDescIP("bitacoraOutAccessDescIP.txt");
+    bool complete= false; 
 
     if(!bitacoraOut.is_open()){
         std::cerr << "No se pudo abrir el documento bitacoraOut.txt" << std::endl;
         return 1;
     } else if (posInic <= posFin){
+        if(posInic != posFin && !(it != itFinal)){
+            --itFinal;
+            complete = true; 
+        }
+
         DoubleLL<std::string> temp; 
         while(it != itFinal){
             temp.append(*it);
@@ -83,13 +89,46 @@ int main(){
                 frequenceLists[temp.length()].merge(temp);
             }
         }
-        for(auto& element: frequenceLists){
-            bitacoraOutAccessDesc<<element.second.turnToText();
+
+        if (complete){
+            temp.append(*it);
+            bitacoraOut << *it << std::endl;
+            ++it;
+            if(*temp.end() != *it){
+                frequenceLists[temp.length()].merge(temp);
+            }        
         }
+
+        for(auto& element : frequenceLists){
+            element.second.invert();
+            bitacoraOutAccessDescIP<<element.second.turnToText();
+        }
+
         bitacoraOut.close();
-        bitacoraOutAccessDesc.close();        
+        bitacoraOutAccessDescIP.close();        
+    }
+    
+    std::map<std::string, std::pair<int, DoubleLL<std::string>>> mapFrequency;
+    DoubleLL<std::string> temp;
+    it= linkedList.begin()+posInic;
+    while(it != itFinal){
+        std::string port=obtainPort(*it);
+        mapFrequency[port].first++;
+        mapFrequency[port].second.append(*it);
+        ++it;
     }
 
+    std::multimap<int, DoubleLL<std::string>, std::greater<int>> sortedPorts;
+    for(auto& [port, stats]: mapFrequency){
+        stats.second.invert();
+        sortedPorts.insert({stats.first,stats.second});
+    }
+
+    std::ofstream bitacoraOutAccessDescPORT("bitacoraOutAccessDescPORT.txt");
+    for(auto& portSection:sortedPorts){
+        bitacoraOutAccessDescPORT<<portSection.second.turnToText();
+    }
+    bitacoraOutAccessDescPORT.close();
     return 0;
 
 }

@@ -12,7 +12,7 @@ class DoubleLL:public BaseLL<T, DoubleNode<T>>{
         DoubleLL(std::initializer_list<T> elements);
         ~DoubleLL() override;
 
-        const DoubleLL<T>& operator=(DoubleLL<T> & listToCopy);
+        const DoubleLL<T>& operator=(const DoubleLL<T> & listToCopy);
 
         void append(const DoubleNode<T>& nodeToAppend);
         virtual void append(T data) override;
@@ -201,7 +201,7 @@ void DoubleLL<T>::merge(DoubleLL<T>& listToAppend){
 }
 
 template<class T>
-const DoubleLL<T> & DoubleLL<T>::operator=(DoubleLL<T> & listToCopy) {
+const DoubleLL<T> & DoubleLL<T>::operator=(const DoubleLL<T> & listToCopy) {
     if (this == &listToCopy){ 
         return *this;
     }
@@ -292,9 +292,11 @@ void DoubleLL<T>::print(){
 template <class T>
 std::string DoubleLL<T>::turnToText(){
     std::string text;
-    for(DoubleLL<T>::Iterator it = this->begin(); it != this->end(); ++it){
+    DoubleLL<T>::Iterator it = this->begin();
+    for(; it != this->end(); ++it){
         text+=*it+"\n";
     }
+    text+=*it+"\n";
     return text; 
 }
 
