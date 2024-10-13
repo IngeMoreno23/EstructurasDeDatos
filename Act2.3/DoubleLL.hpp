@@ -2,6 +2,7 @@
 #include "BaseLL.hpp"
 #include "DoubleNode.hpp"
 #include <stdexcept>
+#include <string>
 
 template<class T>
 class DoubleLL:public BaseLL<T, DoubleNode<T>>{
@@ -23,6 +24,8 @@ class DoubleLL:public BaseLL<T, DoubleNode<T>>{
 
         virtual void insert(T data, int index) override;
         virtual void insert(DoubleNode<T>& nodeToInsert, int index);
+
+        std::string turnToText();
 
         void empty() override;
         void print();
@@ -49,6 +52,7 @@ DoubleLL<T>::DoubleLL(){
     this->head =new DoubleNode<T> (T());        
     this->head->setNext(this->head);
     this->head->setPrevious(this->head);
+    this->size=0;
 }
 
 template <class T> 
@@ -173,23 +177,26 @@ void DoubleLL<T>::merge(DoubleLL<T>& listToAppend){
     }
     if(this->size==0){
         this->head=listToAppend.head;
-        listToAppend.head=nullptr;
+        listToAppend.head=new DoubleNode<T> (T());
+        listToAppend.head->setNext(listToAppend.head);
+        listToAppend.head->setPrevious(listToAppend.head);
+        listToAppend.size=0;
+        this->size++;
         return;
     }
 
-    DoubleNode<T>* listToAppendHeadCopy = new DoubleNode<T> (listToAppend.head->getData());    
-    DoubleNode<T>* temp = this->head->getPrevious();
+    DoubleNode<T>* listToAppendHeadCopy = listToAppend.head;    
+    DoubleNode<T>* temp = listToAppend.head->getPrevious();
 
-    temp->setNext(listToAppendHeadCopy);
-    listToAppend.head->getPrevious()->setNext(this->head);
-    
-    listToAppendHeadCopy->setPrevious(temp);
-    this->head->setPrevious(listToAppend.head->getPrevious()); // cambié aquí
-    listToAppendHeadCopy->setNext(listToAppend.head->getNext());
+    temp->setNext(this->head);
+    this->head->getPrevious()->setNext(listToAppend.head);
+    this->head->setPrevious(temp);
     this->size+=listToAppend.size;
 
-    listToAppend.head->setNext(nullptr);
-    listToAppend.head->setPrevious(nullptr);
+    listToAppend.head=new DoubleNode<T> (T());
+    listToAppend.head->setNext(listToAppend.head);
+    listToAppend.head->setPrevious(listToAppend.head);
+
     listToAppend.size=0;
 }
 
@@ -280,6 +287,15 @@ void DoubleLL<T>::print(){
         currentNode=currentNode->getNext();
     } while(currentNode -> getNext() != this->head);
     std::cout<<std::endl;
+}
+
+template <class T>
+std::string DoubleLL<T>::turnToText(){
+    std::string text;
+    for(DoubleLL<T>::Iterator it = this->begin(); it != this->end(); ++it){
+        text+=*it+"\n";
+    }
+    return text; 
 }
 
 template <class T>
