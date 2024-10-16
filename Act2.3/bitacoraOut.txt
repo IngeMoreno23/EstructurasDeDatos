@@ -1,0 +1,1 @@
+Jun 10 14:05:49 50.92.942.90:4163 Failed password for root
