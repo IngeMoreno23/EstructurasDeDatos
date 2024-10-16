@@ -108,3 +108,17 @@ Queue<T>::Queue(const Stack<T>& stack){
         enQueue(stack.elements[i]);
     }
 };
+
+
+template <class T>
+void heapify(Queue<T>* queue){
+    int size = (queue->bottom % queue->capacity) - (queue->bottom % queue->capacity);
+    for(int i = size/2; i >= 0; i--){
+        if(queue->content[2*i + 2] > queue-> content[i]){
+            T temp = queue -> content[2 * i + 2];
+            queue -> content[2 * i + 2] = queue-> content[i];
+            queue -> content[i] = temp; 
+        }
+
+    }
+}

@@ -27,9 +27,13 @@ class Queue{
         T getBottom();
         void print();
 
+        template <typename U>
+        friend void heapify(Queue<U>* queue);
+
         // const Queue<T> operator=(const Stack<T>& stackCopy);
     private:
         T* content; 
         int top, bottom, capacity; 
         friend class Stack<T>;
+
 };
