@@ -1,4 +1,4 @@
-#include "Queue.cpp"
+#include "Queue.hpp"
 #include <iostream>
 
 int main(){
