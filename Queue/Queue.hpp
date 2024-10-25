@@ -29,8 +29,6 @@ class Queue{
         T& getBottom();
         virtual void print();
 
-        template <typename U>
-        friend void heapify(Queue<U>* queue);
 
         // const Queue<T> operator=(const Stack<T>& stackCopy);
     protected:
@@ -165,19 +163,3 @@ Queue<T>::Queue(const Stack<T>& stack){
 };
 
 
-template <class T>
-void heapify(Queue<T>* queue){
-    int size = (queue -> bottom >= queue -> top) ? 
-                queue -> bottom - queue -> top:
-                (queue -> bottom + queue -> capacity) - queue->top; 
-    for(int i = queue -> size()/2; i >= 0; i--){
-        if(queue->content[2 * i + 2] > queue-> content[i]){
-            queue -> print();
-            T temp = queue -> content[2 * i + 2];
-            queue -> content[2 * i + 2] = queue-> content[i];
-            queue -> content[i] = temp; 
-        }
-    }
-    queue->print();
-
-}
