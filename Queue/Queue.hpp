@@ -91,7 +91,7 @@ Queue<T>::~Queue(){
 
 template<class T>
 bool Queue<T>::isFull(){
-    return ((bottom + 1) % capacity == top % capacity) ? true : false;
+    return ((bottom + 1) % capacity == top) ? true : false;
 }
 
 template <class T>

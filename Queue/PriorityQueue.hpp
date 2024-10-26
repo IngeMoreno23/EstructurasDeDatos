@@ -1,10 +1,10 @@
 #pragma once
-#include "..\Queue\Queue.hpp"
 #include <iostream>
 #include <algorithm>
+#include "..\Queue\exceptions.cpp"
 
 template <class T>
-class PriorityQueue: public Queue<T>{
+class PriorityQueue{
     public: 
         PriorityQueue();
         PriorityQueue(int _capacity);
@@ -13,14 +13,19 @@ class PriorityQueue: public Queue<T>{
 
         void pop();
         void push(const T& data);
+        void emptyQueue();
 
         void rearrangeUp();
         void rearrangeDown();
 
-        T& Top();
+        T& top();
         bool empty();
         int size();
         virtual void print();
+
+    private: 
+        T* content;
+        int capacity, bottom; 
 
 };
 
@@ -31,7 +36,12 @@ class PriorityQueue: public Queue<T>{
 > Orden: O(1).
 */
 template <class T>
-PriorityQueue<T>::PriorityQueue():Queue<T>(){}
+PriorityQueue<T>::PriorityQueue(){
+    capacity = 10; 
+    bottom = -1;
+    content = new T[capacity];
+    emptyQueue(); // Colocado solo por motivos de depuración y pruebas
+}
 
 /*
 > Parámetros: Una lista inicializadora
@@ -41,7 +51,15 @@ PriorityQueue<T>::PriorityQueue():Queue<T>(){}
 */
 
 template <class T>
-PriorityQueue<T>::PriorityQueue(std::initializer_list<T> list):Queue<T>(list){}
+PriorityQueue<T>::PriorityQueue(std::initializer_list<T> list):capacity(list.size() + 10) {
+    content = new T[capacity];
+     emptyQueue(); // Colocado solo por motivos de depuración 
+    bottom = (list.size() > 0) ? list.size() - 1: -1; 
+    int i = 0; 
+    for(const auto& element :list){
+        content[i++]=element;
+    }
+}
 
 /*
 > Parámetros: Un entero con la capacidad de la lista a construir.
@@ -50,7 +68,13 @@ PriorityQueue<T>::PriorityQueue(std::initializer_list<T> list):Queue<T>(list){}
 > Orden: O(1).
 */
 template <class T>
-PriorityQueue<T>::PriorityQueue(int _capacity):Queue<T>(_capacity){};
+PriorityQueue<T>::PriorityQueue(int _capacity){
+    capacity= _capacity;
+    bottom = -1; 
+    content = new T[_capacity];
+
+    emptyQueue(); // Colocada solo por motivos de depuración y pruebas
+}
 
 /*
 > Parámetros: Nada.
@@ -61,17 +85,25 @@ PriorityQueue<T>::PriorityQueue(int _capacity):Queue<T>(_capacity){};
 template <class T>
 PriorityQueue<T>::~PriorityQueue(){
     delete[] this -> content;
-};
+}
+
+template <class T> 
+void PriorityQueue<T>::emptyQueue(){
+    bottom = -1; 
+    for(int i = 0; i < capacity; i++){
+        content[i]=T();
+    } 
+}
 
 /*
 > Parámetros: Ninguno
-> Método: Si el valor del tope es equivalente a -1, la lista está vacía.
+> Método: Si el índice del último valor es equivalente a -1, la lista está vacía.
 > Retorno: Valor booleano que indica si la lista está vacía o no.
 > Orden: O(1).
 */
 template <class T>
 bool PriorityQueue<T>::empty(){
-    return (this -> top == -1) ? true : false;
+    return (bottom == -1) ? true : false;
 }
 
 /*
@@ -81,11 +113,11 @@ bool PriorityQueue<T>::empty(){
 > Orden: O(1).
 */
 template <class T>
-T& PriorityQueue<T>::Top(){
+T& PriorityQueue<T>::top(){
     if(empty()){
-        throw(out_of_range("The list is empty"));
+        throw(out_of_range("La cola está vacía"));
     }
-    return this -> content[0];
+    return content[0];
 }
 
 /*
@@ -98,23 +130,17 @@ T& PriorityQueue<T>::Top(){
 template <class T>
 void PriorityQueue<T>::pop(){
     if(empty()){
-        throw(out_of_range("The queue is empty"));
+        throw(out_of_range("La cola está vacía"));
     }
 
-    std::swap(this -> content[ this -> top], this -> content[ this -> bottom]);
-    if(this -> top == this -> bottom){
-        this -> content[this -> bottom]= T();
-        this -> top = this -> bottom = -1;
-    } else{
-        this -> content[this -> bottom]= T();
-        if (size() == 1){
-            this -> top = this -> bottom = -1;
-            return; 
-        }
-        this -> bottom --;
+    if(bottom > 0) {
+        std::swap(content[0], content[bottom]);
+        content[bottom--]= T();
+        rearrangeDown();
+    } else {
+        content[bottom--]= T();
     }
-    rearrangeDown();
-    
+
 }
 
 /*
@@ -125,24 +151,21 @@ void PriorityQueue<T>::pop(){
 */
 template <class T>
 void PriorityQueue<T>::rearrangeDown() {
-    int position = this->top + 1; 
+    int parent = 1; 
     int leftChild, rightChild, maxChild;
 
-    while ((2 * position + 1) % this->capacity != this->bottom) {  
-        leftChild = (2 * position) % this->capacity;
-        rightChild = (2 * position + 1) % this->capacity;
+    while (2 * parent <= (bottom + 1)) {  
+        leftChild = (2 * parent);
+        rightChild = (2 * parent + 1);
 
-        if (this->content[rightChild] > this->content[leftChild]) {
-            maxChild = rightChild;
-        } else {
-            maxChild = leftChild;
-        }
-
-        if (this->content[position] >= this->content[maxChild]) {
+        maxChild = (content[rightChild - 1] > content[leftChild - 1]) ? rightChild : leftChild;
+        
+        if (content[parent - 1] >= content[maxChild - 1]) {
             return;
         }
-        std::swap(this->content[position], this->content[maxChild]);
-        position = maxChild;
+        
+        std::swap(content[parent - 1], content[maxChild - 1]);
+        parent = maxChild;
     }
 }
 
@@ -154,16 +177,13 @@ void PriorityQueue<T>::rearrangeDown() {
 */
 template <class T>
 void PriorityQueue<T>::push(const T& data){
-    if(this -> isFull()){
-        throw(out_of_range("Out of bounds"));
+    if(bottom + 1 >= capacity){
+        throw(out_of_range("La cola está llena"));
     }
-    try{
-        this->enQueue(data);
-        rearrangeUp();
-    } catch(out_of_range& ex){
-        std::cerr<<"Exception: "<<ex.what();
-        return;
-    }
+
+    content[++bottom] = data;
+    rearrangeUp();
+
 }
 
 /*
@@ -174,13 +194,14 @@ void PriorityQueue<T>::push(const T& data){
 */
 template <class T>
 void PriorityQueue<T>::rearrangeUp() {
-    int position = this->bottom;  
-    int parent = (position - 1 + this->capacity) % this->capacity;
 
-    while (position != this->top && this->content[parent] < this->content[position]) {
-        std::swap(this->content[parent], this->content[position]);
-        position = parent;
-        parent = (position - 1 + this->capacity) % this->capacity;
+    int child = bottom + 1;  
+    int parent = child / 2; 
+
+    while (child > 1 && content[parent - 1] < content[child - 1]) {
+        std::swap(content[parent - 1], content[child - 1]);
+        child = parent;
+        parent = child / 2 ;
     }
 }
 
@@ -193,13 +214,7 @@ void PriorityQueue<T>::rearrangeUp() {
 */
 template <class T>
 int PriorityQueue<T>::size(){
-    if(empty()){
-        return 0; 
-    }
-
-    return (this -> bottom >= this -> top) ? 
-                this -> bottom - this -> top + 1:
-                (this -> bottom + this -> capacity) - this->top + 1; 
+    return !empty() ? bottom + 1 : 0;
 }
 
 /*
@@ -211,5 +226,10 @@ int PriorityQueue<T>::size(){
 template <class T>
 void PriorityQueue<T>::print(){
     std::cout<<"La cola es de tamaño "<<size()<<": ";
-    Queue<T>::print();
+
+    for(int i = 0; i < capacity; i++){
+        std::cout <<content[i]<<" "; 
+    }
+    std::cout<<std::endl;
+
 }

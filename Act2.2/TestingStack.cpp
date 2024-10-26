@@ -1,5 +1,5 @@
-#include "Stack.cpp"
-#include "..\Queue\Queue.cpp"
+#include "..\Stack\Stack.cpp"
+#include "..\Queue\Queue.hpp"
 
 #include <iostream>
 #include <sstream>

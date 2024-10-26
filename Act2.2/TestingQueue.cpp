@@ -1,5 +1,5 @@
-#include "Queue.hpp"
 #include <iostream>
+#include "..\Queue\Queue.hpp"
 
 int main(){
     Queue<std::string> cola({"Pedro","Ernesto","Julián","Pancho"});
