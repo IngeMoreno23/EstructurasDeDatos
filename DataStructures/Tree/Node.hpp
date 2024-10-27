@@ -16,13 +16,13 @@ class Node{
         Node<T> &operator=(Node<T> &otherNode);
 
         T getData();
-        Node<T> *getLeft();
-        Node<T> *getRight();
+        Node<T>* getLeft();
+        Node<T>* getRight();
         int getHeight();
 
         const T getData() const;
-        const Node<T> *getLeft() const;
-        const Node<T> *getRight() const;
+        const Node<T>* getLeft() const;
+        const Node<T>* getRight() const;
 
         void setData(T data);
         void setLeft(Node<T> *left);
@@ -58,9 +58,6 @@ Node<T>::Node(const Node &otherNode){
     this->height = 1;
 }
 
-/*
-
-*/
 template <class T>
 Node<T>::~Node(){
 

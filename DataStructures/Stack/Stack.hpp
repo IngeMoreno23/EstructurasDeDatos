@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include "exceptionsStack.cpp"
-#include "..\Queue\Queue.hpp"
+#include "..\DataStructures\Queue\Queue.hpp"
 
 template <class T> // Importante para no tener un círculo en las declaraciones, porque estoy usando la clase queue en stack y stack en queue
 class Queue;
@@ -96,6 +96,10 @@ Stack<T>::Stack(const Stack<T>& copyStack){
 */
 template <class T>
 const Stack<T>& Stack<T>::operator=(const Stack<T>& copyStack){
+    if(this = &copyStack){
+        return; 
+    }
+    
     delete[] elements;
 
     capacity=copyStack.capacity;

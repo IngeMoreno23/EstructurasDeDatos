@@ -10,9 +10,9 @@ Rodolfo Romero Blas Valdez A01741665
 Última modificación: 18/10/2024
 */
 
-#include "..\DataStructures\Queue\PriorityQueue.hpp"
 #include <iostream>
 #include <string>
+#include "..\DataStructures\Queue\PriorityQueue.hpp"
 
 int main(){
 

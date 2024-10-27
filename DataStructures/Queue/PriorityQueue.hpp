@@ -227,7 +227,7 @@ template <class T>
 void PriorityQueue<T>::print(){
     std::cout<<"La cola es de tamaño "<<size()<<": ";
 
-    for(int i = 0; i < capacity; i++){
+    for(int i = 0; i <= bottom; i++){
         std::cout <<content[i]<<" "; 
     }
     std::cout<<std::endl;
