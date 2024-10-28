@@ -95,6 +95,7 @@ void SplayTree<T>::splay(T data){
     }
 }
 
+// insert tiene una fuga de memoria ??
 template <class T>
 void SplayTree<T>::insert(T data){
     if(root == nullptr){
@@ -131,19 +132,16 @@ void SplayTree<T>::deleteN(T data){
     }
 
     if (search(data)){
-        Node<T> *subRootL = root->getLeft();
-        if(root->getLeft() != nullptr){
+        Node<T> *pastRoot = root;
+        if (root -> getLeft() != nullptr){
             root = root -> getLeft();
-            if (temp->getRight() != nullptr){
-                root -> setRight(temp -> getRight());
-            }
-        } else if (root->getRight() != nullptr){
+            splay(data);
+            root -> setRight(pastRoot->getRight());
+        } else if (root -> getRight() != nullptr){
             root = root -> getRight();
-            if (temp -> getRight){
-                
-            }
         }
-        delete temp;
+
+        delete pastRoot;
     } else{
         return;
     }
