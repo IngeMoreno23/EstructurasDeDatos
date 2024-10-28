@@ -13,7 +13,7 @@ class SplayTree{
 
         void insert(T data);
         int search(T data);
-        void deleteN();
+        void deleteN(T data);
 
         void preOrder();
         void inOrder();
@@ -109,10 +109,10 @@ void SplayTree<T>::insert(T data){
     root = new Node<T>(data);
     if(data < temp -> getData()){
         root -> setRight(temp);
-        root -> setLeft(temp->getLeft()); // checar que no sean nullptr
+        root -> setLeft(temp->getLeft());
     } else{
         root -> setLeft(temp);
-        root -> setRight(temp->getRight()); // checar que no sean nullptr
+        root -> setRight(temp->getRight());
     }
 }
 
@@ -121,4 +121,29 @@ int SplayTree<T>::search(T data){
     splay(data);
 
     return (root->getData() == data) ? 1 : 0;
+}
+
+template <class T>
+void SplayTree<T>::deleteN(T data){
+    if(root == nullptr){
+        throw(std::runtime_error("El árbol está vacío"));
+    }
+    if (search(data)){
+        Node<T> *temp = root;
+        if(root->getLeft() != nullptr){
+            root = root -> getLeft();
+            if (temp->getRight() != nullptr){
+                root -> setRight(temp -> getRight());
+            }
+        } else if (root->getRight() != nullptr){
+            root = root -> getRight();
+            if (temp -> getRight){
+                
+            }
+        }
+        delete temp;
+    } else{
+        return;
+    }
+
 }

@@ -87,5 +87,9 @@
         "cwctype": "cpp",
         "numeric": "cpp",
         "numbers": "cpp"
-    }
+    },
+    
+    "liveshare.features.allowGuestDebugging": true,
+    "liveshare.features.allowGuestControl": true
+    
 }
