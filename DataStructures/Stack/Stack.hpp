@@ -1,8 +1,9 @@
 #pragma once 
 
 #include <iostream>
+#include <algorithm>
 #include "exceptionsStack.cpp"
-#include "..\DataStructures\Queue\Queue.hpp"
+#include "..\Queue\Queue.hpp"
 
 template <class T> // Importante para no tener un círculo en las declaraciones, porque estoy usando la clase queue en stack y stack en queue
 class Queue;
@@ -35,9 +36,6 @@ class Stack{
         friend class Queue<T>;
 
 };
-
-
-#include <algorithm>
 
 /*
 > Parámetros: Ninguno.
@@ -97,7 +95,7 @@ Stack<T>::Stack(const Stack<T>& copyStack){
 template <class T>
 const Stack<T>& Stack<T>::operator=(const Stack<T>& copyStack){
     if(this = &copyStack){
-        return; 
+        return *this; 
     }
     
     delete[] elements;
@@ -231,3 +229,5 @@ Stack<T>::Stack(const Queue<T>& queue){
         push(queue.content[i]);
     }
 }
+
+

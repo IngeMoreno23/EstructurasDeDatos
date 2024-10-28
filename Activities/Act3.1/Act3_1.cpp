@@ -1,6 +1,6 @@
 #include <iostream>
 #include <initializer_list>
-#include "..\DataStructures\Tree\BST.hpp"
+#include "..\..\DataStructures\Tree\BST.hpp"
 
 void test(BST<int> &myBST){
     

@@ -1,8 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include "..\Algorithms\sortingAlgorithms\mergeSort.cpp"
-#include "..\DataStructures\List\DoubleLL.hpp"
+#include "..\..\DataStructures\List\DoubleLL.hpp"
 #include "testConf.cpp" 
 
 /*
@@ -40,6 +39,46 @@ void update(DoubleLL<T>& lista, int position, T data){
     lista.update(data, position-1);
 }
 
+
+/*
+PARAMETROS: Rebibe la lista a ordenar y su número de nodos.
+METODO: Utiliza el algoritmo divide y venceras, que separa la lista a la mitad varias veces hasta tener listas de 1 nodo, compara los datos de estos nodos
+y acomoda los nodos de menor a mayor de forma recursiva hasta ordenarlos en la lista original.
+ORDEN: O(nlog(n)).
+RETURN: Regresa la lista enlazada con sus nodos ordenados de menor a mayor según sus datos.
+*/
+template <class T>
+void ordenaMerge(DoubleLL<T> &l, int n){
+    if (n == 1) return;
+    int mitad = n / 2;
+    DoubleLL<T> l1, l2;
+    for (int i = 0; i < mitad; i++) l1.append(l[i]);
+    for (int i = mitad; i < n; i++) l2.append(l[i]);
+    ordenaMerge(l1, mitad);
+    ordenaMerge(l2, n - mitad); 
+    int i = 0, j = 0, k = 0;
+    while (i < mitad && j < n - mitad) {
+        if (l1[i] > l2[j]) {
+            l[k] = l2[j];
+            j++;
+        } else {
+            l[k] = l1[i];
+            i++;
+        }
+        k++;
+    }
+    while (i < mitad) {
+        l[k] = l1[i];
+        i++;
+        k++;
+    }
+    while (j < n - mitad) {
+        l[k] = l2[j];
+        j++;
+        k++;
+    }
+}
+
 /*
 PARAMETROS: Rebibe la lista a ordenar.
 METODO: Utiliza el algoritmo divide y venceras, que separa la lista a la mitad varias veces hasta tener listas de 1 nodo, compara los datos de estos nodos
@@ -50,6 +89,7 @@ RETURN: Regresa la lista enlazada con sus nodos ordenados de menor a mayor segú
 template <class T>
 DoubleLL<T> ordenar(DoubleLL<T> lista){
     ordenaMerge(lista,lista.length());
+    //DoubleLL<T> &l, typename DoubleLL<T>::Iterator itHalf, int n
     return lista;
 }
 

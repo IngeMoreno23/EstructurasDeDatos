@@ -1,6 +1,6 @@
 /*
-Este código es la implementación de una cola circular con algunas modificaciones para simular un árbol heap. Tiene métodos como
-pop() y push() para agregar y eliminar elementos, empty(), size() y top() para conocer datos de la cola como si está vacía, el tamaño y el dato con mayor prioridad.
+Este código es la implementación de una cola simple, con algunas modificaciones para simular un árbol heap. Tiene métodos como
+pop() y push() para agregar y eliminar elementos, empty(), size() y top() para conocer datos de la cola: si está vacía, el tamaño y el dato con mayor prioridad.
 También cuenta con un método print con el propósito de comprobar el correcto funcionamiento de la cola. 
 
 Cristian Ricardo Luque Arámbula A01741850
@@ -10,18 +10,27 @@ Rodolfo Romero Blas Valdez A01741665
 Última modificación: 18/10/2024
 */
 
+#include "..\..\DataStructures\Queue\PriorityQueue.hpp"
 #include <iostream>
 #include <string>
-#include "..\DataStructures\Queue\PriorityQueue.hpp"
 
 int main(){
 
-    PriorityQueue<std::string> initQueue1(2), initQueue2 ={"Alberto", "Berenice", "Fernando"};
+    PriorityQueue<std::string> initQueue1(2), initQueue2 ={"Alberto", "Berenice", "Fernando"}, initQueueP=initQueue2, initQueueP2;
+    initQueueP2=initQueue2;
     PriorityQueue<int> initQueue3;
-    std::cout<<"Primer caso de prueba, probar con datos distintos a enteros para verificar que la plantilla se haya realizado correctamente, testear los constructores\n";
+    std::cout<<"Primer caso de prueba, probar con datos distintos a enteros para verificar que la plantilla se haya realizado correctamente, probar los constructores\n";
     initQueue1.print();
     initQueue2.print();
+    initQueueP.print();
+    initQueueP2.print();
     initQueue3.print();
+
+    initQueueP.pop(); // Probar que los constructores de copia sí están funcionando correctamente
+    initQueueP.print();
+    initQueue2.print();
+
+
     PriorityQueue<int> pQueue(4);
     std::cout<<"\nSegundo caso de prueba. Acceder a un valor cuando la lista está vacía.\n";
     try{

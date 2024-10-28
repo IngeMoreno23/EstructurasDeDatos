@@ -9,8 +9,10 @@ class PriorityQueue{
         PriorityQueue();
         PriorityQueue(int _capacity);
         PriorityQueue(std::initializer_list<T> list);
-        virtual ~PriorityQueue();
+        PriorityQueue(const PriorityQueue<T>& otherPQueue);
+        ~PriorityQueue();
 
+        const PriorityQueue<T>& operator =(const PriorityQueue<T>& otherPQueue);
         void pop();
         void push(const T& data);
         void emptyQueue();
@@ -31,7 +33,7 @@ class PriorityQueue{
 
 /*
 > Parámetros: Ninguno
-> Método: Constructor por defecto, manda llamar el constructor de la clase base
+> Método: Constructor por defecto, inicializa una cola prioritaria con capacidad de 10, bottom (índice del último valor) equivalente a 1 y asigna un bloque de memoria de tamaño 10
 > Retorno: Nada
 > Orden: O(1).
 */
@@ -40,12 +42,11 @@ PriorityQueue<T>::PriorityQueue(){
     capacity = 10; 
     bottom = -1;
     content = new T[capacity];
-    emptyQueue(); // Colocado solo por motivos de depuración y pruebas
 }
 
 /*
 > Parámetros: Una lista inicializadora
-> Método: Constructor con una lista, manda llamar el constructor de la clase base que tiene este mismo parámetro.
+> Método: Constructor con una lista inicializadora. La capacidad de la cola prioritaria es el tamaño de la lista más diez. Se asigna un bloque de memoria del tamaño de la capacidad y el índice al útlimo valor equivale al tamaño de la lista menos uno.
 > Retorno: Nada
 > Orden: O(n).
 */
@@ -53,7 +54,6 @@ PriorityQueue<T>::PriorityQueue(){
 template <class T>
 PriorityQueue<T>::PriorityQueue(std::initializer_list<T> list):capacity(list.size() + 10) {
     content = new T[capacity];
-     emptyQueue(); // Colocado solo por motivos de depuración 
     bottom = (list.size() > 0) ? list.size() - 1: -1; 
     int i = 0; 
     for(const auto& element :list){
@@ -62,8 +62,8 @@ PriorityQueue<T>::PriorityQueue(std::initializer_list<T> list):capacity(list.siz
 }
 
 /*
-> Parámetros: Un entero con la capacidad de la lista a construir.
-> Método: Constructor que especifica el tamaño de la lista, manda llamar el constructor de la clase base con el mismo parámetro.
+> Parámetros: Un entero con la capacidad de la cola a construir.
+> Método: Constructor que especifica el tamaño de la cola. Asigna el valor del parámetro a la capacidad, el índice al último valor equivale a menos uno y asigna un bloque de memoria del tamaño de la capacidad especificada.
 > Retorno: Nada
 > Orden: O(1).
 */
@@ -73,7 +73,47 @@ PriorityQueue<T>::PriorityQueue(int _capacity){
     bottom = -1; 
     content = new T[_capacity];
 
-    emptyQueue(); // Colocada solo por motivos de depuración y pruebas
+}
+
+/*
+> Parámetros: Otra cola prioritaria, por referencia
+> Método: Constructor de copia. Toma los valores de capacidad y el índice del último valor a partir de los valores de la cola (que se pasó como parámetro). Se asigna un bloque de memoria del tamaño de la otra cola y copia sus valores.
+> Retorno: Nada
+> Orden: O(n).
+*/
+template <class T>
+PriorityQueue<T>::PriorityQueue(const PriorityQueue<T>& otherPQueue){
+    capacity = otherPQueue.capacity; 
+    bottom = otherPQueue.bottom;
+    content = new T[capacity];
+
+    for(int i=0; i<=bottom; i++){
+        content[i] = otherPQueue.content[i];
+    }
+}
+
+/*
+> Parámetros: Otra cola prioritaria, por referencia
+> Método: Sobrecarga del operador de asignación. Actualiza los valores de capacidad y el índice del último valor a partir de los valores de la cola (que se pasó como parámetro), se asigna un bloque de memoria del tamaño de la otra cola y copia sus valores.
+> Retorno: Nada
+> Orden: O(n).
+*/
+template <class T>
+const PriorityQueue<T>& PriorityQueue<T>::operator=(const PriorityQueue<T>& otherPQueue){
+    if (this == &otherPQueue){
+        return *this;
+    }
+    capacity = otherPQueue.capacity; 
+    bottom = otherPQueue.bottom;
+
+    delete[] content;
+    content= new T[capacity];
+
+    for(int i=0; i<=bottom; i++){
+        content[i] = otherPQueue.content[i];
+    }
+
+    return *this; 
 }
 
 /*
@@ -84,9 +124,15 @@ PriorityQueue<T>::PriorityQueue(int _capacity){
 */
 template <class T>
 PriorityQueue<T>::~PriorityQueue(){
-    delete[] this -> content;
+    delete[] content;
 }
 
+/*
+> Parámetros: Nada.
+> Método: Pasa por cada valor de la cola y lo iguala al valor por defecto del tipo de dato que se maneja. Si es int, es cero. Si es string, es ""; 
+> Retorno: Nada
+> Orden: O(n).
+*/
 template <class T> 
 void PriorityQueue<T>::emptyQueue(){
     bottom = -1; 
@@ -97,8 +143,8 @@ void PriorityQueue<T>::emptyQueue(){
 
 /*
 > Parámetros: Ninguno
-> Método: Si el índice del último valor es equivalente a -1, la lista está vacía.
-> Retorno: Valor booleano que indica si la lista está vacía o no.
+> Método: Si el índice del último valor es equivalente a -1, la cola está vacía.
+> Retorno: Valor booleano que indica si la cola está vacía o no.
 > Orden: O(1).
 */
 template <class T>

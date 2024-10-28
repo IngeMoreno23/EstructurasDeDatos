@@ -1,5 +1,5 @@
-#include "..\DataStructures\Stack\Stack.cpp"
-#include "..\DataStructures\Queue\Queue.hpp"
+#include "..\..\DataStructures\Stack\Stack.hpp"
+#include "..\..\DataStructures\Queue\Queue.hpp"
 
 #include <iostream>
 #include <sstream>

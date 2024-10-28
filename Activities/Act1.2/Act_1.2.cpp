@@ -2,8 +2,8 @@
 #include <vector>
 #include <ctime>
 #include <string>
-#include "..\Algorithms\searchAlgorithms\algoritmosDeBusqueda.cpp"
-#include "..\Algorithms\sortingAlgorithms\algoritmosDeOrdenamiento.cpp"
+#include "..\..\Algorithms\searchAlgorithms\algoritmosDeBusqueda.cpp"
+#include "..\..\Algorithms\sortingAlgorithms\algoritmosDeOrdenamiento.cpp"
 
 void llenarRandVector(std::vector<int> &v, int n){
     srand(time(NULL));
