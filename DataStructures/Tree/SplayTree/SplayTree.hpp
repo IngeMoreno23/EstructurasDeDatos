@@ -32,9 +32,21 @@ class SplayTree{
         Node<T>* root; 
 };
 
+/*
+PARAMETROS: void.
+MÉTODO: Constructor por defecto de la clase SplayTree.
+ORDEN: O(1).
+RETURN: void. Crea un árbol vacío.
+*/
 template <class T>
 SplayTree<T>::SplayTree():root(nullptr){}
 
+/*
+PARAMETROS: initializer_list<T> list, lista de elementos a insertar en el árbol.
+MÉTODO: inserta los elementos de la lista en el árbol.
+ORDEN: O(n).
+RETURN: void, el árbol con los elementos de la lista.
+*/
 template <class T>
 SplayTree<T>::SplayTree(std::initializer_list<T> list):root(nullptr){ // si no inicializo root como null, el método insert no insertará el nodo raíz
     for(const auto &element:list){
@@ -42,12 +54,24 @@ SplayTree<T>::SplayTree(std::initializer_list<T> list):root(nullptr){ // si no i
     }
 }
 
+/*
+PARAMETROS: SplayTree<T> &otherTree, árbol a copiar.
+MÉTODO: copia el árbol otherTree en el árbol actual.
+ORDEN: O(n).
+RETURN: void, el árbol actual con los elementos de otherTree.
+*/
 template <class T>
 SplayTree<T>::SplayTree(const SplayTree<T> & otherTree){
     root = new Node<T>;
     *root = *otherTree.root;
 }
 
+/*
+PARAMETROS: SplayTree<T> &otherTree, árbol a copiar.
+MÉTODO: copia el árbol otherTree en el árbol actual.
+ORDEN: O(n).
+RETURN: SplayTree<T>&, el árbol actual con los elementos de otherTree.
+*/
 template <class T> 
 const SplayTree<T>& SplayTree<T>::operator=(const SplayTree<T> &otherTree){
     if(this = &otherTree){
@@ -57,6 +81,12 @@ const SplayTree<T>& SplayTree<T>::operator=(const SplayTree<T> &otherTree){
     *root = *otherTree.root;
 }
 
+/*
+PARAMETROS: void.
+MÉTODO: Destructor de la clase SplayTree.
+ORDEN: O(n).
+RETURN: void. Destruye el árbol.
+*/
 template <class T>
 SplayTree<T>::~SplayTree(){
     if (root != nullptr){
@@ -65,6 +95,12 @@ SplayTree<T>::~SplayTree(){
     }
 }
 
+/*
+PARAMETROS: Node<T>* current, nodo raíz del árbol a destruir.
+MÉTODO: Llama recurivamente este método con los hijos del nodo actual, y elimina el nodo actual.
+ORDEN: O(n).
+RETURN: void. Vacia el árbol.
+*/
 template <class T>
 void SplayTree<T>::destroyTree(Node<T>* current){
     if(current != nullptr){
@@ -74,6 +110,12 @@ void SplayTree<T>::destroyTree(Node<T>* current){
     }
 }
 
+/*
+PARAMETROS: T data, dato a buscar para hacer un desplegado.
+MÉTODO: Realiza una rotación para subir el nodo con el dato data y subirlo ligeramente de nivel.
+ORDEN: O(log(n)).
+RETURN: void. El nodo con el dato data sube 1-2 niveles.
+*/
 template <class T>
 void SplayTree<T>::splay(T data){
     if(root == nullptr){
@@ -132,6 +174,12 @@ void SplayTree<T>::splay(T data){
     }
 }
 
+/*
+PARAMETROS: T data, dato a insertar en el árbol.
+MÉTODO: Realiza una rotación con splay() y el dato data como argumento, y luego inserta el dato en el árbol.
+ORDEN: O(log(n)).
+RETURN: void. El dato data es insertado en el árbol.
+*/
 // insert tiene una fuga de memoria ??
 template <class T>
 void SplayTree<T>::insert(T data){
@@ -155,6 +203,12 @@ void SplayTree<T>::insert(T data){
     }
 }
 
+/*
+PARAMETROS: T data, dato a buscar en el árbol.
+MÉTODO: Se realiza una rotación con splay() y el dato data como argumento, y se verifica si el dato está en el árbol.
+ORDEN: O(log(n)).
+RETURN: int, 1 si el dato está en el árbol, 0 si no.
+*/
 template <class T>
 int SplayTree<T>::search(T data){
     splay(data);
@@ -162,6 +216,12 @@ int SplayTree<T>::search(T data){
     return (root->getData() == data) ? 1 : 0;
 }
 
+/*
+PARAMETROS: T data, dato a eliminar del árbol.
+MÉTODO: Si el dato está en el árbol, se realiza una rotación con splay() y el dato data como argumento, y se elimina el nodo con el dato data.
+ORDEN: O(log(n)).
+RETURN: void. El dato data es eliminado del árbol.
+*/
 template <class T>
 void SplayTree<T>::deleteN(T data){
     if(root == nullptr){
@@ -187,6 +247,12 @@ void SplayTree<T>::deleteN(T data){
 
 }
 
+/*
+PARAMETROS: void.
+MÉTODO: Llama a preOrder(Node<T>* current) con la raíz del árbol.
+ORDEN: O(n).
+RETURN: void. Despliega los elementos del árbol en preOrder.
+*/
 template <class T>
 void SplayTree<T>::preOrder(){
     if(root != nullptr){
@@ -194,6 +260,12 @@ void SplayTree<T>::preOrder(){
     }
 }
 
+/*
+PARAMETROS: void.
+MÉTODO: Llama a inOrder(Node<T>* current) con la raíz del árbol.
+ORDEN: O(n).
+RETURN: void. Despliega los elementos del árbol en inOrder.
+*/
 template <class T>
 void SplayTree<T>::inOrder(){
     if(root != nullptr){
@@ -201,6 +273,12 @@ void SplayTree<T>::inOrder(){
     }
 }
 
+/*
+PARAMETROS: void.
+MÉTODO: Llama a inReverseOrder(Node<T>* current) con la raíz del árbol.
+ORDEN: O(n).
+RETURN: void. Despliega los elementos del árbol en inReverseOrder.
+*/
 template <class T>
 void SplayTree<T>::inReverseOrder(){
     if(root != nullptr){
@@ -208,6 +286,12 @@ void SplayTree<T>::inReverseOrder(){
     }
 }
 
+/*
+PARAMETROS: void.
+MÉTODO: Llama a postOrder(Node<T>* current) con la raíz del árbol.
+ORDEN: O(n).
+RETURN: void. Despliega los elementos del árbol en postOrder.
+*/
 template <class T>
 void SplayTree<T>::postOrder(){
     if(root != nullptr){
@@ -215,6 +299,12 @@ void SplayTree<T>::postOrder(){
     }
 }
 
+/*
+PARAMETROS: Node<T>* current, nodo raíz del subárbol a desplegar.
+MÉTODO: Imprime el nodo actual, y llama recursivamente a preOrder con los hijos del nodo actual de izquierda a derecha.
+ORDEN: O(n).
+RETURN: void. Despliega los elementos del subárbol en preOrder.
+*/
 template <class T>
 void SplayTree<T>::preOrder(Node<T>* current){
     if(current != nullptr){
@@ -224,7 +314,12 @@ void SplayTree<T>::preOrder(Node<T>* current){
     }
 }
 
-
+/*
+PARAMETROS: Node<T>* current, nodo raíz del subárbol a desplegar.
+MÉTODO: Llama recursivamente a inOrder con los hijos izquierdo del nodo actual, imprime el nodo actual y llama a inOrder con el hijo derecho del noco actual.
+ORDEN: O(n).
+RETURN: void. Despliega los elementos del subárbol en inOrder.
+*/
 template <class T>
 void SplayTree<T>::inOrder(Node<T>* current){
     if(current != nullptr){
@@ -234,6 +329,12 @@ void SplayTree<T>::inOrder(Node<T>* current){
     }
 }
 
+/*
+PARAMETROS: Node<T>* current, nodo raíz del subárbol a desplegar.
+MÉTODO: Llama recursivamente a inReverseOrder con los hijos derecho del nodo actual, imprime el nodo actual y llama a inReverseOrder con el hijo izquierdo del noco actual.
+ORDEN: O(n).
+RETURN: void. Despliega los elementos del subárbol en inReverseOrder.
+*/
 template <class T>
 void SplayTree<T>::inReverseOrder(Node<T>* current){
     if(current != nullptr){
@@ -243,6 +344,12 @@ void SplayTree<T>::inReverseOrder(Node<T>* current){
     }
 }
 
+/*
+PARAMETROS: Node<T>* current, nodo raíz del subárbol a desplegar.
+MÉTODO: Llama recursivamente a postOrder con los hijos del nodo actual de izquierda a derecha, e imprime el nodo actual.
+ORDEN: O(n).
+RETURN: void. Despliega los elementos del subárbol en postOrder.
+*/
 template <class T>
 void SplayTree<T>::postOrder(Node<T>* current){
     if(current != nullptr){
