@@ -167,12 +167,13 @@ int main(){
     // 4. Separar la lista por frecuencia de IP en un mapa
     std::map<int, DoubleLL<std::string>, std::greater<int>> myMap;
     DoubleLL<std::string> temp;
+    temp.append(*myBitacoraList.begin());
     for(auto it=myBitacoraList.begin(); it!=myBitacoraList.end(); ++it){
-        temp.append(*it);
-        std::cout << "it ip: " << obtainIp(*it) << "\n";
+        //std::cout << "temp.end: " << obtainIp(*temp.end()) << "\t\t" << "curr.ip: " << obtainIp(*temp.end()) << "\n";
         if(obtainIp(*temp.end()) != obtainIp(*it)){
             myMap[temp.length()].merge(temp);
         }
+        temp.append(*it);
     }
     for(auto& [key, value] : myMap){
         std::cout << "Key: " << key << "\nValue:\n";

@@ -8,6 +8,7 @@ class SplayTree{
         SplayTree(std::initializer_list<T> list);
         SplayTree(const SplayTree<T> &otherTree);
         const SplayTree<T> operator=(const SplayTree<T> &otherTree);
+        ~SplayTree();
 
         void splay(T data);
 
@@ -128,8 +129,9 @@ void SplayTree<T>::deleteN(T data){
     if(root == nullptr){
         throw(std::runtime_error("El árbol está vacío"));
     }
+
     if (search(data)){
-        Node<T> *temp = root;
+        Node<T> *subRootL = root->getLeft();
         if(root->getLeft() != nullptr){
             root = root -> getLeft();
             if (temp->getRight() != nullptr){
