@@ -38,6 +38,12 @@ SplayTree<T>::SplayTree(std::initializer_list<T> list){
 }
 
 template <class T>
+SplayTree<T>::~SplayTree(){
+    while (root != nullptr){
+        deleteN(root -> getData());
+    }
+}
+template <class T>
 void SplayTree<T>::splay(T data){
     if(root == nullptr){
         throw(std::runtime_error("El árbol está vacío"));
