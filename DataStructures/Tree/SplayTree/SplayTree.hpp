@@ -16,13 +16,19 @@ class SplayTree{
         int search(T data);
         void deleteN(T data);
 
+
         void preOrder();
         void inOrder();
         void postOrder();
+        void inReverseOrder();
+
+        void preOrder(Node<T> *current);
+        void inOrder(Node<T> *current);
+        void postOrder(Node<T> *current);
+        void inReverseOrder(Node<T> *current);
 
     private: 
         Node<T>* root; 
-        // Node<T>* lastAccess; // Posible optimización
 };
 
 template <class T>
@@ -146,10 +152,77 @@ void SplayTree<T>::deleteN(T data){
         } else if (root -> getRight() != nullptr){
             root = root -> getRight();
         }
-
+        if (pastRoot->getRight() == nullptr && pastRoot->getLeft() == nullptr){
+            root = nullptr;
+        }
         delete pastRoot;
     } else{
         return;
     }
 
+}
+
+template <class T>
+void SplayTree<T>::preOrder(){
+    if(root != nullptr){
+        preOrder(root);
+    }
+}
+
+template <class T>
+void SplayTree<T>::inOrder(){
+    if(root != nullptr){
+        inOrder(root);
+    }
+}
+
+template <class T>
+void SplayTree<T>::inReverseOrder(){
+    if(root != nullptr){
+        inReverseOrder(root);
+    }
+}
+
+template <class T>
+void SplayTree<T>::postOrder(){
+    if(root != nullptr){
+        postOrder(root);
+    }
+}
+
+template <class T>
+void SplayTree<T>::preOrder(Node<T>* current){
+    if(current != nullptr){
+        std::cout << current->getData() << "\n";
+        preOrder(current->getLeft());
+        preOrder(current->getRight());
+    }
+}
+
+
+template <class T>
+void SplayTree<T>::inOrder(Node<T>* current){
+    if(current != nullptr){
+        inOrder(current->getLeft());
+        std::cout << current->getData() << "\n";
+        inOrder(current->getRight());
+    }
+}
+
+template <class T>
+void SplayTree<T>::inReverseOrder(Node<T>* current){
+    if(current != nullptr){
+        inReverseOrder(current->getRight());
+        std::cout << current->getData() << "\n";
+        inReverseOrder(current->getLeft());
+    }
+}
+
+template <class T>
+void SplayTree<T>::postOrder(Node<T>* current){
+    if(current != nullptr){
+        postOrder(current->getLeft());
+        postOrder(current->getRight());
+        std::cout << current->getData() << "\n";
+    }
 }
