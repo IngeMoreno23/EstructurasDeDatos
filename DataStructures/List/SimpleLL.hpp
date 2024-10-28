@@ -61,7 +61,7 @@ RETURN: void. Se elimina la lista
 */
 template <class T>
 SimpleLL<T>::~SimpleLL(){
-    this->empty();
+    this->clear();
 }
 
 /*
@@ -100,7 +100,7 @@ const SimpleLL<T>& SimpleLL<T>::operator=(const SimpleLL<T>& listToCopy){
     if (this == &listToCopy){ 
         return *this;
     }
-    this->empty();
+    this->clear();
     
     if (listToCopy.head == nullptr){
         return *this;

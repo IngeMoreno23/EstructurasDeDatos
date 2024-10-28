@@ -1,6 +1,70 @@
 #include "../../DataStructures/List/DoubleLL.hpp"
+#include "parameterConfiguration.cpp"
 #include <string>
 #include <sstream>
+
+struct IpFreq{
+    int freq;
+    std::string ip;
+
+    bool operator>(const IpFreq& other){
+        return freq > other.freq;
+    }
+    bool operator<(const IpFreq& other){
+        return freq < other.freq;
+    }
+    bool operator==(const IpFreq& other){
+        return freq == other.freq;
+    }
+    bool operator!=(const IpFreq& other){
+        return freq != other.freq;
+    }
+    friend std::ostream& operator<<(std::ostream& os, const IpFreq& ipFreq){
+        os << "Frecuencia: " << ipFreq.freq << " IP: " << ipFreq.ip;
+        return os;
+    }
+};
+
+std::string lastIP(std::string& ip){
+    std::stringstream ssCurrentIP(ip);
+    if(! ssCurrentIP){
+        throw(std::invalid_argument("Entrada no válida"));
+    }
+
+    int arr[IP_OCTETS];
+    for (int i = 0; i < IP_OCTETS; i++){
+        ssCurrentIP>>arr[i];
+        ssCurrentIP.ignore();
+    }
+
+    std::string newIP;
+    for(int i = 0; i < IP_OCTETS - 1; i++){
+        newIP+=std::to_string(arr[i]);
+    }
+    newIP+=std::to_string(arr[IP_OCTETS - 1]-1);
+
+    return newIP;
+
+}
+
+std::string nextIP(std::string& ip){
+    std::stringstream ssCurrentIP(ip);
+    if(! ssCurrentIP){
+        throw(std::invalid_argument("Entrada no válida"));
+    }
+    int arr[IP_OCTETS];
+    for (int i = 0; i < IP_OCTETS; i++){
+        ssCurrentIP>>arr[i];
+        ssCurrentIP.ignore();
+    }
+    std::string newIP;
+    for(int i = 0; i < IP_OCTETS - 1; i++){
+        newIP+=std::to_string(arr[i]);
+    }
+    newIP+=std::to_string(arr[IP_OCTETS - 1] + 1);
+
+    return newIP;
+}
 
 /*
 PARAMETROS: String str. Una entrada de la bitácora.
@@ -10,6 +74,9 @@ RETURN: String ip, regresa la ip.
 */
 std::string obtainIp(const std::string& str){
     std::stringstream ssStr(str);
+    if(! ssStr){
+        throw(std::invalid_argument("Entrada no válida"));
+    }
     std::string ip;
     for(int i=0; i<4; i++){
         ssStr>>ip;
@@ -25,6 +92,9 @@ RETURN: String port, regresa el puerto.
 */
 std::string obtainPort(const std::string& str){
     std::stringstream ssStr(str);
+    if(! ssStr){
+        throw(std::invalid_argument("Entrada no válida"));
+    }
     std::string port;
     for(int i=0; i<4; i++){
         ssStr>>port;
@@ -77,7 +147,7 @@ int busquedaBinaria(DoubleLL<T>& l, std::string clave){
         } else if (ip == clave){
             return mitad;
         } else{
-            inicio = mitad+1;
+            inicio = mitad + 1;
             mitad = inicio + (final-inicio)/2;
             it= it + 1 + (final-inicio)/2;
         }
@@ -101,7 +171,7 @@ void ordMerge(DoubleLL<T> &l, typename DoubleLL<T>::Iterator itHalf, int n) { //
     class DoubleLL<T>::Iterator it1= l.begin(), it2= itHalf, itHalfCopy=itHalf;
 
     for (int i = 0; i < mitad; i++, ++it1) {
-        l1.append(*it1); // esta función consume mucho menos con una lista doblemente enlazada.
+        l1.append(*it1); // esta función consume mucho menos con una lista doblemente enlazada que con una lista simplemente enlazada
     }
     for (int i = mitad; i < n; i++, ++it2) {
         l2.append(*it2);

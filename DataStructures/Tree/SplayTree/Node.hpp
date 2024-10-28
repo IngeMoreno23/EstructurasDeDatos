@@ -7,9 +7,10 @@ class Node{
         T data;
         Node<T> *left, *right;
     public:
-        Node(T data, Node<T> *left=nullptr, Node<T> *right=nullptr);
-        Node(const Node &otherNode);
+        Node(T data =T(), Node<T> *left=nullptr, Node<T> *right=nullptr);
+        Node(const Node<T> &otherNode);
         ~Node();
+        void destroyNodes(Node<T>* current);
 
         Node<T> &operator=(T data);
         Node<T> &operator=(Node<T> &otherNode);
@@ -40,22 +41,21 @@ Node<T>::Node(T data, Node *left, Node *right){
     this->right = right;
 }
 
-/*
-PARÁMETROS: Node &otherNode, algún nodo a copiar su atributo data.
-MÉTODO: Solo iguala el dato sin ligarlo a los hijos de otherNode, y se genera el nodo con altura 1.
-ORDEN: O(1).
-RETURN: void. Este nodo.
-*/
 template <class T>
-Node<T>::Node(const Node &otherNode){
-    this->data = otherNode.data;
-    this->left = nullptr;
-    this->right = nullptr;
+Node<T>::Node(const Node<T> &otherNode){
+    *this= otherNode;
 }
 
 template <class T>
-Node<T>::~Node(){
+Node<T>::~Node(){}
 
+template <class T>
+void Node<T>::destroyNodes(Node<T>* current){
+    if (current != nullptr){
+        destroyNodes(getLeft());
+        destroyNodes(getRight());
+        delete this;
+    }
 }
 
 template <class T>
@@ -64,20 +64,31 @@ Node<T> &Node<T>::operator=(T data){
     return *this;
 }
 
-/*
-PARÁMETROS: Node &otherNode, algún nodo a copiar su atributo data.
-MÉTODO: Se verifica que no se este pasando el mismo nodo a copiar, copia el atributo data de otherNode y reestablece sus otros atributos.
-ORDEN: O(1).
-RETURN: Este nodo.
-*/
+
 template <class T>
-Node<T> &Node<T>::operator=(Node &otherNode){
+Node<T> &Node<T>::operator=(Node<T> &otherNode){ 
     if(this==&otherNode){
         return *this;
     }
     this->data = otherNode.data;
-    this->left = nullptr;
-    this->right = nullptr;
+    if(otherNode.getLeft() != nullptr){
+        Node<T>* leftChild = new Node<T>;
+        *leftChild = *otherNode.getLeft();
+        destroyNodes(getLeft());
+        setLeft(leftChild);
+    } else{
+        destroyNodes(getLeft());
+        this->left = nullptr;
+    }
+    if(otherNode.getRight() != nullptr){
+        Node<T>* rightChild = new Node<T>;
+        *rightChild = *otherNode.getRight();
+        destroyNodes(getRight());
+        setRight(rightChild);
+    } else{
+        destroyNodes(getRight());
+        this->right= nullptr;
+    }
     return *this;
 }
 

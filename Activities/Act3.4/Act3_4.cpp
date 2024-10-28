@@ -1,73 +1,24 @@
-// Act2_3
-// Última modificación: 12/10/2024
-// Cristian Ricardo Luque Arámbula - A01741850
-// Oliver Moreno Ibarra - A01742930
-// Rodolfo Blas Romero Valdez - A01741665
+/*  Act3.4
+Cristian Ricardo Luque Arámbula - A01741850
+Oliver Moreno Ibarra - A01742930
+Rodolfo Blas Romero Valdez - A01741665
+Última modificación: 28/10/2024
+*/
 
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <algorithm>
 #include <map>
-#include <tuple>
 
 #include "..\..\DataStructures\List\BaseLL.hpp"
 #include "..\..\DataStructures\List\DoubleLL.hpp"
 #include "..\..\DataStructures\Tree\SplayTree\SplayTree.hpp"
 
-#include "algoritmos.cpp"
-
-std::string lastIP(std::string& ip){
-    std::stringstream ssCurrentIP(ip);
-    int numsIP=4;
-    int arr[4];
-    for (int i=0; i<numsIP; i++){
-        ssCurrentIP>>arr[i];
-        ssCurrentIP.ignore();
-    }
-
-    return std::to_string(arr[0])+"."+std::to_string(arr[1])+"."+std::to_string(arr[2])+"."+std::to_string(arr[3]-1);
-
-}
-
-std::string nextIP(std::string& ip){
-    std::stringstream ssCurrentIP(ip);
-    int numsIP=4;
-    int arr[4];
-    for (int i=0; i<numsIP; i++){
-        ssCurrentIP>>arr[i];
-        ssCurrentIP.ignore();
-    }
-
-    return std::to_string(arr[0])+"."+std::to_string(arr[1])+"."+std::to_string(arr[2])+"."+std::to_string(arr[3]+1);
-}
-
-struct IpFreq{
-    int freq;
-    std::string ip;
-
-    bool operator>(const IpFreq& other){
-        return freq > other.freq;
-    }
-    bool operator<(const IpFreq& other){
-        return freq < other.freq;
-    }
-    bool operator==(const IpFreq& other){
-        return freq == other.freq;
-    }
-    bool operator!=(const IpFreq& other){
-        return freq != other.freq;
-    }
-    friend std::ostream& operator<<(std::ostream& os, const IpFreq& ipFreq){
-        os << "Frecuencia: " << ipFreq.freq << " IP: " << ipFreq.ip;
-        return os;
-    }
-};
+#include "ipHandler.cpp"
+#include "parameterConfiguration.cpp"
 
 int main(){
-    std::cout << "\n\n";
-    std::cout << "Oliver \n\n" << std::endl;
     // 1. Leer el archivo bitacora.txt
     std::ifstream myBitacora("bitacora.txt");
     if(!myBitacora.is_open()){
@@ -91,29 +42,21 @@ int main(){
     // 4. Separar la lista por frecuencia de IP en un mapa
     std::map<int, DoubleLL<std::string>, std::greater<int>> myMap;
     DoubleLL<std::string> temp;
-    temp.empty();
-    for(auto it=myBitacoraList.begin(); it!=myBitacoraList.end(); ++it){
+    temp.clear();
+    for(auto it = myBitacoraList.begin(); it != myBitacoraList.end(); ++it){
         if(!temp.isEmpty() && obtainIp(*temp.end()) != obtainIp(*it)){
             myMap[temp.length()] = temp;
-            temp.empty();
+            temp.clear();
         }
         temp.append(*it);
     }
     // Añadir la ultima lista
-    if (!temp.isEmpty()) {
+    if (! temp.isEmpty()) {
         myMap[temp.length()] = temp;
     }
 
-    // for(auto& [key, value] : myMap){
-    //     std::cout << "Key: " << key << "\nValue:\n";
-    //     value.print();
-    //     std::cout << "\n";
-    // }
-
-
     // 5. Crear un struct con frecuencia y ip de las 5 ips más frecuentes
-
-    IpFreq myIpFreq[5];
+    IpFreq myIpFreq[NUM_IP_SHOW];
     int i = 0;
     for (auto& [key, value] : myMap){
         if (i < 5){
@@ -122,18 +65,17 @@ int main(){
             i++;
         }
     }
-    for(int i=0; i<5; i++){
+    for(int i=0; i < NUM_IP_SHOW; i++){
         std::cout << "Frecuencia: " << myIpFreq[i].freq << " IP: " << myIpFreq[i].ip << std::endl;
     }
 
     // 6. Crear un árbol splay con las ips
-
     SplayTree<IpFreq> mySplayTree;
-    for(int i=0; i<5; i++){
+    for(int i=0; i < NUM_IP_SHOW; i++){
         mySplayTree.insert(myIpFreq[i]);
     }
 
-    // 7. Imprimir el árbol en inOrder
+    // 7. Imprimir el árbol
     std::cout << "\n";
     std::cout << "InOrder:\n";
     mySplayTree.inOrder();
@@ -141,7 +83,6 @@ int main(){
     mySplayTree.preOrder();
     std::cout << "PostOrder:\n";
     mySplayTree.postOrder();
-
 
 
     // 7. Crear 3 arboles, para clase A, B y C

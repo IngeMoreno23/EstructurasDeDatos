@@ -27,7 +27,7 @@ class DoubleLL:public BaseLL<T, DoubleNode<T>>{
 
         std::string turnToText();
 
-        void empty() override;
+        void clear() override;
         void print();
 
         class Iterator{
@@ -69,7 +69,7 @@ RETURN: void. Se elimina la lista.
 */
 template <class T> 
 DoubleLL<T>::~DoubleLL(){
-    empty();
+    clear();
     delete this->head;
 }
 
@@ -80,7 +80,7 @@ ORDEN: O(n). n = tamaño de la lista.
 RETURN: void. Se elimina la lista.
 */
 template <class T>
-void DoubleLL<T>::empty(){
+void DoubleLL<T>::clear(){
     if(this->size == 0){
         return;
     }
@@ -261,7 +261,7 @@ const DoubleLL<T> & DoubleLL<T>::operator=(const DoubleLL<T> & listToCopy) {
         return *this;
     }
     
-    empty();    
+    clear();    
 
     if (listToCopy.head == nullptr){
         return *this;

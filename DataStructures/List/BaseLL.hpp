@@ -38,7 +38,7 @@ class BaseLL{
         virtual void print();
         void exchange(int index1, int index2);
         void invert();
-        virtual void empty();
+        virtual void clear();
 };
 
 /*
@@ -114,7 +114,7 @@ auto & BaseLL<T, NodeType>::operator=(const BaseLL<T, NodeType>& listToCopy){
         return *this;
     }
 
-    empty();
+    clear();
     
     if (listToCopy.head == nullptr){
         return *this;
@@ -169,7 +169,7 @@ ORDEN: O(n). n = tamaño de la lista.
 RETURN: void. Vacia la lista.
 */
 template <class T, class NodeType>
-void BaseLL <T, NodeType>::empty(){
+void BaseLL <T, NodeType>::clear(){
     while(head != nullptr){ // Se utiliza la variable head en vez de crear otra para ir accediendo los elementos. 
         NodeType *temp=this->head; 
         head=head->getNext();

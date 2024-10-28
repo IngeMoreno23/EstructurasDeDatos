@@ -7,15 +7,16 @@ class SplayTree{
         SplayTree();
         SplayTree(std::initializer_list<T> list);
         SplayTree(const SplayTree<T> &otherTree);
-        const SplayTree<T> operator=(const SplayTree<T> &otherTree);
+        const SplayTree<T>& operator=(const SplayTree<T> &otherTree);
+
         ~SplayTree();
+        void destroyTree(Node<T> *current);
 
         void splay(T data);
 
         void insert(T data);
         int search(T data);
         void deleteN(T data);
-
 
         void preOrder();
         void inOrder();
@@ -32,23 +33,47 @@ class SplayTree{
 };
 
 template <class T>
-SplayTree<T>::SplayTree(){
-    root = nullptr;
-}
+SplayTree<T>::SplayTree():root(nullptr){}
 
 template <class T>
-SplayTree<T>::SplayTree(std::initializer_list<T> list){
+SplayTree<T>::SplayTree(std::initializer_list<T> list):root(nullptr){ // si no inicializo root como null, el método insert no insertará el nodo raíz
     for(const auto &element:list){
         insert(element);
     }
 }
 
 template <class T>
+SplayTree<T>::SplayTree(const SplayTree<T> & otherTree){
+    root = new Node<T>;
+    *root = *otherTree.root;
+}
+
+template <class T> 
+const SplayTree<T>& SplayTree<T>::operator=(const SplayTree<T> &otherTree){
+    if(this = &otherTree){
+        return *this;
+    }
+
+    *root = *otherTree.root;
+}
+
+template <class T>
 SplayTree<T>::~SplayTree(){
-    while (root != nullptr){
-        deleteN(root -> getData());
+    if (root != nullptr){
+        destroyTree(root);
+        root = nullptr;
     }
 }
+
+template <class T>
+void SplayTree<T>::destroyTree(Node<T>* current){
+    if(current != nullptr){
+        destroyTree(current->getLeft());
+        destroyTree(current->getRight());
+        delete current;
+    }
+}
+
 template <class T>
 void SplayTree<T>::splay(T data){
     if(root == nullptr){
@@ -57,9 +82,9 @@ void SplayTree<T>::splay(T data){
         return;
     }
     Node<T> *temp = root;
-    bool cond = (data > root->getData()) ? (root->getLeft() != nullptr) : (root->getRight() != nullptr);
+    bool cond = (data < root->getData()) ? (root->getLeft() != nullptr) : (root->getRight() != nullptr);
     while (cond){
-        if(data < root -> getData()){
+        if(data < root -> getData()){ // No necesito checar si es null porque en el cond ya garanticé que no. 
             temp = root;
             if(data < root->getLeft()->getData() && root->getLeft()->getLeft() != nullptr){
                 // rotación zig zig
@@ -80,7 +105,7 @@ void SplayTree<T>::splay(T data){
                 root->setRight(temp);
                 break;
             }
-        } else if (data > root->getData()){ // No necesito checar si es null porque en el cond ya garanticé que no.
+        } else if (data > root->getData()){ // No necesito checar si es null porque en el cond ya garanticé que no. 
             if(data > root->getRight()->getData() && root->getRight()->getRight() != nullptr){
                 // zig zig 
                 root= root->getRight()->getRight();
@@ -103,7 +128,7 @@ void SplayTree<T>::splay(T data){
         } else{
             break; // No debería ser necesario este break por la formulación del cond
         }
-        cond = (data > root->getData()) ? (root -> getLeft() != nullptr) : (root -> getRight() != nullptr && root-> getData() != data);
+        cond = (data < root->getData()) ? (root -> getLeft() != nullptr) : (root -> getRight() != nullptr && root-> getData() != data);
     }
 }
 
