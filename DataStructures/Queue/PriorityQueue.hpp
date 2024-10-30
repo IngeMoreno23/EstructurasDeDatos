@@ -12,12 +12,14 @@ class PriorityQueue{
         PriorityQueue(const PriorityQueue<T>& otherPQueue);
         ~PriorityQueue();
 
+        void heapify();
+
         const PriorityQueue<T>& operator =(const PriorityQueue<T>& otherPQueue);
         void pop();
         void push(const T& data);
-        void emptyQueue();
+        void clear();
 
-        void rearrangeUp();
+        bool rearrangeUp();
         void rearrangeDown();
 
         T& top();
@@ -59,8 +61,31 @@ PriorityQueue<T>::PriorityQueue(std::initializer_list<T> list):capacity(list.siz
     for(const auto& element :list){
         content[i++]=element;
     }
+    heapify();
 }
 
+template <class T>
+void PriorityQueue<T>::heapify(){
+    int parent = size()/2; 
+    int leftChild, rightChild, maxChild;
+    for(int i = parent; i >= 1; i--)
+    {
+        parent= i;
+        while (2 * parent <= (bottom + 1)) {  
+            leftChild = (2 * parent);
+            rightChild = (2 * parent + 1);
+
+            maxChild = (content[rightChild - 1] > content[leftChild - 1]) ? rightChild : leftChild;
+            
+            if (content[parent - 1] >= content[maxChild - 1]) {
+                return;
+            }
+            
+            std::swap(content[parent - 1], content[maxChild - 1]);
+            parent = maxChild;
+        }
+    }
+}
 /*
 > Parámetros: Un entero con la capacidad de la cola a construir.
 > Método: Constructor que especifica el tamaño de la cola. Asigna el valor del parámetro a la capacidad, el índice al último valor equivale a menos uno y asigna un bloque de memoria del tamaño de la capacidad especificada.
@@ -72,7 +97,6 @@ PriorityQueue<T>::PriorityQueue(int _capacity){
     capacity= _capacity;
     bottom = -1; 
     content = new T[_capacity];
-
 }
 
 /*
@@ -95,7 +119,7 @@ PriorityQueue<T>::PriorityQueue(const PriorityQueue<T>& otherPQueue){
 /*
 > Parámetros: Otra cola prioritaria, por referencia
 > Método: Sobrecarga del operador de asignación. Actualiza los valores de capacidad y el índice del último valor a partir de los valores de la cola (que se pasó como parámetro), se asigna un bloque de memoria del tamaño de la otra cola y copia sus valores.
-> Retorno: Nada
+> Retorno: La lista actual, por referencia.
 > Orden: O(n).
 */
 template <class T>
@@ -129,12 +153,12 @@ PriorityQueue<T>::~PriorityQueue(){
 
 /*
 > Parámetros: Nada.
-> Método: Pasa por cada valor de la cola y lo iguala al valor por defecto del tipo de dato que se maneja. Si es int, es cero. Si es string, es ""; 
+> Método: POR MOTIVOS DE DEPURACIÓN, pasa por cada valor de la cola y lo iguala al valor por defecto del tipo de dato que se maneja. Si es int, es cero. Si es string, es ""; Idealmente, solo se actualiza el índice del último elemento.
 > Retorno: Nada
-> Orden: O(n).
+> Orden: O(n). Idealmente O(1), en el que solo se cambia el índice del último elemento.
 */
 template <class T> 
-void PriorityQueue<T>::emptyQueue(){
+void PriorityQueue<T>::clear(){
     bottom = -1; 
     for(int i = 0; i < capacity; i++){
         content[i]=T();
@@ -239,16 +263,19 @@ void PriorityQueue<T>::push(const T& data){
 > Orden: O(log(n))
 */
 template <class T>
-void PriorityQueue<T>::rearrangeUp() {
+bool PriorityQueue<T>::rearrangeUp() {
 
     int child = bottom + 1;  
     int parent = child / 2; 
-
+    if(child < 1 || content[parent - 1] > content[child - 1]){
+        return false;
+    }
     while (child > 1 && content[parent - 1] < content[child - 1]) {
         std::swap(content[parent - 1], content[child - 1]);
         child = parent;
         parent = child / 2 ;
     }
+    return true;
 }
 
 

@@ -14,9 +14,10 @@ Rodolfo Romero Blas Valdez A01741665
 #include <iostream>
 #include <string>
 
+
 int main(){
 
-    PriorityQueue<std::string> initQueue1(2), initQueue2 ={"Alberto", "Berenice", "Fernando"}, initQueueP=initQueue2, initQueueP2;
+    PriorityQueue<std::string> initQueue1(2), initQueue2 ({"Alberto", "Berenice", "Fernando", "Julian", "Hermenegildo"}), initQueueP=initQueue2, initQueueP2;
     initQueueP2=initQueue2;
     PriorityQueue<int> initQueue3;
     std::cout<<"Primer caso de prueba, probar con datos distintos a enteros para verificar que la plantilla se haya realizado correctamente, probar los constructores\n";
@@ -25,7 +26,8 @@ int main(){
     initQueueP.print();
     initQueueP2.print();
     initQueue3.print();
-
+    initQueue2.push("Cristian");
+    initQueue2.print();
     initQueueP.pop(); // Probar que los constructores de copia sí están funcionando correctamente
     initQueueP.print();
     initQueue2.print();
@@ -39,7 +41,6 @@ int main(){
     } catch(out_of_range& ex){
         std::cout<<"Error. "<<ex.what()<<"\n";
     }
-    
     std::cout<<"\nTercer caso de prueba. Utiliza push hasta llenar la lista.\n";
     try{
         pQueue.push(5);

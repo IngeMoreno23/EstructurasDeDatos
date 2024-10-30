@@ -32,7 +32,7 @@ class Node{
 PARÁMETROS: data, un dato tipo T; left, apuntador a nodo izquiedo; right, apuntador a nodo derecho.
 MÉTODO: Iguala los atributos de este nodo con los argumentos, y se genera un nodo con altura 1.
 ORDEN: O(1).
-RETURN: void. Este nodo.
+RETURN: Ninguno, es el constructor
 */
 template <class T>
 Node<T>::Node(T data, Node *left, Node *right){
@@ -41,14 +41,32 @@ Node<T>::Node(T data, Node *left, Node *right){
     this->right = right;
 }
 
+/*
+PARÁMETROS: El nodo que se busca replicar en el nodo actual.
+MÉTODO: Manda a llamar la sobrecarga del operador de asignación al igualar el nodo actual al otro nodo.
+ORDEN: O(1). Contando la sobrecarga, O(n)
+RETURN: Ninguno, es el constructor.
+*/
 template <class T>
 Node<T>::Node(const Node<T> &otherNode){
     *this= otherNode;
 }
 
+/*
+PARÁMETROS: Ninguno
+MÉTODO: El destructor del nodo. No elimina los nodos hijos, solo se desasigna la localización de la memoria.
+ORDEN: O(1).
+RETURN: Ninguno, es el destructor.
+*/
 template <class T>
 Node<T>::~Node(){}
 
+/*
+PARÁMETROS: El nodo que se busca destruir por completo.
+MÉTODO: Recorre el árbol partiendo del nodo inicial nodoI (el que se pasa por parámetro en la primera llamada de la función) hasta los nodos hoja, y los borra hasta que borre el nodoI.
+ORDEN: O(1).
+RETURN: Ninguno, es el destructor.
+*/
 template <class T>
 void Node<T>::destroyNodes(Node<T>* current){
     if (current != nullptr){
@@ -58,13 +76,24 @@ void Node<T>::destroyNodes(Node<T>* current){
     }
 }
 
+/*
+PARÁMETROS: Un valor de tipo T.
+MÉTODO: Sobrecarga del operador de asignación. Se asigna el valor data pasado como parámetro al atributo data del nodo actual
+ORDEN: O(1).
+RETURN: Regresa el nodo actual (por referencia).
+*/
 template <class T>
 Node<T> &Node<T>::operator=(T data){
     this->data = data;
     return *this;
 }
 
-
+/*
+PARÁMETROS: Un valor de tipo T.
+MÉTODO: Sobrecarga del operador de asignación. Se asigna el valor data pasado como parámetro al atributo data del nodo actual
+ORDEN: O(n).
+RETURN: Regresa el nodo actual (por referencia).
+*/
 template <class T>
 Node<T> &Node<T>::operator=(Node<T> &otherNode){ 
     if(this==&otherNode){
@@ -92,11 +121,23 @@ Node<T> &Node<T>::operator=(Node<T> &otherNode){
     return *this;
 }
 
+/*
+PARÁMETROS: Ninguno
+MÉTODO: Accede al dato que almacena el nodo. 
+ORDEN: O(1).
+RETURN: Una copia del dato tipo T almacenado en el nodo.
+*/
 template <class T>
 T Node<T>::getData(){
     return this->data;
 }
 
+/*
+PARÁMETROS: Ninguno
+MÉTODO: Accede al nodo izquierdo del nodo actual. 
+ORDEN: O(1).
+RETURN: El apuntador tipo nodo del nodo a la izquierda del nodo actual.
+*/
 template <class T>
 Node<T> *Node<T>::getLeft(){
     return this->left;

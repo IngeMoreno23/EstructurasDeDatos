@@ -25,47 +25,6 @@ struct IpFreq{
     }
 };
 
-std::string lastIP(std::string& ip){
-    std::stringstream ssCurrentIP(ip);
-    if(! ssCurrentIP){
-        throw(std::invalid_argument("Entrada no válida"));
-    }
-
-    int arr[IP_OCTETS];
-    for (int i = 0; i < IP_OCTETS; i++){
-        ssCurrentIP>>arr[i];
-        ssCurrentIP.ignore();
-    }
-
-    std::string newIP;
-    for(int i = 0; i < IP_OCTETS - 1; i++){
-        newIP+=std::to_string(arr[i]);
-    }
-    newIP+=std::to_string(arr[IP_OCTETS - 1]-1);
-
-    return newIP;
-
-}
-
-std::string nextIP(std::string& ip){
-    std::stringstream ssCurrentIP(ip);
-    if(! ssCurrentIP){
-        throw(std::invalid_argument("Entrada no válida"));
-    }
-    int arr[IP_OCTETS];
-    for (int i = 0; i < IP_OCTETS; i++){
-        ssCurrentIP>>arr[i];
-        ssCurrentIP.ignore();
-    }
-    std::string newIP;
-    for(int i = 0; i < IP_OCTETS - 1; i++){
-        newIP+=std::to_string(arr[i]);
-    }
-    newIP+=std::to_string(arr[IP_OCTETS - 1] + 1);
-
-    return newIP;
-}
-
 /*
 PARAMETROS: String str. Una entrada de la bitácora.
 METODO: Separa cada espacio de la entrada de la bitácora y solamente deja la ip.
@@ -82,24 +41,6 @@ std::string obtainIp(const std::string& str){
         ssStr>>ip;
     }
     return ip;
-}
-
-/*
-PARAMETROS: String str. Una entrada de la bitácora.
-METODO: Separa cada espacio de la entrada de la bitácora y separa el puerto de la ip, regresando solo el puerto.
-ORDEN: O(1).
-RETURN: String port, regresa el puerto.
-*/
-std::string obtainPort(const std::string& str){
-    std::stringstream ssStr(str);
-    if(! ssStr){
-        throw(std::invalid_argument("Entrada no válida"));
-    }
-    std::string port;
-    for(int i=0; i<4; i++){
-        ssStr>>port;
-    }
-    return port.substr(port.find(':')+1,port.find(' '));
 }
 
 /*

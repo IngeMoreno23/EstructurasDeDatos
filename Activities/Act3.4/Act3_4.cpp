@@ -11,7 +11,6 @@ Rodolfo Blas Romero Valdez - A01741665
 #include <sstream>
 #include <map>
 
-#include "..\..\DataStructures\List\BaseLL.hpp"
 #include "..\..\DataStructures\List\DoubleLL.hpp"
 #include "..\..\DataStructures\Tree\SplayTree\SplayTree.hpp"
 
@@ -40,7 +39,7 @@ int main(){
     std::cout << "\n\n\n\n\n";
 
     // 4. Separar la lista por frecuencia de IP en un mapa
-    std::map<int, DoubleLL<std::string>, std::greater<int>> myMap;
+    std::map<int, DoubleLL<std::string>> myMap;
     DoubleLL<std::string> temp;
     temp.clear();
     for(auto it = myBitacoraList.begin(); it != myBitacoraList.end(); ++it){
@@ -55,7 +54,7 @@ int main(){
         myMap[temp.length()] = temp;
     }
 
-    // 5. Crear un struct con frecuencia y ip de las 5 ips más frecuentes
+    // 5. Crear un struct con frecuencia y las 5 (dato guardado como NUM_IP_SHOW) ips más frecuentes
     IpFreq myIpFreq[NUM_IP_SHOW];
     int i = 0;
     for (auto& [key, value] : myMap){
@@ -75,6 +74,7 @@ int main(){
         mySplayTree.insert(myIpFreq[i]);
     }
 
+/*
     // 7. Imprimir el árbol
     std::cout << "\n";
     std::cout << "InOrder:\n";
@@ -83,7 +83,7 @@ int main(){
     mySplayTree.preOrder();
     std::cout << "PostOrder:\n";
     mySplayTree.postOrder();
-
+*/
 
     // 7. Crear 3 arboles, para clase A, B y C
     SplayTree<IpFreq> mySplayTreeA; // 0.0.0.0 - 127.255.255.255

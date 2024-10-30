@@ -14,7 +14,7 @@ class SplayTree{
 
         void splay(T data);
 
-        void insert(T data);
+        int insert(T data);
         int search(T data);
         void deleteN(T data);
 
@@ -48,7 +48,7 @@ ORDEN: O(n).
 RETURN: void, el árbol con los elementos de la lista.
 */
 template <class T>
-SplayTree<T>::SplayTree(std::initializer_list<T> list):root(nullptr){ // si no inicializo root como null, el método insert no insertará el nodo raíz
+SplayTree<T>::SplayTree(std::initializer_list<T> list):root(nullptr){ // si no se inicializ la raíz como null, el método inserción no insertará el nodo raíz
     for(const auto &element:list){
         insert(element);
     }
@@ -56,7 +56,7 @@ SplayTree<T>::SplayTree(std::initializer_list<T> list):root(nullptr){ // si no i
 
 /*
 PARAMETROS: SplayTree<T> &otherTree, árbol a copiar.
-MÉTODO: copia el árbol otherTree en el árbol actual.
+MÉTODO: copia el árbol otherTree en el árbol actual, mandando llamar la sobrecarga de operador de asignación del nodo nodo1=nodo2.
 ORDEN: O(n).
 RETURN: void, el árbol actual con los elementos de otherTree.
 */
@@ -180,17 +180,16 @@ MÉTODO: Realiza una rotación con splay() y el dato data como argumento, y lueg
 ORDEN: O(log(n)).
 RETURN: void. El dato data es insertado en el árbol.
 */
-// insert tiene una fuga de memoria ??
 template <class T>
-void SplayTree<T>::insert(T data){
+int SplayTree<T>::insert(T data){
     if(root == nullptr){
         root = new Node<T>(data);
-        return;
+        return 1;
     }
 
     splay(data);
     if(root -> getData() == data){
-        return;
+        return 0;
     }
     Node<T> *temp= root;
     root = new Node<T>(data);
@@ -358,3 +357,5 @@ void SplayTree<T>::postOrder(Node<T>* current){
         std::cout << current->getData() << "\n";
     }
 }
+
+
