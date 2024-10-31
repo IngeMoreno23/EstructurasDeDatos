@@ -55,7 +55,9 @@ int main(){
     if (! temp.isEmpty()) {
         ipTree.insert(IpFreq(temp.length(), temp));
     }
-
+    std::cout<<"5 IPS con mayores accesos: \n";
+    ipTree.print5Largest();
+    std::cout<<"\n";
     // 7. Crear 3 arboles, para clase A, B y C
     SplayTree<IpFreq> ipTreeA, ipTreeB, ipTreeC; 
 

@@ -33,6 +33,8 @@ class SplayTree{
 
         void inReverseOrder(Node<T>* current, std::function<void(T&)> callback);
         void inReverseOrder(std::function<void(T&)> callback);
+
+        void print5Largest();
     private: 
         Node<T>* root; 
 };
@@ -398,4 +400,17 @@ void SplayTree<T>::postOrder(Node<T>* current){
         postOrder(current->getRight());
         std::cout << current->getData() << "\n";
     }
+}
+
+template <class T>
+void SplayTree<T>::print5Largest() {
+    int count = 0;
+    std::function<void(Node<T>*)> printLargest = [&count, &printLargest](Node<T>* node) {
+        if (node && count < 5) {
+            if (node->getRight()) printLargest(node->getRight());
+            if (count++ < 5) std::cout << node->getData() << "\n";
+            if (node->getLeft()) printLargest(node->getLeft());
+        }
+    };
+    printLargest(root);
 }
