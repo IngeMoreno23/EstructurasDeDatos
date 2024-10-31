@@ -46,8 +46,6 @@ int main(){
         if(!temp.isEmpty() && obtainIp(*temp.end()) != obtainIp(*it)){
             IpFreq current = IpFreq(temp.length(), temp);
             ipTree.insert(current); 
-            ipTree.inOrder();
-            std::cout<<"\n";
             temp.clear();
         }
         temp.append(*it);
@@ -57,7 +55,6 @@ int main(){
         ipTree.insert(IpFreq(temp.length(), temp));
     }
 
-    ipTree.inOrder();
     // 7. Crear 3 arboles, para clase A, B y C
 
     SplayTree<IpFreq> ipTreeA, ipTreeB, ipTreeC; 
