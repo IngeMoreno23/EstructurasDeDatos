@@ -397,7 +397,6 @@ void SplayTree<T>::inReverseOrder(Node<T>* current, std::function<void(T&)> call
     }
 }
 
-// Y un método público que inicie la recursión:
 template <class T>
 void SplayTree<T>::inReverseOrder(std::function<void(T&)> callback){
     inReverseOrder(root, callback);
@@ -417,38 +416,3 @@ void SplayTree<T>::postOrder(Node<T>* current){
         std::cout << current->getData() << "\n";
     }
 }
-
-/*
-template <class T>
-SplayTree<T>::Iterator::Iterator(Node<T> *currentNode){
-    pushLeft(root);
-    current=root;
-}
-
-template <class T>
-void SplayTree<T>::Iterator::pushLeft(Node<T> *currentNode){
-    while(currentNode != nullptr){
-        orderStack.push(currentNode);
-        currentNode= currentNode->getLeft();
-    }
-    currentNode =orderStack.peek();
-}
-
-template <class T>
-class SplayTree<T>::Iterator& SplayTree<T>::Iterator::operator++(){
-    orderStack.pop();
-    orderStack.push(current->getRight());
-    current= current->getRight();
-    pushLeft(current);
-}
-
-template <class T>
-bool SplayTree<T>::Iterator::operator!=(const Iterator& otherIterator){ 
-    return (!orderStack.isEmpty());
-}
-
-template <class T>
-T SplayTree<T>::Iterator::operator*(){
-    return orderStack.peek()->getData();
-}
-*/
