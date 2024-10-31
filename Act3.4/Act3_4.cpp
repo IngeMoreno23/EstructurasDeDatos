@@ -62,7 +62,7 @@ int main(){
     SplayTree<IpFreq> ipTreeA, ipTreeB, ipTreeC; 
 
     // 8. Insertar en los arboles todas las ips correspondientes  
-ipTree.inReverseOrder([&ipTreeA, &ipTreeB, &ipTreeC](auto& ipAccFreq) {
+    ipTree.inReverseOrder([&ipTreeA, &ipTreeB, &ipTreeC](auto& ipAccFreq) {
     std::string ip = ipAccFreq.ip;
     if(ip.empty()) return true;
     

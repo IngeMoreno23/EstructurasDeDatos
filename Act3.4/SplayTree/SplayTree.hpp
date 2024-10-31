@@ -402,9 +402,19 @@ void SplayTree<T>::postOrder(Node<T>* current){
     }
 }
 
+/*
+PARAMETROS: void.
+MÉTODO: Crea una función lambda que despliega los 5 elementos más grandes del árbol. Esta función se llama con la raíz del árbol.
+Cada vez que se imprime un elemento, se incrementa un contador. Al llegar a 5, la función deja de imprimir elementos y llamarse a sí misma.
+ORDEN: O(n).
+RETURN: void. Imprime los 5 elementos más grandes del árbol.
+*/
 template <class T>
 void SplayTree<T>::print5Largest() {
     int count = 0;
+    // Función lambda que imprime los 5 elementos más grandes del árbol.
+    // Recibe un nodo y llama a sí misma con el hijo derecho, imprime el nodo y llama a sí misma con el hijo izquierdo.
+    // Si el contador que se pasa por referencia llega a 5, la función deja de imprimir elementos.
     std::function<void(Node<T>*)> printLargest = [&count, &printLargest](Node<T>* node) {
         if (node && count < 5) {
             if (node->getRight()) printLargest(node->getRight());
