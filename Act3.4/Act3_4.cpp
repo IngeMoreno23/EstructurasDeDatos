@@ -11,8 +11,8 @@ Rodolfo Blas Romero Valdez - A01741665
 #include <sstream>
 #include <map>
 
-#include "..\..\DataStructures\List\DoubleLL.hpp"
-#include "..\..\DataStructures\Tree\SplayTree\SplayTree.hpp"
+#include "List\DoubleLL.hpp"
+#include "SplayTree\SplayTree.hpp"
 
 #include "ipHandler.cpp"
 #include "parameterConfiguration.cpp"
@@ -79,7 +79,7 @@ ipTree.inReverseOrder([&ipTreeA, &ipTreeB, &ipTreeC](auto& ipAccFreq) {
 
     // 9. Imprimir los arboles
     std::cout << "Mayor a menor A:\n";
-    ipTreeA.inReverseOrder();   
+    ipTreeA.inReverseOrder();
     std::cout << "\nMayor a menor B:\n";
     ipTreeB.inReverseOrder();
     std::cout << "\nMayor a menor C:\n";
