@@ -372,7 +372,13 @@ void SplayTree<T>::inReverseOrder(Node<T>* current){
     }
 }
 
-
+/*
+PARAMETROS: Node<T>* current, nodo actual; std::function<void(T&)> callback, función lambda que recibe un dato tipo T y no regresa nada.
+MÉTODO: Itera en inReverseOrder con los hijos derecho del nodo actual, llama a la función lambda con el dato del nodo actual y llama a inReverseOrder con el hijo izquierdo del nodo actual.
+Al llegar a un nodo nulo, regresa.
+ORDEN: O(n).
+RETURN: void. Regresa los elementos del árbol en inReverseOrder.
+*/
 template <class T>
 void SplayTree<T>::inReverseOrder(Node<T>* current, std::function<void(T&)> callback){
     if(current != nullptr){
@@ -382,6 +388,12 @@ void SplayTree<T>::inReverseOrder(Node<T>* current, std::function<void(T&)> call
     }
 }
 
+/*
+PARAMETROS: std::function<void(T&)> callback, función lambda que recibe un dato tipo T y no regresa nada.
+MÉTODO: Llama a inReverseOrder(Node<T>* current, std::function<void(T&)> callback) con la raíz del árbol.
+ORDEN: O(n).
+RETURN: void. Regresa los elementos del árbol en inReverseOrder.
+*/
 template <class T>
 void SplayTree<T>::inReverseOrder(std::function<void(T&)> callback){
     inReverseOrder(root, callback);
