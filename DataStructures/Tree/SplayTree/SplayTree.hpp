@@ -152,8 +152,8 @@ void SplayTree<T>::splay(T data){
     Node<T> *temp = root;
     bool cond = (data < root->getData()) ? (root->getLeft() != nullptr) : (root->getRight() != nullptr);
     while (cond){
+        temp = root;
         if(data < root -> getData()){ // No necesito checar si es null porque en el cond ya garanticé que no. 
-            temp = root;
             if(data < root->getLeft()->getData() && root->getLeft()->getLeft() != nullptr){
                 // rotación zig zig
                 root = root->getLeft()->getLeft();
@@ -174,7 +174,6 @@ void SplayTree<T>::splay(T data){
                 break;
             }
         } else if (data > root->getData()){ // No necesito checar si es null porque en el cond ya garanticé que no.
-         
             if(data > root->getRight()->getData() && root->getRight()->getRight() != nullptr){
                 // zig zig 
                 root= root->getRight()->getRight();
