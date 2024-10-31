@@ -26,7 +26,7 @@ class Stack{
 
         bool isFull();
         bool isEmpty();
-        T pop();
+        T& pop();
         T peek();
         int getTop();
         void print();
@@ -132,14 +132,12 @@ void Stack<T>::push(T data){
 > Retorno: Un valor del tipo de dato T. 
 */
 template <class T>
-T Stack<T>::pop(){
+T& Stack<T>::pop(){
     if (isEmpty()){
         throw(out_of_rangeStack("La pila está vacía\n"));
     }
 
-    T currentData= elements[top--];
-    elements[top+1]= T();
-    return currentData;
+    return elements[top--];
 }
 /*
 > Parámetros: Ninguno.

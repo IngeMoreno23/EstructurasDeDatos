@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Node.hpp"
+#include <functional>
 
 template <class T>
 class SplayTree{
@@ -13,6 +14,10 @@ class SplayTree{
         void destroyTree(Node<T> *current);
 
         void splay(T data);
+        void endSplay();
+        T top(); // en este caso el valor T no puede haber sido pasado por referencia porque lo que hace es obtener T por getData(), que no espasado por referencia
+
+        void zig(bool toRight);
 
         int insert(T data);
         int search(T data);
@@ -28,6 +33,8 @@ class SplayTree{
         void postOrder(Node<T> *current);
         void inReverseOrder(Node<T> *current);
 
+        void inReverseOrder(Node<T>* current, std::function<void(T&)> callback);
+        void inReverseOrder(std::function<void(T&)> callback);
     private: 
         Node<T>* root; 
 };
@@ -110,6 +117,25 @@ void SplayTree<T>::destroyTree(Node<T>* current){
     }
 }
 
+template<class T>
+void SplayTree<T>::zig(bool toRight){
+    Node<T> *temp = root;
+
+    if(!toRight){
+        root = root->getLeft();
+        temp->setLeft(root->getRight());
+        root->setRight(temp);
+    } else{
+        root = root -> getRight();
+        temp -> setRight(root -> getLeft());
+        root -> setLeft(temp);
+    }
+}
+
+template <class T>
+T SplayTree<T>::top(){
+    return root->getData();
+}
 /*
 PARAMETROS: T data, dato a buscar para hacer un desplegado.
 MÉTODO: Realiza una rotación para subir el nodo con el dato data y subirlo ligeramente de nivel.
@@ -147,12 +173,14 @@ void SplayTree<T>::splay(T data){
                 root->setRight(temp);
                 break;
             }
-        } else if (data > root->getData()){ // No necesito checar si es null porque en el cond ya garanticé que no. 
+        } else if (data > root->getData()){ // No necesito checar si es null porque en el cond ya garanticé que no.
+         
             if(data > root->getRight()->getData() && root->getRight()->getRight() != nullptr){
                 // zig zig 
                 root= root->getRight()->getRight();
                 temp->getRight()->setRight(root->getLeft());
                 root->setLeft(temp);
+
             } else if(data < root->getRight()->getData() && root->getRight()->getLeft() != nullptr){
                 // zig zag 
                 root = root->getRight()->getLeft();
@@ -174,6 +202,20 @@ void SplayTree<T>::splay(T data){
     }
 }
 
+template <class T>
+void SplayTree<T>::endSplay(){
+    if(root == nullptr){
+        throw(std::runtime_error("El árbol está vacío"));
+    }
+    Node<T> *temp = root;
+    while(root->getRight() != nullptr){
+        temp = root; 
+        root = root -> getRight();
+        temp -> setRight(root -> getLeft());
+        root -> setLeft(temp);
+    }
+}
+
 /*
 PARAMETROS: T data, dato a insertar en el árbol.
 MÉTODO: Realiza una rotación con splay() y el dato data como argumento, y luego inserta el dato en el árbol.
@@ -191,15 +233,18 @@ int SplayTree<T>::insert(T data){
     if(root -> getData() == data){
         return 0;
     }
-    Node<T> *temp= root;
-    root = new Node<T>(data);
-    if(data < temp -> getData()){
-        root -> setRight(temp);
-        root -> setLeft(temp->getLeft());
+    Node<T> *newNode = new Node<T>(data);
+    if(data < root -> getData()){
+        newNode -> setRight(root);
+        newNode -> setLeft(root->getLeft());
+        root -> setLeft(nullptr);
     } else{
-        root -> setLeft(temp);
-        root -> setRight(temp->getRight());
+        newNode -> setLeft(root);
+        newNode -> setRight(root->getRight());
+        root-> setRight(nullptr);
     }
+    root = newNode;
+    return 1;
 }
 
 /*
@@ -343,6 +388,22 @@ void SplayTree<T>::inReverseOrder(Node<T>* current){
     }
 }
 
+
+template <class T>
+void SplayTree<T>::inReverseOrder(Node<T>* current, std::function<void(T&)> callback){
+    if(current != nullptr){
+        inReverseOrder(current->getRight(), callback);
+        callback(current->getData());  // En lugar de cout
+        inReverseOrder(current->getLeft(), callback);
+    }
+}
+
+// Y un método público que inicie la recursión:
+template <class T>
+void SplayTree<T>::inReverseOrder(std::function<void(T&)> callback){
+    inReverseOrder(root, callback);
+}
+
 /*
 PARAMETROS: Node<T>* current, nodo raíz del subárbol a desplegar.
 MÉTODO: Llama recursivamente a postOrder con los hijos del nodo actual de izquierda a derecha, e imprime el nodo actual.
@@ -358,4 +419,37 @@ void SplayTree<T>::postOrder(Node<T>* current){
     }
 }
 
+/*
+template <class T>
+SplayTree<T>::Iterator::Iterator(Node<T> *currentNode){
+    pushLeft(root);
+    current=root;
+}
 
+template <class T>
+void SplayTree<T>::Iterator::pushLeft(Node<T> *currentNode){
+    while(currentNode != nullptr){
+        orderStack.push(currentNode);
+        currentNode= currentNode->getLeft();
+    }
+    currentNode =orderStack.peek();
+}
+
+template <class T>
+class SplayTree<T>::Iterator& SplayTree<T>::Iterator::operator++(){
+    orderStack.pop();
+    orderStack.push(current->getRight());
+    current= current->getRight();
+    pushLeft(current);
+}
+
+template <class T>
+bool SplayTree<T>::Iterator::operator!=(const Iterator& otherIterator){ 
+    return (!orderStack.isEmpty());
+}
+
+template <class T>
+T SplayTree<T>::Iterator::operator*(){
+    return orderStack.peek()->getData();
+}
+*/

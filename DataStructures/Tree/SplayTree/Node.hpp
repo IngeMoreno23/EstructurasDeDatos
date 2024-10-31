@@ -15,7 +15,7 @@ class Node{
         Node<T> &operator=(T data);
         Node<T> &operator=(Node<T> &otherNode);
 
-        T getData();
+        T& getData();
         Node<T>* getLeft();
         Node<T>* getRight();
 
@@ -94,6 +94,7 @@ MÉTODO: Sobrecarga del operador de asignación. Se asigna el valor data pasado 
 ORDEN: O(n).
 RETURN: Regresa el nodo actual (por referencia).
 */
+
 template <class T>
 Node<T> &Node<T>::operator=(Node<T> &otherNode){ 
     if(this==&otherNode){
@@ -128,7 +129,7 @@ ORDEN: O(1).
 RETURN: Una copia del dato tipo T almacenado en el nodo.
 */
 template <class T>
-T Node<T>::getData(){
+T& Node<T>::getData(){
     return this->data;
 }
 

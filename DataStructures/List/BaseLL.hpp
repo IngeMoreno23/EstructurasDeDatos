@@ -223,7 +223,7 @@ int BaseLL<T,NodeType>::length() const {
 
 template <class T,class NodeType>
 bool BaseLL<T,NodeType>::isEmpty(){
-    if (head == nullptr){
+    if (size == 0){
         return true;
     }
     return false;

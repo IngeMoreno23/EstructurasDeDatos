@@ -3,27 +3,6 @@
 #include <string>
 #include <sstream>
 
-struct IpFreq{
-    int freq;
-    std::string ip;
-
-    bool operator>(const IpFreq& other){
-        return freq > other.freq;
-    }
-    bool operator<(const IpFreq& other){
-        return freq < other.freq;
-    }
-    bool operator==(const IpFreq& other){
-        return freq == other.freq;
-    }
-    bool operator!=(const IpFreq& other){
-        return freq != other.freq;
-    }
-    friend std::ostream& operator<<(std::ostream& os, const IpFreq& ipFreq){
-        os << "Frecuencia: " << ipFreq.freq << " IP: " << ipFreq.ip;
-        return os;
-    }
-};
 
 /*
 PARAMETROS: String str. Una entrada de la bitácora.
@@ -157,3 +136,49 @@ void ordMerge(DoubleLL<T> &l, typename DoubleLL<T>::Iterator itHalf, int n) { //
         k++;
     }
 }
+
+struct IpFreq{
+    public:
+        int freq;
+        DoubleLL<std::string> ipLL;
+        std::string ip; 
+
+        IpFreq(int frequency, DoubleLL<std::string> ips):freq(frequency),ipLL(ips){
+            if(!ips.isEmpty()){
+                ip = obtainIp(ipLL.operator[](0)); // Si manda un DoubleLL vacía, daría error. 
+            } 
+        }
+        IpFreq():freq(0),ip(""){
+            ipLL= DoubleLL<std::string>();
+        } // Tengo dudas aquí.
+        void changeList(DoubleLL<std::string>& dLLReplacement){
+            ipLL = dLLReplacement;
+            freq = dLLReplacement.length();
+        }
+        void mergeList(DoubleLL<std::string>& dLLAddition){
+            ipLL.merge(dLLAddition);
+            freq=ipLL.length();
+        }
+
+        bool operator>(const IpFreq& other){
+            return freq > other.freq;
+        }
+        bool operator<(const IpFreq& other){
+            return freq < other.freq;
+        }
+        bool operator==(const IpFreq& other){
+            return freq == other.freq;
+        }
+        bool operator!=(const IpFreq& other){
+            return freq != other.freq;
+        }
+
+        void operator+(int addition){
+            freq+=addition;
+        }
+        // Por alguna razón, si getData no regresa T por referencia, y como parámetros de la sobrecarga de << es const, (que creo que lleva a recibir un valor temporal), no se imprime nada.
+        friend std::ostream& operator<<(std::ostream& os, IpFreq& ipFreq){ // Se tuvo que agregar const para que aceptara tanto objetos temporales como persistentes. Para la impresión, se usa getData, que regresa un valor temporal. Al intentar ingresarlo a la función, que acepta por referencia, arroja un error de compilación. Por ende, se cambia a const que acepta ambos valores, y no copia ipFreq.
+            os << "Frecuencia: " << ipFreq.freq << " IP: " << ipFreq.ip;
+            return os;
+        }
+};
