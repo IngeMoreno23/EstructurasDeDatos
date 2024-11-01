@@ -145,12 +145,12 @@ struct IpFreq{
 
         IpFreq(int frequency, DoubleLL<std::string> ips):freq(frequency),ipLL(ips){
             if(!ips.isEmpty()){
-                ip = obtainIp(ipLL.operator[](0)); // Si manda un DoubleLL vacía, daría error. 
+                ip = obtainIp(ipLL.operator[](0)); 
             } 
         }
         IpFreq():freq(0),ip(""){
             ipLL= DoubleLL<std::string>();
-        } // Tengo dudas aquí.
+        }
         void changeList(DoubleLL<std::string>& dLLReplacement){
             ipLL = dLLReplacement;
             freq = dLLReplacement.length();

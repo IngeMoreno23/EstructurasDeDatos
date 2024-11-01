@@ -17,8 +17,6 @@ class SplayTree{
         void endSplay();
         T top(); // en este caso el valor T no puede haber sido pasado por referencia porque lo que hace es obtener T por getData(), que no espasado por referencia
 
-        void zig(bool toRight);
-
         int insert(T data);
         int search(T data);
         void deleteN(T data);
@@ -35,6 +33,8 @@ class SplayTree{
 
         void inReverseOrder(Node<T>* current, std::function<void(T&)> callback);
         void inReverseOrder(std::function<void(T&)> callback);
+
+        void print5Largest();
     private: 
         Node<T>* root; 
 };
@@ -114,21 +114,6 @@ void SplayTree<T>::destroyTree(Node<T>* current){
         destroyTree(current->getLeft());
         destroyTree(current->getRight());
         delete current;
-    }
-}
-
-template<class T>
-void SplayTree<T>::zig(bool toRight){
-    Node<T> *temp = root;
-
-    if(!toRight){
-        root = root->getLeft();
-        temp->setLeft(root->getRight());
-        root->setRight(temp);
-    } else{
-        root = root -> getRight();
-        temp -> setRight(root -> getLeft());
-        root -> setLeft(temp);
     }
 }
 
@@ -387,7 +372,13 @@ void SplayTree<T>::inReverseOrder(Node<T>* current){
     }
 }
 
-
+/*
+PARAMETROS: Node<T>* current, nodo actual; std::function<void(T&)> callback, función lambda que recibe un dato tipo T y no regresa nada.
+MÉTODO: Itera en inReverseOrder con los hijos derecho del nodo actual, llama a la función lambda con el dato del nodo actual y llama a inReverseOrder con el hijo izquierdo del nodo actual.
+Al llegar a un nodo nulo, regresa.
+ORDEN: O(n).
+RETURN: void. Regresa los elementos del árbol en inReverseOrder.
+*/
 template <class T>
 void SplayTree<T>::inReverseOrder(Node<T>* current, std::function<void(T&)> callback){
     if(current != nullptr){
@@ -397,6 +388,12 @@ void SplayTree<T>::inReverseOrder(Node<T>* current, std::function<void(T&)> call
     }
 }
 
+/*
+PARAMETROS: std::function<void(T&)> callback, función lambda que recibe un dato tipo T y no regresa nada.
+MÉTODO: Llama a inReverseOrder(Node<T>* current, std::function<void(T&)> callback) con la raíz del árbol.
+ORDEN: O(n).
+RETURN: void. Regresa los elementos del árbol en inReverseOrder.
+*/
 template <class T>
 void SplayTree<T>::inReverseOrder(std::function<void(T&)> callback){
     inReverseOrder(root, callback);
@@ -415,4 +412,27 @@ void SplayTree<T>::postOrder(Node<T>* current){
         postOrder(current->getRight());
         std::cout << current->getData() << "\n";
     }
+}
+
+/*
+PARAMETROS: void.
+MÉTODO: Crea una función lambda que despliega los 5 elementos más grandes del árbol. Esta función se llama con la raíz del árbol.
+Cada vez que se imprime un elemento, se incrementa un contador. Al llegar a 5, la función deja de imprimir elementos y llamarse a sí misma.
+ORDEN: O(n).
+RETURN: void. Imprime los 5 elementos más grandes del árbol.
+*/
+template <class T>
+void SplayTree<T>::print5Largest() {
+    int count = 0;
+    // Función lambda que imprime los 5 elementos más grandes del árbol.
+    // Recibe un nodo y llama a sí misma con el hijo derecho, imprime el nodo y llama a sí misma con el hijo izquierdo.
+    // Si el contador que se pasa por referencia llega a 5, la función deja de imprimir elementos.
+    std::function<void(Node<T>*)> printLargest = [&count, &printLargest](Node<T>* node) {
+        if (node && count < 5) {
+            if (node->getRight()) printLargest(node->getRight());
+            if (count++ < 5) std::cout << node->getData() << "\n";
+            if (node->getLeft()) printLargest(node->getLeft());
+        }
+    };
+    printLargest(root);
 }

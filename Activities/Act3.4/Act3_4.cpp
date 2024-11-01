@@ -55,31 +55,41 @@ int main(){
     if (! temp.isEmpty()) {
         ipTree.insert(IpFreq(temp.length(), temp));
     }
-
+    std::cout<<"5 IPS con mayores accesos: \n";
+    ipTree.print5Largest();
+    std::cout<<"\n";
     // 7. Crear 3 arboles, para clase A, B y C
     SplayTree<IpFreq> ipTreeA, ipTreeB, ipTreeC; 
 
     // 8. Insertar en los arboles todas las ips correspondientes  
-ipTree.inReverseOrder([&ipTreeA, &ipTreeB, &ipTreeC](auto& ipAccFreq) {
-    std::string ip = ipAccFreq.ip;
-    if(ip.empty()) return true;
-    
-    IpFreq classIpFreq(ipAccFreq.freq, ipAccFreq.ipLL);
-    int ip1 = std::stoi(ip.substr(0, ip.find('.')));
-    
-    if (ip1 >= 0 && ip1 <= 127) {
-        ipTreeA.insert(classIpFreq);
-    } else if (ip1 >= 128 && ip1 <= 191) {
-        ipTreeB.insert(classIpFreq);
-    } else if (ip1 >= 192 && ip1 <= 223) {
-        ipTreeC.insert(classIpFreq);
-    }
-    return true; 
-});
+    /*
+    Lambda function: [&ipTreeA, &ipTreeB, &ipTreeC](auto& ipAccFreq) {...}
+    PARAMETROS: auto& ipAccFreq, un objeto de tipo T del árbol actual.
+    MÉTODO: La función lambda recibe como argumento un objeto de tipo T del árbol actual y lo separa en 3 clases, A, B y C, y las inserta en los árboles correspondientes.
+    Al llegar a un nodo nulo, regresa.
+    ORDEN: O(n).
+    RETURN: void. Agrega las ips a los árboles correspondientes. [ipTreeA, ipTreeB, ipTreeC] son las referencias a los árboles de clase A, B y C.
+    */
+    ipTree.inReverseOrder([&ipTreeA, &ipTreeB, &ipTreeC](auto& ipAccFreq) {
+        std::string ip = ipAccFreq.ip;
+        if(ip.empty()) return true;
+        
+        IpFreq classIpFreq(ipAccFreq.freq, ipAccFreq.ipLL);
+        int ip1 = std::stoi(ip.substr(0, ip.find('.')));
+        
+        if (ip1 >= 0 && ip1 <= 127) {
+            ipTreeA.insert(classIpFreq);
+        } else if (ip1 >= 128 && ip1 <= 191) {
+            ipTreeB.insert(classIpFreq);
+        } else if (ip1 >= 192 && ip1 <= 223) {
+            ipTreeC.insert(classIpFreq);
+        }
+        return true; 
+    });
 
     // 9. Imprimir los arboles
     std::cout << "Mayor a menor A:\n";
-    ipTreeA.inReverseOrder();   
+    ipTreeA.inReverseOrder();
     std::cout << "\nMayor a menor B:\n";
     ipTreeB.inReverseOrder();
     std::cout << "\nMayor a menor C:\n";
