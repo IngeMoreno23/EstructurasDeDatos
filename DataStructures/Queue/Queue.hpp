@@ -1,10 +1,5 @@
 #pragma once
-#include "..\Stack\Stack.hpp"
 #include "exceptions.cpp"
-
-template <class T>
-class Stack;
-
 
 template <class T>
 class Queue{
@@ -12,13 +7,20 @@ class Queue{
         Queue();
         Queue(std::initializer_list<T> list);
         Queue(int _capacity);
-        Queue(const Stack<T>& stack);
 
         ~Queue();
 
         Queue(const Queue<T>& queueCopy);
         const Queue<T>& operator=(const Queue<T>& queueCopy);
-
+        /*
+        Esto es para declarar un constructor solo sí se ha definido INCLUDE_PILA_CONSTRUCTOR
+        */
+        #ifdef STACK_TO_QUEUE
+            #include "..\Stack\Stack.hpp"
+            friend class Stack<T>;
+            Queue(const Stack<T>& stack);
+        #endif
+        
         void enQueue(T data);
         T deQueue();
 
@@ -29,14 +31,12 @@ class Queue{
         T& getBottom();
         virtual void print();
 
-
-        // const Queue<T> operator=(const Stack<T>& stackCopy);
     protected:
         T* content; 
         int top, bottom, capacity; 
-        friend class Stack<T>;
 
 };
+
 
 template <class T>
 Queue<T>::Queue():capacity(10), bottom(-1), top(-1), content(new T[10]){
@@ -149,17 +149,5 @@ void Queue<T>::print(){
     }
     std::cout<<std::endl;
 }
-
-template <class T>
-Queue<T>::Queue(const Stack<T>& stack){
-    bottom=-1;
-    top=-1;
-    capacity=stack.capacity;
-    content=new T[stack.capacity];
-
-    for(int i=0; i <= stack.top; i++){
-        enQueue(stack.elements[i]);
-    }
-};
 
 

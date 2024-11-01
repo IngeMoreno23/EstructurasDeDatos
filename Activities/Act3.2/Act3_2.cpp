@@ -17,7 +17,7 @@ Rodolfo Romero Blas Valdez A01741665
 
 int main(){
 
-    PriorityQueue<std::string> initQueue1(2), initQueue2 ({"Alberto", "Berenice", "Fernando", "Julian", "Hermenegildo"}), initQueueP=initQueue2, initQueueP2;
+    PriorityQueue<std::string> initQueue1(2), initQueue2 ({"Alberto", "Berenice", "Fernando", "Julian", "Hermenegildo","Zamara"}), initQueueP=initQueue2, initQueueP2;
     initQueueP2=initQueue2;
     PriorityQueue<int> initQueue3;
     std::cout<<"Primer caso de prueba, probar con datos distintos a enteros para verificar que la plantilla se haya realizado correctamente, probar los constructores\n";

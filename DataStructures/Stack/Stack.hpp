@@ -3,10 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include "exceptionsStack.cpp"
-#include "..\Queue\Queue.hpp"
 
-template <class T> // Importante para no tener un círculo en las declaraciones, porque estoy usando la clase queue en stack y stack en queue
-class Queue;
 
 template <class T>
 class Stack{
@@ -14,14 +11,19 @@ class Stack{
         Stack();
         Stack(std::initializer_list<T> list);
         Stack(int _capacity);
-        Stack(const Queue<T>& queue); // es importante utilizar una letra distinta a T, para que no haya conflictos con la class T de la clase
 
         ~Stack();
     
         Stack(const Stack<T>& copyStack);
+
+        #ifdef QUEUE_TO_STACK
+            #include "..\Queue\Queue.hpp"
+            friend class Queue<T>;
+            Stack(const Queue<T>& queue); // es importante utilizar una letra distinta a T, para que no haya conflictos con la class T de la clase
+        #endif
+
         const Stack<T>& operator =(const Stack<T>& copyStack);
 
-        
         void push(T data);
 
         bool isFull();
@@ -33,7 +35,6 @@ class Stack{
     private:
         int capacity, top; 
         T* elements;
-        friend class Queue<T>;
 
 };
 
@@ -209,23 +210,3 @@ template <class T>
 int Stack<T>::getTop(){
     return top;
 }
-
-/*
-> Parámetros: Una cola circular. 
-> Método: Borra la memoria asignada en el constructor, y asigna a un nuevo bloque de memoria del tamaño de la capacidad de la cola, que después 
-  asigna a la pila. Determina los elementos que hay entre el primer y último valor de la cola, y los copia en la pila. Es un constructor.
-> Orden: O(n). n siendo los elementos en la cola circular.
-*/
-template <class T>
-Stack<T>::Stack(const Queue<T>& queue){
-    
-    elements= new T[queue.capacity];
-    capacity=queue.capacity;
-    top=-1;
-    int diff=(queue.bottom % queue.capacity) - (queue.top % queue.capacity);
-    for(int i = 0; i <= diff; i++){
-        push(queue.content[i]);
-    }
-}
-
-
