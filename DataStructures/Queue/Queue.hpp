@@ -12,8 +12,9 @@ class Queue{
 
         Queue(const Queue<T>& queueCopy);
         const Queue<T>& operator=(const Queue<T>& queueCopy);
+        
         /*
-        Esto es para declarar un constructor solo sí se ha definido INCLUDE_PILA_CONSTRUCTOR
+        Esto es para declarar un constructor solo sí se ha definido STACK_TO_QUEUE
         */
         #ifdef STACK_TO_QUEUE
             #include "..\Stack\Stack.hpp"

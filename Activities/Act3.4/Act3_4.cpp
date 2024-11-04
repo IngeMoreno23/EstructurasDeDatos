@@ -9,7 +9,6 @@ Rodolfo Blas Romero Valdez - A01741665
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <map>
 
 #include "..\..\DataStructures\List\DoubleLL.hpp"
 #include "..\..\DataStructures\Tree\SplayTree\SplayTree.hpp"

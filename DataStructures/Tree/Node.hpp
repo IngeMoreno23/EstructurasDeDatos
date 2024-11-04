@@ -59,9 +59,7 @@ Node<T>::Node(const Node &otherNode){
 }
 
 template <class T>
-Node<T>::~Node(){
-
-}
+Node<T>::~Node(){}
 
 template <class T>
 Node<T> &Node<T>::operator=(T data){
@@ -77,7 +75,7 @@ RETURN: Este nodo.
 */
 template <class T>
 Node<T> &Node<T>::operator=(Node &otherNode){
-    if(this==&otherNode){
+    if(this == &otherNode){
         return *this;
     }
     this->data = otherNode.data;

@@ -151,15 +151,6 @@ struct IpFreq{
         IpFreq():freq(0),ip(""){
             ipLL= DoubleLL<std::string>();
         }
-        void changeList(DoubleLL<std::string>& dLLReplacement){
-            ipLL = dLLReplacement;
-            freq = dLLReplacement.length();
-        }
-        void mergeList(DoubleLL<std::string>& dLLAddition){
-            ipLL.merge(dLLAddition);
-            freq=ipLL.length();
-        }
-
         bool operator>(const IpFreq& other){
             return freq > other.freq;
         }
@@ -176,6 +167,7 @@ struct IpFreq{
         void operator+(int addition){
             freq+=addition;
         }
+        
         // Por alguna razón, si getData no regresa T por referencia, y como parámetros de la sobrecarga de << es const, (que creo que lleva a recibir un valor temporal), no se imprime nada.
         friend std::ostream& operator<<(std::ostream& os, IpFreq& ipFreq){ // Se tuvo que agregar const para que aceptara tanto objetos temporales como persistentes. Para la impresión, se usa getData, que regresa un valor temporal. Al intentar ingresarlo a la función, que acepta por referencia, arroja un error de compilación. Por ende, se cambia a const que acepta ambos valores, y no copia ipFreq.
             os << "Frecuencia: " << ipFreq.freq << " IP: " << ipFreq.ip;
