@@ -1,18 +1,22 @@
 #include <vector>
 // Se requiere poner template en cada uno y <typename...> para las plantillas anidadas. Por default, se utiliza std::vector. 
-template <template <
-    typename...> class vertContainer = std::vector, 
+template <
+    template <typename...> class vertContainer = std::vector, 
     template <typename...> class adjContainer = std::vector, 
     typename T>
 
 class Graph{
+    using container = vertContainer<adjContainer<T>>;
     private:
-        using container = vertContainer<adjContainer<T>>;
         container nodes;
     public:
         Graph();
         Graph(int v);
         Graph(const container& adjList);
+        Graph(const Graph& otherGraph);
+        
+        const Graph& operator=(const Graph& otherGraph);
+
         void loadGraph(int vertices, int connections);
         void loadGraph(const container& adjList);
         void DFS();
