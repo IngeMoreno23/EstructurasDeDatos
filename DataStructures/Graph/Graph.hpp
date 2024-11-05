@@ -2,8 +2,9 @@
 #include <iostream>
 #include <stack>
 #include <queue>
+#include <stdexcept>
 
-// Se requiere poner template en cada uno y <typename...> para las plantillas anidadas. Por default, se utiliza std::vector. 
+// Se requiere poner template en cada uno y <typename...> para las plantillas anidadas. Por default, se utiliza std::vector. Coloco el último T porque es posible que se implemente con structs, para guardar el índice al que apunta
 template <
     template <typename...> class vertContainer = std::vector, 
     template <typename...> class adjContainer = std::vector, 
@@ -31,8 +32,8 @@ class Graph{
         void addVertex();
         void addVertex(const adjContainer<T>& adjacency);
 
-        void DFS(const container& extContainer);
-        void BFS(const container& extContainer);
+        void DFS(const container& extContainer, int initIndex);
+        void BFS(const container& extContainer, int initIndex);
         void print();
 
         bool empty();
@@ -117,17 +118,37 @@ void Graph<vertContainer, adjContainer, T>::print(){
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-void Graph<vertContainer, adjContainer, T>::DFS(const container& extContainer){
-    std::vector<bool> visited(container.size(), false);
+void Graph<vertContainer, adjContainer, T>::DFS(const container& extContainer, int initIndex){
+    if(initIndex < 0 || initIndex > extContainer.size()){
+        throw(std::out_of_range("El índice se encuentra fuera de rango"));
+    }
+
+    std::vector<bool> visited(extContainer.size(), false);
     std::queue<int> queue;
     
+    queue.push(extContainer[initIndex]);
+    int actIndex = initIndex;
     while(!queue.empty()){
-        queue.push();
-    }
-    extContainer[0];
+        visited[actIndex] = true;
+        actIndex=queue.front();
+        for(const auto& element:extContainer[actIndex]){
+            std::cout<<actIndex;
+            if(!visited[element]){
+                queue.push(element);
+            }
+
+        }
+        queue.pop();
+    }    
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+void Graph<vertContainer, adjContainer, T>::BFS(const container& extContainer, int initIndex){
+     
+}
+
+
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool Graph<vertContainer, adjContainer, T>::empty(){
-    return container.size() == 0;
+    return nodes.size() == 0;
 }
