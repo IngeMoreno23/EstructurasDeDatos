@@ -14,6 +14,7 @@ template <
 class Graph{
     using container = vertContainer<adjContainer<T>>;
     private:
+        bool directed;
         // container nodes;
     public:
         container nodes;
@@ -126,19 +127,18 @@ void Graph<vertContainer, adjContainer, T>::BFS(const container& extContainer, i
     std::vector<bool> visited(extContainer.size(), false);
     std::queue<int> queue;
 
+    visited[initIndex]=true;
     queue.push(initIndex);
-    int actIndex = initIndex;
     while(!queue.empty()){
-        actIndex=queue.front();
-        for(const auto& element:extContainer[actIndex]){
-            visited[actIndex] = true;
-            std::cout<<element;
+        initIndex = queue.front();
+        std::cout<<initIndex;
+        queue.pop();
+        visited[initIndex] = true;
+        for(const auto& element:extContainer[initIndex]){
             if(!visited[element]){
                 queue.push(element);
             }
-
         }
-        queue.pop();
     }    
 }
 
@@ -151,9 +151,13 @@ void Graph<vertContainer, adjContainer, T>::DFS(const container& extContainer, i
     std::vector<bool> visited(extContainer.size(), false);
     std::stack<int> stack;
 
+    visited[initIndex] = true;
+    
+
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool Graph<vertContainer, adjContainer, T>::empty(){
     return nodes.size() == 0;
 }
+
