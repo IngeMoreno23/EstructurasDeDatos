@@ -118,21 +118,21 @@ void Graph<vertContainer, adjContainer, T>::print(){
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-void Graph<vertContainer, adjContainer, T>::DFS(const container& extContainer, int initIndex){
+void Graph<vertContainer, adjContainer, T>::BFS(const container& extContainer, int initIndex){
     if(initIndex < 0 || initIndex > extContainer.size()){
         throw(std::out_of_range("El índice se encuentra fuera de rango"));
     }
 
     std::vector<bool> visited(extContainer.size(), false);
     std::queue<int> queue;
-    
-    queue.push(extContainer[initIndex]);
+
+    queue.push(initIndex);
     int actIndex = initIndex;
     while(!queue.empty()){
-        visited[actIndex] = true;
         actIndex=queue.front();
         for(const auto& element:extContainer[actIndex]){
-            std::cout<<actIndex;
+            visited[actIndex] = true;
+            std::cout<<element;
             if(!visited[element]){
                 queue.push(element);
             }
@@ -143,10 +143,15 @@ void Graph<vertContainer, adjContainer, T>::DFS(const container& extContainer, i
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-void Graph<vertContainer, adjContainer, T>::BFS(const container& extContainer, int initIndex){
-     
-}
+void Graph<vertContainer, adjContainer, T>::DFS(const container& extContainer, int initIndex){
+    if(initIndex < 0 || initIndex > extContainer.size()){
+        throw(std::out_of_range("El índice se encuentra fuera de rango"));
+    }
 
+    std::vector<bool> visited(extContainer.size(), false);
+    std::stack<int> stack;
+
+}
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool Graph<vertContainer, adjContainer, T>::empty(){
