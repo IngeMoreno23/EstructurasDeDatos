@@ -87,8 +87,7 @@ void Graph<vertContainer, adjContainer, T>::addEdge(int vertex, int connection){
     // Pero entonces, no le veo mucho sentido a un vector que no tenga los vertices completos hasta el vertice que quiere conectar. Pero el vertice de destino, considero yo, el error de no existir debería ser arrojado en otra función
     
     if(vertex < 0 || vertex >= adjacencyList.size() || connection < 0 || connection >= adjacencyList.size()){
-        std::cout<<vertex<<" "<<connection<<" "<<adjacencyList.size()<<"\n";
-        throw(std::out_of_range("There is no such edge"));
+        throw(std::out_of_range("No existe tal vértice"));
     }
     
     iterator_type it;
@@ -105,7 +104,7 @@ void Graph<vertContainer, adjContainer, T>::addEdge(int vertex, int connection){
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 int Graph<vertContainer, adjContainer, T>::hasEdge(int vertex, int connection, iterator_type& it){
     if(vertex < 0 || vertex >= adjacencyList.size() || connection < 0 || connection >= adjacencyList.size()){
-        throw(std::out_of_range("There is no such vertex"));
+        throw(std::out_of_range("No existe tal vértice"));
     }
 
     it = std::find(adjacencyList[vertex].begin(), adjacencyList[vertex].end(), connection);
@@ -115,7 +114,7 @@ int Graph<vertContainer, adjContainer, T>::hasEdge(int vertex, int connection, i
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 int Graph<vertContainer, adjContainer, T>::hasEdge(int vertex, int connection){
     if(vertex < 0 || vertex >= adjacencyList.size() || connection < 0 || connection >= adjacencyList.size()){
-        throw(std::out_of_range("There is no such vertex"));
+        throw(std::out_of_range("No existe tal vértice"));
     }
     return std::find(adjacencyList[vertex].begin(), adjacencyList[vertex].end(), connection) != adjacencyList[vertex].end();
 }
@@ -140,23 +139,25 @@ void Graph<vertContainer, adjContainer, T>::addVertex(const adjContainer<T>& adj
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::removeEdge(int vertex0, int vertex1){
     iterator_type it;
-    if(hasEdge(vertex0, vertex1, it)){
-        adjacencyList[vertex0].erase(it);
-    } else{
-        // throw(std::out_of_range("The graph does not have that edge"));
+    if(!hasEdge(vertex0, vertex1, it)){
+        throw(std::out_of_range("El grafo no contiene tal arco"));
     }
+    adjacencyList[vertex0].erase(it);
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::loadGraph(const container& adjList){
-    if(&(this->adjacencyList) == &adjList){
+    if(&adjacencyList == &adjList){
         return;
     }
-    this -> adjacencyList = container(adjList);
+    adjacencyList = container(adjList);
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::loadGraph(int vertices, int connections){
+    if( vertices < 0 || connections < 0){
+        std::invalid_argument("Valor de vértice inválido");
+    }
     adjacencyList = container(); // Aquí hay que estandarizar el código para que funcione con otros que no sean vectores. Y no funcionará si no tiene un constructor con el tamaño como parámetros.
     for(int v = 0; v < vertices; v++){
         adjacencyList.push_back(adjContainer<T>(connections)); 
@@ -165,9 +166,7 @@ void Graph<vertContainer, adjContainer, T>::loadGraph(int vertices, int connecti
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::print(){
-    if (adjacencyList.size() == 0){
-        std::cout<<"The graph is empty\n";
-    }
+    std::cout<<"[\n";
     int i = 0;
     for(const auto& vertVec:adjacencyList){
         std::cout <<i<<": ";
@@ -181,7 +180,7 @@ void Graph<vertContainer, adjContainer, T>::print(){
         }
         i++;
     }
-    std::cout<<"\n";
+    std::cout<<"]\n";
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
@@ -211,7 +210,7 @@ void Graph<vertContainer, adjContainer, T>::BFS(int index){
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::DFS(int index){
-    if(index < 0 || index > adjacencyList.size()){
+    if(index < 0 || index >= adjacencyList.size()){
         throw(std::out_of_range("El índice se encuentra fuera de rango"));
     }
     std::cout<<"DFS: ";
