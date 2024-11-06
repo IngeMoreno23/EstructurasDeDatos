@@ -122,7 +122,7 @@ int Graph<vertContainer, adjContainer, T>::hasEdge(int vertex, int connection){
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::addVertex(int n){
     for(int i = 0; i < n; i++){
-        adjacencyList.push_back(adjContainer<T>());
+        adjacencyList.push_back(adjContainer<T>()); // Necesario poner el <T> después de adjContainer.
     }
 }
 
@@ -155,12 +155,16 @@ void Graph<vertContainer, adjContainer, T>::loadGraph(const container& adjList){
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::loadGraph(int vertices, int connections){
-    if( vertices < 0 || connections < 0){
+    if( vertices < 0 || connections < 0 || connections > vertices){
         throw(std::invalid_argument("Valor de vértice inválido"));
     }
     adjacencyList = container(); // Aquí hay que estandarizar el código para que funcione con otros que no sean vectores. Y no funcionará si no tiene un constructor con el tamaño como parámetros.
     for(int v = 0; v < vertices; v++){
-        adjacencyList.push_back(adjContainer<T>(connections)); 
+        adjContainer<T> temp = adjContainer<T>();
+        for(int i = 0; i < connections; i++){
+            temp.push_back(i);
+        }
+        adjacencyList.push_back(temp); 
     }
 }
 
