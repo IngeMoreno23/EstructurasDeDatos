@@ -17,15 +17,16 @@ class Graph{
 
     private:
         bool directed;
-        // container adjacencyList;
-    public:
         container adjacencyList;
+    public:
+        // container adjacencyList;
 
-        Graph();
         Graph(bool _directed = true);
         Graph(int v, bool _directed = true);
         Graph(const container& adjList, bool _directed = true);
         Graph(const Graph& otherGraph, bool _directed = true);
+
+        ~Graph();
         
         const Graph& operator=(const Graph& otherGraph);
 
@@ -33,10 +34,11 @@ class Graph{
         void loadGraph(const container& adjList);
 
         void addEdge(int vertex, int connection);
-        void addVertex();
+        void addVertex(int n = 1);
         void addVertex(const adjContainer<T>& adjacency);
 
-        int hasEdge(int vertex, int connection, iterator_type& it);
+        int hasEdge(int vertex, int connection, iterator_type& it); // Existe solo para cuando, de existir el arco, se realice una operación con el arco 
+        int hasEdge(int vertex, int connection);
         void removeEdge(int vertex0, int vertex1);
 
         void DFS(int index);
@@ -48,43 +50,52 @@ class Graph{
 };
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-Graph<vertContainer, adjContainer, T>::Graph(){
-    adjacencyList = *new container(); // Al parecer los contenedores de la STL se inicializan automáticamente, así que no es necesario poner new. Además, como son atributos de la clase, sobrevivirán al salir de ámbito. A menos que se tengan punteros como atributos. Pero como es sabido, en funciones, los datos inicializados de cualquier tipo no sobrevivirán al salir del ámbito a menos que se utilice el operador new. 
+Graph<vertContainer, adjContainer, T>::Graph(bool _directed):directed(_directed){
+    adjacencyList = container(); // Al parecer los contenedores de la STL se inicializan automáticamente, así que no es necesario poner new. Además, como son atributos de la clase, sobrevivirán al salir de ámbito. A menos que se tengan punteros como atributos. Pero como es sabido, en funciones, los datos inicializados de cualquier tipo no sobrevivirán al salir del ámbito a menos que se utilice el operador new. 
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 Graph<vertContainer, adjContainer, T>::Graph(const container& adjList, bool _directed):directed(_directed){
-    adjacencyList = *new container(adjList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
+    adjacencyList = container(adjList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 Graph<vertContainer, adjContainer, T>::Graph(const Graph& otherGraph, bool _directed):directed(_directed){
-    delete adjacencyList; 
-    adjacencyList = *new container(otherGraph.adjacencyList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
+    adjacencyList = container(otherGraph.adjacencyList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 const Graph<vertContainer, adjContainer, T>& Graph<vertContainer, adjContainer, T>::operator=(const Graph& otherGraph){
-    delete adjacencyList; 
-    adjacencyList = *new container(otherGraph.adjacencyList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
+    adjacencyList = container(otherGraph.adjacencyList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 Graph<vertContainer, adjContainer, T>::Graph(int v, bool _directed): directed(_directed){
 
-    adjacencyList = *new container();
+    adjacencyList = container();
     for(int vx = 0; vx < v; vx++){
         adjacencyList.push_back(adjContainer<T>());
     }
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+Graph<vertContainer, adjContainer, T>::~Graph(){} // los contenedores se borran cuando el objeto sale de ámbito. Como tal, los contenedores deberían tener su administración de la memoria.
+
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::addEdge(int vertex, int connection){
+    // Esto se podría incluir, pero en la implementación de un grafo, puede que se agreguen conexiones a vertices que aún no forman parte pero eventualmente lo harán. Arrojar una excepcion, consider que sería más pertinente hacerlo en un hasEdge. Tampoco creo factible el hecho de crear un nuevo vertice o n vertices hasta llegar al vertice que se busca conectar.
+    // Pero entonces, no le veo mucho sentido a un vector que no tenga los vertices completos hasta el vertice que quiere conectar. Pero el vertice de destino, considero yo, el error de no existir debería ser arrojado en otra función
+    
+    if(vertex < 0 || vertex >= adjacencyList.size() || connection < 0 || connection >= adjacencyList.size()){
+        std::cout<<vertex<<" "<<connection<<" "<<adjacencyList.size()<<"\n";
+        throw(std::out_of_range("There is no such edge"));
+    }
+    
     iterator_type it;
     if (!hasEdge(vertex, connection, it)){
         adjacencyList[vertex].push_back(connection); // Esto asume que la estructura de datos utilizada tiene método push_back y tiene sobrecarga de []
     }
-    if(directed){
+    if(!directed){
         if (!hasEdge(connection, vertex, it)){
             adjacencyList[connection].push_back(vertex); 
         }
@@ -93,14 +104,27 @@ void Graph<vertContainer, adjContainer, T>::addEdge(int vertex, int connection){
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 int Graph<vertContainer, adjContainer, T>::hasEdge(int vertex, int connection, iterator_type& it){
+    if(vertex < 0 || vertex >= adjacencyList.size() || connection < 0 || connection >= adjacencyList.size()){
+        throw(std::out_of_range("There is no such vertex"));
+    }
+
     it = std::find(adjacencyList[vertex].begin(), adjacencyList[vertex].end(), connection);
     return it != adjacencyList[vertex].end();
 }
 
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+int Graph<vertContainer, adjContainer, T>::hasEdge(int vertex, int connection){
+    if(vertex < 0 || vertex >= adjacencyList.size() || connection < 0 || connection >= adjacencyList.size()){
+        throw(std::out_of_range("There is no such vertex"));
+    }
+    return std::find(adjacencyList[vertex].begin(), adjacencyList[vertex].end(), connection) != adjacencyList[vertex].end();
+}
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-void Graph<vertContainer, adjContainer, T>::addVertex(){
-    adjacencyList.push_back(adjContainer<T>());
+void Graph<vertContainer, adjContainer, T>::addVertex(int n){
+    for(int i = 0; i < n; i++){
+        adjacencyList.push_back(adjContainer<T>());
+    }
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
@@ -116,26 +140,24 @@ void Graph<vertContainer, adjContainer, T>::addVertex(const adjContainer<T>& adj
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::removeEdge(int vertex0, int vertex1){
     iterator_type it;
-    if(!hasEdge(vertex0, vertex1, it)){
-        throw(std::out_of_range("The graph does not have that edge"));
+    if(hasEdge(vertex0, vertex1, it)){
+        adjacencyList[vertex0].erase(it);
+    } else{
+        // throw(std::out_of_range("The graph does not have that edge"));
     }
-    adjacencyList[vertex0].erase(it);
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::loadGraph(const container& adjList){
-    if(*(this->adjacencyList) == &adjList){
+    if(&(this->adjacencyList) == &adjList){
         return;
     }
-    delete adjacencyList;
-
-    this -> adjacencyList = *new container(adjList);
+    this -> adjacencyList = container(adjList);
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::loadGraph(int vertices, int connections){
-    delete adjacencyList;
-    adjacencyList = *new container(); // Aquí hay que estandarizar el código para que funcione con otros que no sean vectores. Y no funcionará si no tiene un constructor con el tamaño como parámetros.
+    adjacencyList = container(); // Aquí hay que estandarizar el código para que funcione con otros que no sean vectores. Y no funcionará si no tiene un constructor con el tamaño como parámetros.
     for(int v = 0; v < vertices; v++){
         adjacencyList.push_back(adjContainer<T>(connections)); 
     }
@@ -143,7 +165,9 @@ void Graph<vertContainer, adjContainer, T>::loadGraph(int vertices, int connecti
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::print(){
-    std::cout<<"Impresión de la lista de adyacencia: \n";
+    if (adjacencyList.size() == 0){
+        std::cout<<"The graph is empty\n";
+    }
     int i = 0;
     for(const auto& vertVec:adjacencyList){
         std::cout <<i<<": ";
@@ -214,4 +238,13 @@ void Graph<vertContainer, adjContainer, T>::DFS(int index){
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool Graph<vertContainer, adjContainer, T>::empty(){
     return adjacencyList.size() == 0;
+}
+
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+void Graph<vertContainer, adjContainer, T>::clear(){
+    if(adjacencyList.size() == 0){
+        return;
+    }
+
+    adjacencyList = container(); // Esto es posible porque el contenedor, en su sobrecarga de asignación, ya tiene un proceso que elimina los datos actuales y cambia a los datos nuevos. No necesito eliminar el contenedor, dentro de su implementación se hace todo esto.
 }
