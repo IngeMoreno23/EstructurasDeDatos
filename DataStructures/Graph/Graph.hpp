@@ -156,7 +156,7 @@ void Graph<vertContainer, adjContainer, T>::loadGraph(const container& adjList){
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::loadGraph(int vertices, int connections){
     if( vertices < 0 || connections < 0){
-        std::invalid_argument("Valor de vértice inválido");
+        throw(std::invalid_argument("Valor de vértice inválido"));
     }
     adjacencyList = container(); // Aquí hay que estandarizar el código para que funcione con otros que no sean vectores. Y no funcionará si no tiene un constructor con el tamaño como parámetros.
     for(int v = 0; v < vertices; v++){

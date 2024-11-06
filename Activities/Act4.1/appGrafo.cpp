@@ -64,5 +64,12 @@ int main(){
     std::cout<<"> Implementación del método loadGraph con una lista de adyacencias como parámetro: \n";
     testLoadGraph.loadGraph(container);
     testLoadGraph.print();
+
+    std::cout<<"> Implementación del método loadGraph con valores inválidos: \n";
+    try{
+        testLoadGraph.loadGraph(-2,3);
+    } catch(std::invalid_argument& ex){
+        std::cout<<"Error al intentar cargar grafo: "<<ex.what();
+    }
 }
 
