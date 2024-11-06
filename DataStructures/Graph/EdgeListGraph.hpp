@@ -26,6 +26,8 @@ class EdgeListGraph{
         // void DFS();
 
         void print();
+        void printOrigin();
+        void printDestination();
 };
 
 /*
@@ -63,9 +65,48 @@ void EdgeListGraph<T>::print(){
         std::cout<<"Empty graph.\n";
         return;
     }
+    std::cout<<"Graph.- Vertex: (origin, destination, weight)\n";
     EdgeListVertex<T>* currentVertex = this->vertex;
     while(currentVertex != nullptr){
         currentVertex->print();
         currentVertex = currentVertex->getNextVertex();
+        std::cout<<"\n";
+    }
+}
+
+/*
+Who is pointing to me
+*/
+template <typename T>
+void EdgeListGraph<T>::printOrigin(){
+    if(this->vertex == nullptr){
+        std::cout<<"Empty graph.\n";
+        return;
+    }
+    std::cout<<"Graph.- Vertex: (origin, weight) - Who is pointing to me:\n";
+    EdgeListVertex<T>* currentVertex = this->vertex;
+    while(currentVertex != nullptr){
+        currentVertex->printOrigin();
+        currentVertex = currentVertex->getNextVertex();
+        std::cout<<"\n";
+    }
+}
+
+/*
+Who am I pointing to.
+
+*/
+template <typename T>
+void EdgeListGraph<T>::printDestination(){
+    if(this->vertex == nullptr){
+        std::cout<<"Empty graph.\n";
+        return;
+    }
+    std::cout<<"Graph.- Vertex: (destination, weight) - Who am I pointing to:\n";
+    EdgeListVertex<T>* currentVertex = this->vertex;
+    while(currentVertex != nullptr){
+        currentVertex->printDestination();
+        currentVertex = currentVertex->getNextVertex();
+        std::cout<<"\n";
     }
 }

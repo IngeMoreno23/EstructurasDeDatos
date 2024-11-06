@@ -27,6 +27,8 @@ class EdgeListVertex{
         void setNextEdgeDestination(EdgeListEdge<T>* nextEdgeDestination);
 
         void print();
+        void printOrigin();
+        void printDestination();
 };
 
 template <typename T>
@@ -89,10 +91,59 @@ RETURN: None.
 template <typename T>
 void EdgeListVertex<T>::print(){
     std::cout<<vertex<<": ";
+
+    if(this->nextEdgeOrigin == nullptr)
+        return;
+
     EdgeListEdge<T>* currentEdgeOrigin = this->nextEdgeOrigin;
-    while(currentEdgeOrigin != nullptr){
+    do{
         currentEdgeOrigin -> print();
         currentEdgeOrigin = currentEdgeOrigin->getNextEdgeOrigin();
-    }
-    std::cout << "\n";
+
+        if(currentEdgeOrigin != nullptr)
+            std::cout<<", ";
+
+    } while(currentEdgeOrigin != nullptr);
+    std::cout << ".";
+}
+
+template <typename T>
+void EdgeListVertex<T>::printOrigin(){
+    std::cout<<vertex<<": ";
+
+    if(this->nextEdgeDestination == nullptr)
+        return;
+
+    EdgeListEdge<T>* nextEdgeDestination = this->nextEdgeDestination;
+    do{
+        nextEdgeDestination -> printOrigin();
+        nextEdgeDestination = nextEdgeDestination->getNextEdgeDestination();
+
+        if(nextEdgeDestination != nullptr)
+            std::cout<<", ";
+
+    } while(nextEdgeDestination != nullptr);
+    std::cout << ".";
+}
+
+/*
+This will print the destination of the edges this vertes is origin of.
+*/
+template <typename T>
+void EdgeListVertex<T>::printDestination(){
+    std::cout<<vertex<<": ";
+
+    if(this->nextEdgeOrigin == nullptr)
+        return;
+
+    EdgeListEdge<T>* nextEdgeOrigin = this->nextEdgeOrigin;
+    do{
+        nextEdgeOrigin -> printDestination();
+        nextEdgeOrigin = nextEdgeOrigin->getNextEdgeOrigin();
+
+        if(nextEdgeOrigin != nullptr)
+            std::cout<<", ";
+
+    } while(nextEdgeOrigin != nullptr);
+    std::cout << ".";
 }

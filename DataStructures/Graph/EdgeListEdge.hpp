@@ -29,6 +29,8 @@ class EdgeListEdge{
         void setNextEdgeDestination(EdgeListEdge<T>* nextEdgeDestination);
 
         void print();
+        void printOrigin();
+        void printDestination();
 };
 
 template <typename T>
@@ -107,4 +109,16 @@ RETURN: None.
 template <typename T>
 void EdgeListEdge<T>::print(){
     std::cout<<"("<<vertexOrigin<<", "<<vertexDestination<<", "<<weight<<")";
+}
+
+
+template <typename T>
+void EdgeListEdge<T>::printOrigin(){
+    std::cout<<"("<<vertexOrigin<<", "<<weight<<")";
+}
+
+
+template <typename T>
+void EdgeListEdge<T>::printDestination(){
+    std::cout<<"("<<vertexDestination<<", "<<weight<<")";
 }
