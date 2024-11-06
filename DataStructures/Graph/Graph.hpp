@@ -191,7 +191,7 @@ void Graph<vertContainer, adjContainer, T>::BFS(int index){
 
     std::vector<bool> visited(adjacencyList.size(), false);
     std::queue<int> queue;
-    std::cout<<"BFS: ";
+    std::cout<<"BFS ("<<index<<"): ";
     visited[index] = true;
     queue.push(index);
     while(!queue.empty()){
@@ -213,7 +213,7 @@ void Graph<vertContainer, adjContainer, T>::DFS(int index){
     if(index < 0 || index >= adjacencyList.size()){
         throw(std::out_of_range("El índice se encuentra fuera de rango"));
     }
-    std::cout<<"DFS: ";
+    std::cout<<"DFS ("<<index<<"): ";
     std::vector<bool> visited(adjacencyList.size(), false);
     std::stack<int> stack;
 
