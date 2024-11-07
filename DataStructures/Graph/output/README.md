@@ -33,6 +33,16 @@ Set - Crear vertex
 
 
 que quiero hacer
+- crear un grafo completo, deberá tener opcion para hacer 
+- agregar vertices junto con arcos con formato {T, init_list<T>}
+
+- añadir vertices
+- modificar vertices (incluirá modificar los arcos)
+- quitar vertices
+
+- añadir arcos
+- NO EXISTIRÁ MODIFICAR arco
+- eliminar arco
 
 EdgeListGraph
 Constructor (std::initializer_list<std::initializer_list<T>>)- Crear una grafo completo con el formato:
