@@ -4,21 +4,21 @@
 template <class T, class U>
 class EdgeListEdge{
     private:
-        T vertexOrigin; // Origin vertex of the edge.
-        T vertexDestination; // Destination vertex of the edge.
+        T& vertexOrigin; // Origin vertex of the edge.
+        T& vertexDestination; // Destination vertex of the edge.
         U weight; // Weight of the edge.
         EdgeListEdge<T, U>* nextEdgeOrigin; // ptr to the next edge that has the same origin.
         EdgeListEdge<T, U>* nextEdgeDestination; // ptr to the next edge that has the same destination.
     public:
-        EdgeListEdge();
-        // EdgeListEdge(T& vertexOrigin, T& vertexDestination, U weight);
+        EdgeListEdge(T& vertexOrigin, T& vertexDestination);
+        EdgeListEdge(T& vertexOrigin, T& vertexDestination, U weight);
         // EdgeListEdge(const EdgeListEdge& otherEdge);
         // const EdgeListEdge& operator=(const EdgeListEdge& otherEdge);
         // ~EdgeListEdge();
 
-        T getVertexOrigin();
-        T getVertexDestination();
-        U getWeight();
+        T& getVertexOrigin();
+        T& getVertexDestination();
+        U& getWeight();
         EdgeListEdge<T, U>* getNextEdgeOrigin();
         EdgeListEdge<T, U>* getNextEdgeDestination();
 
@@ -40,9 +40,7 @@ ORDER OF EXECUTION: O(1).
 RETURN: None.
 */
 template <class T, class U>
-EdgeListEdge<T, U>::EdgeListEdge(){
-    this->vertexOrigin = T();
-    this->vertexDestination = T();
+EdgeListEdge<T, U>::EdgeListEdge(T& vertexOrigin, T& vertexDestination): vertexOrigin(vertexOrigin), vertexDestination(vertexDestination){
     if constexpr (std::is_same<U, int>::value ||std::is_same<U, long>::value || std::is_same<U, long long>::value
                     || std::is_same<U, float>::value ||  std::is_same<U, double>::value){
         this->weight = U(1);
@@ -53,21 +51,32 @@ EdgeListEdge<T, U>::EdgeListEdge(){
     this->nextEdgeDestination = nullptr;
 }
 
+/*
+
+*/
+template <class T, class U>
+EdgeListEdge<T, U>::EdgeListEdge(T& vertexOrigin, T& vertexDestination, U weight): vertexOrigin(vertexOrigin), vertexDestination(vertexDestination){
+    this->weight = weight;
+    this->nextEdgeOrigin = nullptr;
+    this->nextEdgeDestination = nullptr;
+}
+
+
 
 // GETTERS
 
 template <class T, class U>
-T EdgeListEdge<T, U>::getVertexOrigin(){
+T& EdgeListEdge<T, U>::getVertexOrigin(){
     return this->vertexOrigin;
 }
 
 template <class T, class U>
-T EdgeListEdge<T, U>::getVertexDestination(){
+T& EdgeListEdge<T, U>::getVertexDestination(){
     return this->vertexDestination;
 }
 
 template <class T, class U>
-U EdgeListEdge<T, U>::getWeight(){
+U& EdgeListEdge<T, U>::getWeight(){
     return this->weight;
 }
 

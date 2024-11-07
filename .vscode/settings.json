@@ -86,7 +86,8 @@
         "semaphore": "cpp",
         "cwctype": "cpp",
         "numeric": "cpp",
-        "numbers": "cpp"
+        "numbers": "cpp",
+        "set": "cpp"
     },
     
     "liveshare.features.allowGuestDebugging": true,

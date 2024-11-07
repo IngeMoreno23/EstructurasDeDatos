@@ -64,6 +64,8 @@ Set - appendVertex(T vertexData) - Añadir un vector solo con el dato-key.
     condicion base -> **SI vertexData < this->head **
         el primero es mayor al argumento
         volver el argumento cabeza y que apunte al antes primer head.
+    
+    **while -> current.getNextVertex() != nullptr && vertex > current.getNextVertex()->getVertex().
     condicion loop -> **SI vertexData < current.nextVertex->getVertex() || current.nextVertex == nullptr -> APPEND**
         si el siguiente es mayor
         añadirlo despues del actual
