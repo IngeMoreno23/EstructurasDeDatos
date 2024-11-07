@@ -19,12 +19,15 @@ class EdgeListGraph{
         // ~EdgeListGraph();
 
         void addVertex(T& vertex); // DOOOOONE
+        void addEdge(const T& vertexOrigin, const T& vertexDestination);
         // void addEdge(const T& vertexOrigin, const T& vertexDestination, double weight, bool isDirected);
 
         void updateVertex(const T& vertex, const T& newVertex);
 
         // void removeVertex(const T& vertex);
-        // void removeEdge(const T& vertexOrigin, const T& vertexDestination, bool isDirected);
+        void removeEdge(const T& vertexOrigin, const T& vertexDestination);
+
+        bool edgeExists(const T& vertexOrigin, const T& vertexDestination);
 
         EdgeListVertex<T, U>* getVertex();
         void setVertex(EdgeListVertex<T, U>* vertex);
@@ -177,6 +180,50 @@ void EdgeListGraph<T, U>::addVertex(T& vertex){
 }
 
 /*
+May cause probles for no ref params
+*/
+template <class T, class U>
+void EdgeListGraph<T, U>::addEdge(const T& vertexOrigin, const T& vertexDestination){
+    if(this->vertex == nullptr){
+        std::cerr << "The graph is empty.\n";
+        return;
+    }
+    // Verify if the edge is already in the graph.
+    if(this->edgeExists(vertexOrigin, vertexDestination)){
+        return;
+    }
+    // Find the vertexOrigin and vertexDestination.
+    EdgeListVertex<T, U>* currentVertex = this->vertex, *vertexOriginPtr = nullptr, *vertexDestinationPtr = nullptr;
+    while(currentVertex != nullptr && (vertexOriginPtr == nullptr || vertexDestinationPtr == nullptr)){
+        if(currentVertex->getVertex() == vertexOrigin){
+            vertexOriginPtr = currentVertex;
+        }
+        if(currentVertex->getVertex() == vertexDestination){
+            vertexDestinationPtr = currentVertex;
+        }
+        currentVertex = currentVertex->getNextVertex();
+    }
+    // If the vertexOrigin or the vertexDestination are not in the graph, we do nothing.
+    if(vertexOriginPtr == nullptr || vertexDestinationPtr == nullptr){
+        std::cerr << "The vertex " << vertexOrigin << " or " << vertexDestination << " is not in the graph.\n";
+        return;
+    }
+    // Add the edges.
+    vertexOriginPtr->addEdge(vertexOriginPtr, vertexDestinationPtr);
+    // Lastly, EdgeDestinations assignation.
+    currentVertex = this->vertex;
+    while(currentVertex != nullptr){
+        EdgeListEdge<T, U>* currentEdgeOrigin = currentVertex->getNextEdgeOrigin();
+        while(currentEdgeOrigin != nullptr){
+            if(currentEdgeOrigin->getVertexDestination() == vertexDestination){
+                currentVertex->addEdgeDestination(currentEdgeOrigin);
+            }
+            currentEdgeOrigin = currentEdgeOrigin->getNextEdgeOrigin();
+        }
+        currentVertex = currentVertex->getNextVertex();
+    }
+}
+/*
 
 */
 template <class T, class U>
@@ -205,6 +252,127 @@ void EdgeListGraph<T, U>::updateVertex(const T& vertex, const T& newVertex){
     }
     std::cerr << "The vertex " << vertex << " is not in the graph.\n";
 
+}
+/*
+
+*/
+template <class T, class U>
+void EdgeListGraph<T, U>::removeEdge(const T& vertexOrigin, const T& vertexDestination){
+    if(this->vertex == nullptr){
+        std::cerr << "The graph is empty.\n";
+        return;
+    }
+    // Check if the edge exists.
+    if(!this->edgeExists(vertexOrigin, vertexDestination)){
+        return;
+    }
+    // Remove the EdgeDestination
+    EdgeListVertex<T, U>* currentVertex = this->vertex;
+    while(currentVertex != nullptr){
+        if(currentVertex->getVertex() != vertexDestination){
+            currentVertex = currentVertex->getNextVertex();
+            continue;
+        }
+        // Unlink the edge destination.
+        EdgeListEdge<T, U>* currentEdgeDestination = currentVertex->getNextEdgeDestination(), *prevEdgeDestination = nullptr;
+        // We are sure to find the edge destination.        
+        // Special case: if the edge destination is the first edge.
+        if(currentEdgeDestination->getVertexOrigin() == vertexOrigin){
+            // If the nextEdgeDestination is nullptr, we are in the last edge.
+            if(currentEdgeDestination->getNextEdgeDestination() == nullptr){
+                currentVertex->setNextEdgeDestination(nullptr);
+                break;
+            }
+            // If the nextEdgeDestination is not nullptr, we are in the middle of the list.
+            currentVertex->setNextEdgeDestination(currentEdgeDestination->getNextEdgeDestination());
+            break;
+        }
+        prevEdgeDestination = currentEdgeDestination;
+        currentEdgeDestination = currentEdgeDestination->getNextEdgeDestination();
+        while(currentEdgeDestination != nullptr){
+            if(currentEdgeDestination->getVertexOrigin() == vertexOrigin){
+                // Unlink the edge destination.
+                // If the nextEdgeDestination is nullptr, we are in the last edge.
+                if(currentEdgeDestination->getNextEdgeDestination() == nullptr){
+                    prevEdgeDestination->setNextEdgeDestination(nullptr);
+                } else {
+                    // If the nextEdgeDestination is not nullptr, we are in the middle of the list.
+                    prevEdgeDestination->setNextEdgeDestination(currentEdgeDestination->getNextEdgeDestination());
+                }
+                break;
+            }
+            currentEdgeDestination = currentEdgeDestination->getNextEdgeDestination();
+        }
+        break;
+    }
+    // Remove the EdgeOrigin
+    currentVertex = this->vertex;
+    while(currentVertex != nullptr){
+        if(currentVertex->getVertex() != vertexOrigin){
+            currentVertex = currentVertex->getNextVertex();
+            continue;
+        }
+        // Remove the edge origin.
+        EdgeListEdge<T, U>* currentEdgeOrigin = currentVertex->getNextEdgeOrigin(), *prevEdgeOrigin = nullptr;
+        // We are sure to find the edge origin.
+        // Special case: if the edge origin is the first edge.
+        if(currentEdgeOrigin->getVertexDestination() == vertexDestination){
+            // If the nextEdgeOrigin is nullptr, we are in the last edge.
+            if(currentEdgeOrigin->getNextEdgeOrigin() == nullptr){
+                currentVertex->setNextEdgeOrigin(nullptr);
+                break;
+            }
+            // If the nextEdgeOrigin is not nullptr, we are in the middle of the list.
+            currentVertex->setNextEdgeOrigin(currentEdgeOrigin->getNextEdgeOrigin());
+            break;
+        }
+        prevEdgeOrigin = currentEdgeOrigin;
+        currentEdgeOrigin = currentEdgeOrigin->getNextEdgeOrigin();
+        while(currentEdgeOrigin != nullptr){
+            if(currentEdgeOrigin->getVertexDestination() == vertexDestination){
+                // Unlink the edge origin.
+                // If the nextEdgeOrigin is nullptr, we are in the last edge.
+                if(currentEdgeOrigin->getNextEdgeOrigin() == nullptr){
+                    prevEdgeOrigin->setNextEdgeOrigin(nullptr);
+                } else {
+                    // If the nextEdgeOrigin is not nullptr, we are in the middle of the list.
+                    prevEdgeOrigin->setNextEdgeOrigin(currentEdgeOrigin->getNextEdgeOrigin());
+                }
+                delete currentEdgeOrigin;
+                break;            
+            }
+            currentEdgeOrigin = currentEdgeOrigin->getNextEdgeOrigin();
+        }
+        break;
+    }
+}
+
+/*
+*/
+template <class T, class U>
+bool EdgeListGraph<T, U>::edgeExists(const T& vertexOrigin, const T& vertexDestination){
+    if(this->vertex == nullptr){
+        std::cerr << "The graph is empty.\n";
+        return false;
+    }
+    EdgeListVertex<T, U>* currentVertex = this->vertex;
+    while(currentVertex != nullptr){
+        if(currentVertex->getVertex() != vertexOrigin){
+            currentVertex = currentVertex->getNextVertex();
+            continue;
+        }
+        EdgeListEdge<T, U>* currentEdgeOrigin = currentVertex->getNextEdgeOrigin();
+        while(currentEdgeOrigin != nullptr){
+            if(currentEdgeOrigin->getVertexDestination() == vertexDestination){
+                return true;
+            }
+            currentEdgeOrigin = currentEdgeOrigin->getNextEdgeOrigin();
+        }
+        std::cerr << "The edge (" << vertexOrigin << ", " << vertexDestination << ") does not exist.\n";
+        return false;
+    }
+    std::cerr << "The vertex " << vertexOrigin << " is not in the graph.\n";
+    return false;
 }
 
 // GETTERS

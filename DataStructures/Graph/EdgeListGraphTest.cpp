@@ -158,7 +158,61 @@ int main(){
 
     end = clock(); // Time counting ends.
     std::cout<<"Execution time: "<<1000*(double)(end-start)/CLOCKS_PER_SEC<<" ms.\n-------------------\n";
+//
+    std::cout << "Test removeEdge():\n\n";
 
+    start = clock(); // Time counting begins.
 
+    EdgeListGraph<int, int> graphToRemoveAnEdge({
+        {1, {3, 2}},
+        {2, {3}},
+        {3, {1}},
+        {0, {}}
+    });
+
+    std::cout << "Before removing edge:\n";
+    graphToRemoveAnEdge.print();
+    graphToRemoveAnEdge.printOrigin();
+    graphToRemoveAnEdge.printDestination();
+
+    graphToRemoveAnEdge.removeEdge(1, 3);
+    std::cout << "----------:\n";
+    std::cout << "After removing edge:\n";
+    graphToRemoveAnEdge.print();
+    graphToRemoveAnEdge.printOrigin();
+    graphToRemoveAnEdge.printDestination();
+
+    std::cout << "----------:\n";
+    std::cout << "Remove unexisting edge:\n";
+    graphToRemoveAnEdge.removeEdge(1, 3);
+
+    graphToRemoveAnEdge.removeEdge(2, 3);
+    std::cout << "----------:\n";
+    std::cout << "After removing edge:\n";
+    graphToRemoveAnEdge.print();
+    graphToRemoveAnEdge.printOrigin();
+    graphToRemoveAnEdge.printDestination();
+
+    end = clock(); // Time counting ends.
+    std::cout<<"Execution time: "<<1000*(double)(end-start)/CLOCKS_PER_SEC<<" ms.\n-------------------\n";
+
+//
+    std::cout << "Test cristian:\n\n";
+    start = clock(); // Time counting begins.
+
+    EdgeListGraph<int, int> graphCristian;
+    int myNumToChange = 1;
+    graphCristian.addVertex(myNumToChange);
+    // graphCristian.addVertex(2);
+    graphCristian.addEdge(1,2);
+
+    graphCristian.print();
+
+    myNumToChange = 2;
+
+    graphCristian.print();
+    
+    end = clock(); // Time counting ends.
+    std::cout<<"Execution time: "<<1000*(double)(end-start)/CLOCKS_PER_SEC<<" ms.\n-------------------\n";
     return 0;
 }
