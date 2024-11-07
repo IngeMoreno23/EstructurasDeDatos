@@ -3,10 +3,10 @@
 #include "EdgeListEdge.hpp"
 #include "EdgeListVertex.hpp"
 
-template <typename T>
+template <class T, class U>
 class EdgeListGraph{
     private:
-        EdgeListVertex<T>* vertex; // Head of the list of vertex
+        EdgeListVertex<T, U>* vertex; // Head of the list of vertex
     public:
         EdgeListGraph();
         // EdgeListGraph(const EdgeListGraph& otherGraph);
@@ -19,8 +19,8 @@ class EdgeListGraph{
         // void removeVertex(const T& vertex);
         // void removeEdge(const T& vertexOrigin, const T& vertexDestination, bool isDirected);
 
-        EdgeListVertex<T>* getVertex();
-        void setVertex(EdgeListVertex<T>* vertex);
+        EdgeListVertex<T, U>* getVertex();
+        void setVertex(EdgeListVertex<T, U>* vertex);
 
         // void BFS();
         // void DFS();
@@ -33,22 +33,22 @@ class EdgeListGraph{
 /*
 
 */
-template <typename T>
-EdgeListGraph<T>::EdgeListGraph(){
+template <class T, class U>
+EdgeListGraph<T, U>::EdgeListGraph(){
     this->vertex = nullptr;
 }
 
 // GETTERS
 
-template <typename T>
-EdgeListVertex<T>* EdgeListGraph<T>::getVertex(){
+template <class T, class U>
+EdgeListVertex<T, U>* EdgeListGraph<T, U>::getVertex(){
     return this->vertex;
 }
 
 // SETTERS
 
-template <typename T>
-void EdgeListGraph<T>::setVertex(EdgeListVertex<T>* vertex){
+template <class T, class U>
+void EdgeListGraph<T, U>::setVertex(EdgeListVertex<T, U>* vertex){
     this->vertex = vertex;
 }
 
@@ -59,14 +59,14 @@ METHOD: Prints the graph in the format "vertex -> edge -> edge -> ...".
 ORDER OF EXECUTION: O(V + E).
 RETURN: None.
 */
-template <typename T>
-void EdgeListGraph<T>::print(){
+template <class T, class U>
+void EdgeListGraph<T, U>::print(){
     if(this->vertex == nullptr){
         std::cout<<"Empty graph.\n";
         return;
     }
     std::cout<<"Graph.- Vertex: (origin, destination, weight)\n";
-    EdgeListVertex<T>* currentVertex = this->vertex;
+    EdgeListVertex<T, U>* currentVertex = this->vertex;
     while(currentVertex != nullptr){
         currentVertex->print();
         currentVertex = currentVertex->getNextVertex();
@@ -77,14 +77,14 @@ void EdgeListGraph<T>::print(){
 /*
 Who is pointing to me
 */
-template <typename T>
-void EdgeListGraph<T>::printOrigin(){
+template <class T, class U>
+void EdgeListGraph<T, U>::printOrigin(){
     if(this->vertex == nullptr){
         std::cout<<"Empty graph.\n";
         return;
     }
     std::cout<<"Graph.- Vertex: (origin, weight) - Who is pointing to me:\n";
-    EdgeListVertex<T>* currentVertex = this->vertex;
+    EdgeListVertex<T, U>* currentVertex = this->vertex;
     while(currentVertex != nullptr){
         currentVertex->printOrigin();
         currentVertex = currentVertex->getNextVertex();
@@ -96,14 +96,14 @@ void EdgeListGraph<T>::printOrigin(){
 Who am I pointing to.
 
 */
-template <typename T>
-void EdgeListGraph<T>::printDestination(){
+template <class T, class U>
+void EdgeListGraph<T, U>::printDestination(){
     if(this->vertex == nullptr){
         std::cout<<"Empty graph.\n";
         return;
     }
     std::cout<<"Graph.- Vertex: (destination, weight) - Who am I pointing to:\n";
-    EdgeListVertex<T>* currentVertex = this->vertex;
+    EdgeListVertex<T, U>* currentVertex = this->vertex;
     while(currentVertex != nullptr){
         currentVertex->printDestination();
         currentVertex = currentVertex->getNextVertex();

@@ -13,7 +13,7 @@ int main(){
     start = clock(); // Time counting begins.
     
 
-    EdgeListGraph<int> graphDefault;
+    EdgeListGraph<int, int> graphDefault;
     graphDefault.print();
     
 
@@ -24,8 +24,8 @@ int main(){
     start = clock(); // Time counting begins.
     
 
-    EdgeListGraph<int> graphManual;
-    EdgeListVertex<int> vertex1, vertex2, vertex3;
+    EdgeListGraph<int, int> graphManual;
+    EdgeListVertex<int, int> vertex1, vertex2, vertex3;
     vertex1.setVertex(1); vertex2.setVertex(2); vertex3.setVertex(3);
     vertex1.setNextVertex(&vertex2); vertex2.setNextVertex(&vertex3);
     graphManual.setVertex(&vertex1);
@@ -39,10 +39,10 @@ int main(){
     start = clock(); // Time counting begins.
 
 
-    EdgeListGraph<int> graphManualEdges;
-    EdgeListVertex<int> vertex4, vertex5, vertex6;
+    EdgeListGraph<int, int> graphManualEdges;
+    EdgeListVertex<int, int> vertex4, vertex5, vertex6;
     vertex4.setVertex(4); vertex5.setVertex(5); vertex6.setVertex(6);
-    EdgeListEdge<int> edge4_5, edge4_6, edge5_6, edge6_4;
+    EdgeListEdge<int, int> edge4_5, edge4_6, edge5_6, edge6_4;
     edge4_5.setVertexOrigin(4); edge4_5.setVertexDestination(5); edge4_5.setWeight(1);
     edge4_6.setVertexOrigin(4); edge4_6.setVertexDestination(6); edge4_6.setWeight(4);
     edge5_6.setVertexOrigin(5); edge5_6.setVertexDestination(6); edge5_6.setWeight(2);
