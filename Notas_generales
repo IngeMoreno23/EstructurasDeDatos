@@ -1,0 +1,29 @@
+
+
+/*
+El valor T() es como inicializar std::string() pero para un valor plantilla, creo. Por ello, T() da el valor nulo por defecto del tipo de dato especificado. 
+
+Instanciar objetos de varias maneras: 
+MyClass obj;
+MyClass obj();
+
+MyClass obj(10, "example");  // Constructor parametrizado
+MyClass obj{10, "example"};  // Inicialización con llaves
+MyClass obj = MyClass(10, "example");  // Inicialización por asignación
+
+MyClass* obj = new MyClass();  // Llamada al constructor por defecto
+MyClass* obj = new MyClass;  // Llamada al constructor por defecto
+
+Puedes acceder a los metodos/atributos privados de un objeto si estás dentro de la clase, aunque el método haya sido llamado por otro objeto de la misma clase
+
+
+
+
+entonces cuando yo mando a llamar throw(out_of_range("msg error ")), estoy instanciando un objeto. 
+la excepción se trata como un objeto, porque lo es
+
+
+
+Variables globales. struct. Hash map. grafos. 
+Él inspira más confianza. tmb laqe 
+*/
