@@ -26,7 +26,7 @@ class EdgeListGraph{
 
         void updateVertex(const T& vertex, const T& newVertex);
 
-        // void removeVertex(const T& vertex);
+        void removeVertex(const T& vertex);
         void removeEdge(const T& vertexOrigin, const T& vertexDestination);
 
         bool edgeExists(const T& vertexOrigin, const T& vertexDestination);
@@ -297,6 +297,55 @@ void EdgeListGraph<T, U>::updateVertex(const T& vertex, const T& newVertex){
     std::cerr << "The vertex " << vertex << " is not in the graph.\n";
 
 }
+
+/*
+*/
+template <class T, class U>
+void EdgeListGraph<T, U>::removeVertex(const T& vertex){
+    // If the graph is empty, we do nothing.
+    if(this->vertex == nullptr){
+        std::cerr << "The graph is empty.\n";
+        return;
+    }
+    // If the vertex is not in the graph, we do nothing.
+    EdgeListVertex<T, U>* currentVertex = this->vertex;
+    while(currentVertex != nullptr){
+        if(currentVertex->getVertex() == vertex){
+            break;
+        }
+        currentVertex = currentVertex->getNextVertex();
+    }
+    if(currentVertex == nullptr){
+        std::cerr << "The vertex " << vertex << " is not in the graph.\n";
+        return;
+    }
+    // Unlink all edgeDestinations where this vertex appears.
+    currentVertex = this->vertex;
+    while(currentVertex != nullptr){
+        EdgeListEdge<T, U>* currentEdgeOrigin = currentVertex->getNextEdgeOrigin(), *prevEdgeOrigin = nullptr;
+        while(currentEdgeOrigin != nullptr){
+            if(currentEdgeOrigin->getVertexDestination() == vertex){
+                // Special case: if the edge origin is the first edge.
+                if(prevEdgeOrigin == nullptr){
+                    currentVertex->setNextEdgeOrigin(currentEdgeOrigin->getNextEdgeOrigin());
+                    delete currentEdgeOrigin;
+                    currentEdgeOrigin = currentVertex->getNextEdgeOrigin();
+                    continue;
+                }
+                // If the edge origin is not the first edge.
+                prevEdgeOrigin->setNextEdgeOrigin(currentEdgeOrigin->getNextEdgeOrigin());
+                delete currentEdgeOrigin;
+                currentEdgeOrigin = prevEdgeOrigin->getNextEdgeOrigin();
+                continue;
+            }
+            prevEdgeOrigin = currentEdgeOrigin;
+            currentEdgeOrigin = currentEdgeOrigin->getNextEdgeOrigin();
+        }
+        currentVertex = currentVertex->getNextVertex();
+    }
+    
+}
+
 /*
 
 */

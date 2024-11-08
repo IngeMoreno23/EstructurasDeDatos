@@ -20,7 +20,7 @@ class EdgeListVertex{
         void addEdge(EdgeListVertex<T, U>* vertexOriginPtr, EdgeListVertex<T, U>* vertexDestinationPtr);
         void addEdgeDestination(EdgeListEdge<T, U>* edgeDestination);
 
-        void removeEdge(T& vertexDestination);
+        // void removeEdge(T& vertexDestination);
 
         T& getVertex();
         EdgeListVertex<T, U>* getNextVertex();
@@ -146,20 +146,20 @@ void EdgeListVertex<T, U>::addEdgeDestination(EdgeListEdge<T, U>* edgeDestinatio
     currentEdgeDestination->setNextEdgeDestination(edgeDestination);
 }
 
-/*
+// /*
 
-*/
-template <class T, class U>
-void EdgeListVertex<T, U>::removeEdge(T& vertexDestination){
-    if(this->nextEdgeOrigin == nullptr){
-        std::cerr << "The vertex does not have edges.\n";
-        return;
-    }
-    // Check if the edge exists.
-    EdgeListEdge<T, U>* currentEdgeOrigin = this->nextEdgeOrigin;
+// */
+// template <class T, class U>
+// void EdgeListVertex<T, U>::removeEdge(T& vertexDestination){
+//     if(this->nextEdgeOrigin == nullptr){
+//         std::cerr << "The vertex does not have edges.\n";
+//         return;
+//     }
+//     // Check if the edge exists.
+//     EdgeListEdge<T, U>* currentEdgeOrigin = this->nextEdgeOrigin;
     
 
-}
+// }
 
 
 // GETTERS
