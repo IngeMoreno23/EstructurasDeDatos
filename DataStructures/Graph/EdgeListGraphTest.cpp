@@ -201,16 +201,22 @@ int main(){
     start = clock(); // Time counting begins.
 
     EdgeListGraph<int, int> graphCristian;
-    int myNumToChange = 1;
-    graphCristian.addVertex(myNumToChange);
-    // graphCristian.addVertex(2);
+
+    graphCristian.addVertex(1);
     graphCristian.addEdge(1,2);
 
     graphCristian.print();
+    graphCristian.printOrigin();
+    graphCristian.printDestination();
 
-    myNumToChange = 2;
-
+    graphCristian.addVertex(2);
+    graphCristian.addEdge(1,2);
     graphCristian.print();
+    graphCristian.printOrigin();
+    graphCristian.printDestination();
+    
+    graphCristian.addEdge(1,2);
+
     
     end = clock(); // Time counting ends.
     std::cout<<"Execution time: "<<1000*(double)(end-start)/CLOCKS_PER_SEC<<" ms.\n-------------------\n";

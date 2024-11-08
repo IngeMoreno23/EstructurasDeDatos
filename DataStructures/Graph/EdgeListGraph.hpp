@@ -19,7 +19,9 @@ class EdgeListGraph{
         // ~EdgeListGraph();
 
         void addVertex(T& vertex); // DOOOOONE
+        void addVertex(const T& vertex);
         void addEdge(const T& vertexOrigin, const T& vertexDestination);
+        
         // void addEdge(const T& vertexOrigin, const T& vertexDestination, double weight, bool isDirected);
 
         void updateVertex(const T& vertex, const T& newVertex);
@@ -180,6 +182,46 @@ void EdgeListGraph<T, U>::addVertex(T& vertex){
 }
 
 /*
+
+*/
+template <class T, class U>
+void EdgeListGraph<T, U>::addVertex(const T& vertex){
+    if(this->vertex == nullptr){
+        EdgeListVertex<T, U>* newVertex = new EdgeListVertex<T, U>(const_cast<T&>(vertex));
+        this->vertex = newVertex;
+        return;
+    }
+    // We will insert the vertex in order by T.
+    EdgeListVertex<T, U>* currentVertex = this->vertex;
+    // Special case: if the vertex to insert is less than the head of the list.
+    if(vertex < currentVertex->getVertex()){
+        EdgeListVertex<T, U>* newVertex = new EdgeListVertex<T, U>(const_cast<T&>(vertex));
+        newVertex->setNextVertex(currentVertex);
+        this->vertex = newVertex;
+        return;
+    }
+    // While the next vertex is not null and the vertex to insert is greater than the next vertex.
+    // This will stop when current >= vertex > current->next.
+    while(currentVertex->getNextVertex() != nullptr && currentVertex->getNextVertex()->getVertex() <= vertex){
+        currentVertex = currentVertex->getNextVertex();
+    }
+    // If the vertex to insert is equal to the current vertex, we do nothing.
+    if(currentVertex->getVertex() == vertex){
+        return;
+    }
+    // If the next vertex is null, we insert the vertex at the end of the list.
+    if(currentVertex->getNextVertex() == nullptr){
+        EdgeListVertex<T, U>* newVertex = new EdgeListVertex<T, U>(const_cast<T&>(vertex));
+        currentVertex->setNextVertex(newVertex);
+        return;
+    }
+    // If the vertex to insert is less than the next vertex, we insert the vertex between the current and the next vertex.
+    EdgeListVertex<T, U>* newVertex = new EdgeListVertex<T, U>(const_cast<T&>(vertex));
+    newVertex->setNextVertex(currentVertex->getNextVertex());
+    currentVertex->setNextVertex(newVertex);
+}
+
+/*
 May cause probles for no ref params
 */
 template <class T, class U>
@@ -212,11 +254,13 @@ void EdgeListGraph<T, U>::addEdge(const T& vertexOrigin, const T& vertexDestinat
     vertexOriginPtr->addEdge(vertexOriginPtr, vertexDestinationPtr);
     // Lastly, EdgeDestinations assignation.
     currentVertex = this->vertex;
+
     while(currentVertex != nullptr){
         EdgeListEdge<T, U>* currentEdgeOrigin = currentVertex->getNextEdgeOrigin();
         while(currentEdgeOrigin != nullptr){
             if(currentEdgeOrigin->getVertexDestination() == vertexDestination){
-                currentVertex->addEdgeDestination(currentEdgeOrigin);
+                vertexDestinationPtr->addEdgeDestination(currentEdgeOrigin);
+                break;
             }
             currentEdgeOrigin = currentEdgeOrigin->getNextEdgeOrigin();
         }
