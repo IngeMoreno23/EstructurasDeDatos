@@ -1,53 +1,148 @@
-#include "..\..\DataStructures\Graph\Graph.hpp"
-#include "..\..\DataStructures\Graph\ArchPondGraph.hpp"
+/*
+Cristian Ricardo Luque Arámbula - A01741850
+Oliver Moreno Ibarra - A01742930
+Rodolfo Blas Romero Valdez - A01741665
+Última modificación: 07/11/2024
 
-template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-void loadGraph(int n, int m, vertContainer<adjContainer<T>>& container){
-    if( n < 0 || m < 0 || m > n){
-        throw(std::invalid_argument("Valor de vértice inválido"));
+*/
+
+#include "..\..\DataStructures\Graph\Graph.hpp"
+
+#include <sstream>
+#include <string>
+#include <iostream>
+
+/*
+PARAMETROS: int& val.
+MÉTODO: Verifica que la entrada del usuario sea de tipo int y la regresa en el argumento val.
+ORDER: O(1).
+RETORNA: bool.
+*/
+bool aceptaEnteros(int& val){
+    std::stringstream buffer(""); 
+    std::string tempInput;
+    std::getline(std::cin, tempInput);
+    buffer<<tempInput; 
+    std::cin.clear();
+    if(!(buffer >> val)){
+        return false; 
     }
-    
-    container = vertContainer<adjContainer<T>>(); // Aquí hay que estandarizar el código para que funcione con otros que no sean vectores. Y no funcionará si no tiene un constructor con el tamaño como parámetros.
-    for(int i = 0; i < n; i++){
-        adjContainer<T> temp = adjContainer<T>();
-        for(int j = 0; j < m; j++){
-            temp.push_back(j);
+    return true;
+}
+
+/*
+PARAMETROS: int n, cantidad de vértices.
+            int m, Graph<vertContainer, cantidad de aristas.
+            adjContainer, T>& graph, grafo a cargar por referencia.
+MÉTODO: Inicializa una vector de n vectores (listas de adyacencia) y se pregunta al usuario por las aristas.
+        Se verifica que los vértices sean válidos (entre los índices del vector) y se añaden al grafo.
+ORDER: O(V+E), donde V es el número de vértices y E es el número de aristas en adjList.
+RETORNA: void.
+*/
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+void loadGraph(int n, int m, Graph<vertContainer, adjContainer, T>& graph){
+    if( n <= 0){
+        throw(std::invalid_argument("Valor de vértice inválido"));
+    } else if ( m < 0){
+        throw(std::invalid_argument("Número de arcos inválido"));
+    }
+
+    int origen = 0, destino = 0; // NO poner unsigned int porque reintrepreta los negativos como positivos
+    std::stringstream buffer(""); 
+    std::string tempInput;
+    graph.adjacencyList = vertContainer<adjContainer<T>>(n); 
+    for(int i = 0; i < m; i++){
+// Código para aceptar sólo enteros 
+        std::cout<<"Ingrese el vértice de origen (vertice origen, vertice destino):\n(";
+        std::getline(std::cin, tempInput);
+        buffer<<tempInput;
+        while(!(buffer >> origen)){
+            std::cin.clear();
+            std::cout<<"\n"<<buffer.str()<<" es una entrada inválida. Ingrese enteros (vertice origen, vertice destino):\n (";
+            buffer.str("");
+            buffer.clear(); // ES necesario poner clear.
+            std::getline(std::cin, tempInput); 
+            buffer<<tempInput;
         }
-        container.push_back(temp); 
+        std::cin.clear();
+        buffer.str("");
+        buffer.clear();
+
+        std::cout<<"Ingrese el vértice de destino (vertice origen, vertice destino): \n("<<origen<<", ";
+        std::getline(std::cin, tempInput);
+        buffer<<tempInput;
+        while(!(buffer >> destino) || destino < 0){
+            std::cin.clear();
+            std::cout<<")\n"<<buffer.str()<<" es una entrada inválida. Ingrese enteros (vertice origen, vertice destino):\n("<<origen<<", ";
+            buffer.str("");
+            buffer.clear(); // ES necesario poner clear.
+            std::getline(std::cin, tempInput); // Poner ignore después de getline hace que se trabe porque getline pasa todo el stream de bits a tempInput, y cuando se quiere ignorar, está vacío el stream
+            buffer<<tempInput;
+        }
+
+        try{
+            if(graph.hasEdge(origen, destino)){
+                std::cout<<"El grafo ya contiene ese arco\n\n"; // En nuestra implementación de grafo, no arroja error al intentar añadir un arco que ya existe, así que para cumplir con los requisitos de la actividad, se ha implementado fuera de la función.
+                i--;
+            } else{
+                graph.addEdge(origen, destino);
+                std::cout<<"\nEl arco ("<<origen<<", "<<destino<<") se ingresó correctamente !\n";
+            }
+        }catch(std::exception& ex){
+            std::cout<<"\nUna de las entradas fue inválida. Que los vértices sean un valor entre el primer y el último vértice (0, # vertices - 1)\n";
+            i--;
+        }
+        std::cin.clear();
+        buffer.str("");
+        buffer.clear();
     }
 }
 
+/*
+PARAMETROS: vertContainer<adjContainer<T>>& container, contenedor de vértices.
+            int n, índice de inicio de recorrido.
+MÉTODO: Realiza un recorrido en profundidad en el grafo a partir del índice n.
+ORDER: O(V+E), donde V es el número de vértices y E es el número de aristas en adjList.
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void DFS(vertContainer<adjContainer<T>>& container, int n){
-    if( n < 0 || n >= container.size()){
-        throw(std::invalid_argument("Valor de vértice inválido"));
+    if(n < 0 || n >= container.size()){
+        throw(std::out_of_range("El índice se encuentra fuera de rango"));
     }
-
     std::cout<<"DFS ("<<n<<"): ";
     std::vector<bool> visited(container.size(), false);
     std::stack<int> stack;
 
     stack.push(n);
-    visited[n] = true;
 
     while(!stack.empty()){
         n = stack.top();
-        std::cout << n << " ";
         stack.pop();
-        for(const auto& element:container[n]){
-            if(!visited[element]){
-                visited[element] = true;
-                stack.push(element);
+        
+        if(!visited[n]){
+            visited[n] = true;
+            std::cout << n << " ";
+            for(const auto& element:container[n]){
+                if(!visited[element]){
+                    stack.push(element);
+                }
             }
         }
     }
     std::cout<<"\n";
+
 }
 
-
+/*
+PARAMETROS: vertContainer<adjContainer<T>>& container, contenedor de vértices.
+            int n, índice de inicio de recorrido.
+MÉTODO: Realiza un recorrido en amplitud en el grafo a partir del índice n.
+ORDER: O(V+E), donde V es el número de vértices y E es el número de aristas en adjList.
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void BFS(vertContainer<adjContainer<T>>& container, int n){
-    std::cout<<"\ndep: "<<n<<" "<<container.size();
     if(n < 0 || n >= container.size()){
         throw(std::out_of_range("El índice se encuentra fuera de rango"));
     }
@@ -75,86 +170,49 @@ template <typename T>
 using vecGraph = Graph<std::vector, std::vector, T>; // Alias template 
 
 int main(){
-    vecGraph<int> testConstInt(3), testAddEdgeInt;
-    vecGraph<std::string> testConstStr(6), testAddEdgeStr;
-    testConstStr.print();
+    vecGraph<int> vertexInit(3), defaultInit; // Inicializaciones. 
+    vecGraph<std::string> vertexInitStr(6), defaultInitStr;
+    Graph<> testGraphContainer({{1,2},{0,2,3},{0,1,4},{1,4},{2,3}});
 
-    // CASOS DE PRUEBA GENERALES DE LA IMPLEMENTACIÓN DE LA LISTA DE ADYACENCIA:
-    std::cout<<"> Impresión de la lista de adyacencia (añadiendo un arco de 1 a 2 cuando no existen ninguno de los vértices): \n";
-    try{
-        testAddEdgeInt.addEdge(1, 2);
-    } catch(std::out_of_range& ex){
-        std::cout<<"Error al intentar añadir arco: " <<ex.what()<<"\n";
-        testAddEdgeInt.print();
-    }
+    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
+    Graph<> functionTestGraph;
 
-    std::cout<<"\n> Impresión de la lista de adyacencia (añadiendo un arco de 1 a 2 cuando no existe vértice 2): \n";
-    testAddEdgeInt.addVertex(2);     // Añadir dos vértices, 0 y 1. 
-    try{
-        testAddEdgeInt.addEdge(1, 2);
-    } catch(std::out_of_range& ex){
-        std::cout<<"Error al intentar añadir arco: " <<ex.what()<<"\n";
-        testAddEdgeInt.print();
-    }
-
-    std::cout<<"\n> Impresión de la lista de adyacencia (añadiendo un arco de 2 a 2): \n";
-    testAddEdgeInt.addVertex(); // Añadir vértice 2
-    testAddEdgeInt.addEdge(1,2);
-    testAddEdgeInt.addEdge(2,2);
-    testAddEdgeInt.print();
-
-    std::cout<<"\n> Impresión de la lista de adyacencia (quitando el arco inexistente de 1 a 1): \n";
-    try{
-        testAddEdgeInt.removeEdge(1,1);
-    } catch(std::out_of_range& ex){
-        std::cout<<"Error al intentar quitar el arco: "<<ex.what()<<"\n";
-        testAddEdgeInt.print();
-    }
-
-    std::vector<std::vector<int>> container = {{1,2},{0,2,3},{0,1,4},{1,4},{2,3}};
-    Graph<> testGraphContainer(container), testLoadGraph;
     std::cout<<"\n> Impresión de la lista de adyacencia creada con un contenedor como parámetro: \n";
     testGraphContainer.print();
     
-    std::cout<<"\n> Recorridos DFS: \n";
-    DFS(testGraphContainer.adjacencyList, 0);
-    DFS(testGraphContainer.adjacencyList, 1);
-    
-    std::cout<<"\n> Recorridos BFS: \n";
-    BFS(testGraphContainer.adjacencyList, 0);
-    BFS(testGraphContainer.adjacencyList, 1);
-    
-    std::cout<<"\n> Recorridos DFS y BFS en grafos vacíos: \n";
+    std::cout<<"\n> Implementación del método loadGraph con valores potencialmente inválidos: \n";
     try{
-        DFS(testLoadGraph.adjacencyList, 0);
+        int vertices = 0, conexiones = 0;
+        std::cout<<"Ingresa la cantidad de vértices: ";
+        while(!aceptaEnteros(vertices)){
+            std::cout<<"\n"<<"Entrada inválida. Ingrese un entero: ";
+        }
+        std::cout<<"\nIngresa la cantidad de arcos: ";
+        while(!aceptaEnteros(conexiones)){
+            std::cout<<"\n"<<"Entrada inválida. Ingrese un entero: ";
+        }
+        std::cout<<"\n";
+        loadGraph(vertices,conexiones,functionTestGraph);
+        functionTestGraph.print();
+    } catch(std::invalid_argument& ex){
+        std::cout<<"Error al intentar cargar grafo: "<<ex.what()<<"\n";
+    }
+
+    int startingn = 0;
+    std::cout<<"\n> Recorridos DFS y BFS en el grafo construido a partir del índice: ";
+    while(!aceptaEnteros(startingn)){
+        std::cout<<"\nEntrada inválida. Ingrese un entero: ";
+    }
+    try{
+        DFS(functionTestGraph.adjacencyList, startingn);
     } catch(std::exception& ex){
         std::cout<<"Error: "<<ex.what()<<"\n";
     }
 
     try{
-        BFS(testLoadGraph.adjacencyList, 0);
+        BFS(functionTestGraph.adjacencyList, startingn);
     } catch(std::exception& ex){
         std::cout<<"Error: "<<ex.what()<<"\n";
     }
-
-    std::cout<<"\n> Implementación del método loadGraph con una lista de adyacencias como parámetro: \n";
-    testLoadGraph.loadGraph(container);
-    testLoadGraph.print();
-
-    std::cout<<"\n> Implementación del método loadGraph con valores inválidos: \n";
-    try{
-        testLoadGraph.loadGraph(-2,3);
-    } catch(std::invalid_argument& ex){
-        std::cout<<"Error al intentar cargar grafo: "<<ex.what()<<"\n";
-    }
-    std::cout<<"\n> LoadGraph con más conexiones que vértices (imposible): \n";
-    try{
-        testLoadGraph.loadGraph(4,5);
-    } catch(std::invalid_argument& ex){
-        std::cout<<"Error al intentar cargar grafo: "<<ex.what()<<"\n";
-    }
-    std::cout<<"\n> LoadGraph con más vértices que conexiones (correcto): \n";
-    loadGraph(5,4, testLoadGraph.adjacencyList);
-    testLoadGraph.print();
 }
 

@@ -27,3 +27,33 @@ la excepción se trata como un objeto, porque lo es
 Variables globales. struct. Hash map. grafos. 
 Él inspira más confianza. tmb laqe 
 */
+
+
+/* // Código para aceptar sólo valores positivos 
+        std::cout<<"Ingrese el arco\n(vertice origen, vertice destino): (";
+        std::getline(std::cin, tempInput);
+        buffer<<tempInput;
+        while(!(buffer >> origen) || origen < 0 || origen >= n){
+            std::cin.clear();
+            std::cout<<"\n"<<buffer.str()<<" es una entrada inválida. Que el vertice sea un valor entre 0 y el último vértice (# de vértices menos 1) \nIngrese el arco\n(vertice origen, vertice destino): (";
+            buffer.str("");
+            buffer.clear(); // ES necesario poner clear.
+            std::getline(std::cin, tempInput); 
+            buffer<<tempInput;
+        }
+        std::cin.clear();
+        buffer.str("");
+        buffer.clear();
+
+        std::cout<<"Ingrese el arco \n(vertice origen, vertice destino): ("<<origen<<", ";
+        std::getline(std::cin, tempInput);
+        buffer<<tempInput;
+        while(!(buffer >> destino) || destino < 0){
+            std::cin.clear();
+            std::cout<<"\n"<<buffer.str()<<" es una entrada inválida. Que el vertice sea un valor entre 0 y el último vértice (# de vértices menos 1)\nIngrese el arco\n(vertice origen, vertice destino): ("<<origen<<", ";
+            buffer.str("");
+            buffer.clear(); // ES necesario poner clear.
+            std::getline(std::cin, tempInput); // Poner ignore después de getline hace que se trabe porque getline pasa todo el stream de bits a tempInput, y cuando se quiere ignorar, está vacío el stream
+            buffer<<tempInput;
+        }
+*/
