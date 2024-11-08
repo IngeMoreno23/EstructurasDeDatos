@@ -37,7 +37,7 @@ class Graph{
         void addVertex(int n = 1);
         void addVertex(const adjContainer<T>& adjacency);
 
-        int hasEdge(int vertex, int connection, iterator_type& it); // Existe solo para cuando, de existir el arco, se realice una operación con el arco 
+        int hasEdge(int vertex, int connection, iterator_type& it); // Existe solo para cuando, de existir el arco, se realice una operación con este. 
         int hasEdge(int vertex, int connection);
         void removeEdge(int vertex0, int vertex1);
 
@@ -61,6 +61,7 @@ Graph<vertContainer, adjContainer, T>::Graph(const container& adjList, bool _dir
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 Graph<vertContainer, adjContainer, T>::Graph(const Graph& otherGraph, bool _directed):directed(_directed){
+    
     adjacencyList = container(otherGraph.adjacencyList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
 }
 
