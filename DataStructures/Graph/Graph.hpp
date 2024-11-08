@@ -46,6 +46,9 @@ class Graph{
 
         bool empty();
         void clear();
+
+        bool isTree();
+        bool bipartiteGraph();
 };
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
@@ -134,7 +137,7 @@ void Graph<vertContainer, adjContainer, T>::addVertex(const adjContainer<T>& adj
     adjacencyList.push_back(std::move(adjacency));
     if(!directed){
         for(const auto& element:adjacency){
-            addEdge(element);
+            addEdge(adjacencyList.size(), element);
         }
     }
 }
@@ -253,4 +256,9 @@ void Graph<vertContainer, adjContainer, T>::clear(){
     }
 
     adjacencyList = container(); // Esto es posible porque el contenedor, en su sobrecarga de asignación, ya tiene un proceso que elimina los datos actuales y cambia a los datos nuevos. No necesito eliminar el contenedor, dentro de su implementación se hace todo esto.
+}
+
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+bool Graph<vertContainer, adjContainer, T>::isTree(){
+
 }
