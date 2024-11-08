@@ -17,9 +17,8 @@ class Graph{
 
     private:
         bool directed;
-        container adjacencyList;
     public:
-        // container adjacencyList;
+        container adjacencyList;
 
         Graph(bool _directed = true);
         Graph(int v, bool _directed = true);
@@ -122,6 +121,9 @@ int Graph<vertContainer, adjContainer, T>::hasEdge(int vertex, int connection){
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::addVertex(int n){
+    if(n < 0){
+        throw(std::invalid_argument("Función de adición de vértices solo acepta valores positivos"));
+    }
     for(int i = 0; i < n; i++){
         adjacencyList.push_back(adjContainer<T>()); // Necesario poner el <T> después de adjContainer.
     }

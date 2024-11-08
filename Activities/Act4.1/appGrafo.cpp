@@ -1,12 +1,83 @@
 #include "..\..\DataStructures\Graph\Graph.hpp"
 #include "..\..\DataStructures\Graph\ArchPondGraph.hpp"
 
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+void loadGraph(int n, int m, vertContainer<adjContainer<T>>& container){
+    if( n < 0 || m < 0 || m > n){
+        throw(std::invalid_argument("Valor de vértice inválido"));
+    }
+    
+    container = vertContainer<adjContainer<T>>(); // Aquí hay que estandarizar el código para que funcione con otros que no sean vectores. Y no funcionará si no tiene un constructor con el tamaño como parámetros.
+    for(int i = 0; i < n; i++){
+        adjContainer<T> temp = adjContainer<T>();
+        for(int j = 0; j < m; j++){
+            temp.push_back(j);
+        }
+        container.push_back(temp); 
+    }
+}
+
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+void DFS(vertContainer<adjContainer<T>>& container, int n){
+    if( n < 0 || n >= container.size()){
+        throw(std::invalid_argument("Valor de vértice inválido"));
+    }
+
+    std::cout<<"DFS ("<<n<<"): ";
+    std::vector<bool> visited(container.size(), false);
+    std::stack<int> stack;
+
+    stack.push(n);
+    visited[n] = true;
+
+    while(!stack.empty()){
+        n = stack.top();
+        std::cout << n << " ";
+        stack.pop();
+        for(const auto& element:container[n]){
+            if(!visited[element]){
+                visited[element] = true;
+                stack.push(element);
+            }
+        }
+    }
+    std::cout<<"\n";
+}
+
+
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+void BFS(vertContainer<adjContainer<T>>& container, int n){
+    std::cout<<"\ndep: "<<n<<" "<<container.size();
+    if(n < 0 || n >= container.size()){
+        throw(std::out_of_range("El índice se encuentra fuera de rango"));
+    }
+
+    std::vector<bool> visited(container.size(), false);
+    std::queue<int> queue;
+    std::cout<<"BFS ("<<n<<"): ";
+    visited[n] = true;
+    queue.push(n);
+    while(!queue.empty()){
+        n = queue.front();
+        std::cout<<n<<" ";
+        queue.pop();
+        for(const auto& element:container[n]){
+            if(!visited[element]){
+                queue.push(element);
+                visited[element] = true;
+            }
+        }
+    }
+    std::cout<<"\n";
+}
+
 template <typename T>
 using vecGraph = Graph<std::vector, std::vector, T>; // Alias template 
 
 int main(){
     vecGraph<int> testConstInt(3), testAddEdgeInt;
     vecGraph<std::string> testConstStr(6), testAddEdgeStr;
+    testConstStr.print();
 
     // CASOS DE PRUEBA GENERALES DE LA IMPLEMENTACIÓN DE LA LISTA DE ADYACENCIA:
     std::cout<<"> Impresión de la lista de adyacencia (añadiendo un arco de 1 a 2 cuando no existen ninguno de los vértices): \n";
@@ -46,18 +117,23 @@ int main(){
     testGraphContainer.print();
     
     std::cout<<"\n> Recorridos DFS: \n";
-    testGraphContainer.DFS(0);
-    testGraphContainer.DFS(1);
+    DFS(testGraphContainer.adjacencyList, 0);
+    DFS(testGraphContainer.adjacencyList, 1);
     
     std::cout<<"\n> Recorridos BFS: \n";
-    testGraphContainer.BFS(0);
-    testGraphContainer.BFS(1);
+    BFS(testGraphContainer.adjacencyList, 0);
+    BFS(testGraphContainer.adjacencyList, 1);
     
     std::cout<<"\n> Recorridos DFS y BFS en grafos vacíos: \n";
     try{
-        testLoadGraph.DFS(0);
-        testLoadGraph.BFS(0);
-    } catch(std::out_of_range& ex){
+        DFS(testLoadGraph.adjacencyList, 0);
+    } catch(std::exception& ex){
+        std::cout<<"Error: "<<ex.what()<<"\n";
+    }
+
+    try{
+        BFS(testLoadGraph.adjacencyList, 0);
+    } catch(std::exception& ex){
         std::cout<<"Error: "<<ex.what()<<"\n";
     }
 
@@ -78,7 +154,7 @@ int main(){
         std::cout<<"Error al intentar cargar grafo: "<<ex.what()<<"\n";
     }
     std::cout<<"\n> LoadGraph con más vértices que conexiones (correcto): \n";
-    testLoadGraph.loadGraph(5,4);
+    loadGraph(5,4, testLoadGraph.adjacencyList);
     testLoadGraph.print();
 }
 
