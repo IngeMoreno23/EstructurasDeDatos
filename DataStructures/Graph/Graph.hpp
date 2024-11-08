@@ -47,28 +47,61 @@ class Graph{
         void clear();
 };
 
+/*
+PARAMETROS: void.
+MÉTODO: Constructor por defecto. Inicializa la lista de adyacencia.
+ORDER: O(1)
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 Graph<vertContainer, adjContainer, T>::Graph(){
     adjacencyList = *new container(); // Al parecer los contenedores de la STL se inicializan automáticamente, así que no es necesario poner new. Además, como son atributos de la clase, sobrevivirán al salir de ámbito. A menos que se tengan punteros como atributos. Pero como es sabido, en funciones, los datos inicializados de cualquier tipo no sobrevivirán al salir del ámbito a menos que se utilice el operador new. 
 }
 
+/*
+PARAMETROS: const container& adjList, es una lista de adyacencia que se utilizará para inicializar la lista de adyacencia del grafo.
+            bool _directed, indica si el grafo es dirigido o no.
+MÉTODO: Se inicializa la lista de adyacencia con la lista de adyacencia adjList.
+ORDER: O(V+E), donde V es el número de vértices y E es el número de aristas en adjList.
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 Graph<vertContainer, adjContainer, T>::Graph(const container& adjList, bool _directed):directed(_directed){
     adjacencyList = *new container(adjList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
 }
 
+/*
+PARAMETROS: const Graph& otherGraph, otro grafo que se utilizará para inicializar la lista de adyacencia del grafo.
+            bool _directed, indica si el grafo es dirigido o no.
+MÉTODO: Se inicializa una nueva lista de adyacencia con la lista de adyacencia de otherGraph.
+ORDER: O(V+E), donde V es el número de vértices y E es el número de aristas en otherGraph.
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 Graph<vertContainer, adjContainer, T>::Graph(const Graph& otherGraph, bool _directed):directed(_directed){
     delete adjacencyList; 
     adjacencyList = *new container(otherGraph.adjacencyList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
 }
 
+/*
+PARAMETROS: const Graph& otherGraph, otro grafo que se utilizará para inicializar la lista de adyacencia del grafo.
+MÉTODO: Si existe una lista de adyacencia, la elimina, y la asigna a la lista de adyacencia de otherGraph a la del grafo.
+ORDER: O(V+E), donde V es el número de vértices y E es el número de aristas en otherGraph.
+RETORNA: const Graph<vertContainer, adjContainer, T>&, una referencia al grafo actual.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 const Graph<vertContainer, adjContainer, T>& Graph<vertContainer, adjContainer, T>::operator=(const Graph& otherGraph){
     delete adjacencyList; 
     adjacencyList = *new container(otherGraph.adjacencyList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
 }
 
+/*
+PARAMETROS: int v, el número de vértices del grafo.
+            bool _directed, indica si el grafo es dirigido o no.
+MÉTODO: Crear un grafo con v vértices y sin aristas.
+ORDER: O(V), donde V es el número de vértices del grafo.
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 Graph<vertContainer, adjContainer, T>::Graph(int v, bool _directed): directed(_directed){
 
@@ -78,6 +111,13 @@ Graph<vertContainer, adjContainer, T>::Graph(int v, bool _directed): directed(_d
     }
 }
 
+/*
+PARAMETROS: int vertex, índice del vértice al que se le quiere agregar una arista.
+            int connection, índice del vértice al que se le quiere conectar el vértice.
+MÉTODO: Verifica si existe una arista entre vertex y connection. Si existe, se agrega una arista entre vertex.
+ORDER: O(E), donde E es el número de aristas en la lista de adyacencia de vertex.
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::addEdge(int vertex, int connection){
     iterator_type it;
@@ -91,28 +131,54 @@ void Graph<vertContainer, adjContainer, T>::addEdge(int vertex, int connection){
     }
 }
 
+/*
+PARAMETROS: int vertex, vertice al que se le quiere verificar si tiene una arista con connection.
+            int connection, vertice al que se le quiere verificar si tiene una arista con vertex.
+            iterator_type& it, vertice al que se le quiere verificar si tiene una arista con vertex.
+MÉTODO: find() verifica que existe connection en la lista de adyacencia de vertex.
+ORDER: O(E), donde E es el número de aristas en la lista de adyacencia de vertex.
+RETORNA: bool, true si existe una arista entre vertex y connection, false en otro caso.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 int Graph<vertContainer, adjContainer, T>::hasEdge(int vertex, int connection, iterator_type& it){
     it = std::find(adjacencyList[vertex].begin(), adjacencyList[vertex].end(), connection);
     return it != adjacencyList[vertex].end();
 }
 
-
+/*
+PARAMETROS: void.
+MÉTODO: Agraga un vértice al final de la lista de adyacencia.
+ORDER: O(1)
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::addVertex(){
     adjacencyList.push_back(adjContainer<T>());
 }
 
+/*
+PARAMETROS: const adjContainer<T>& adjacency, vertice con su lista de adyacencia que se quiere agregar al grafo.
+MÉTODO: Agrega un vértice al final de la lista de adyacencia con sus aristas. Si es un grafo no dirigido, se agregan las aristas correspondientes.
+ORDER: O(E), donde E es el número de aristas en la lista de adyacencia de vertex.
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::addVertex(const adjContainer<T>& adjacency){
     adjacencyList.push_back(std::move(adjacency));
     if(!directed){
         for(const auto& element:adjacency){
-            addEdge(element);
+            addEdge(element, adjacencyList.size()-1);
         }
     }
 }
 
+/*
+PARAMETROS: int vertex0, vertice de origen de la arista.
+            int vertex1, vertice de destino de la arista.
+MÉTODO: Verifica si existe una arista entre vertex0 y vertex1. Si existe, se elimina la arista.
+ORDER: O(E), donde E es el número de aristas en la lista de adyacencia de vertex0.
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::removeEdge(int vertex0, int vertex1){
     iterator_type it;
@@ -122,6 +188,13 @@ void Graph<vertContainer, adjContainer, T>::removeEdge(int vertex0, int vertex1)
     adjacencyList[vertex0].erase(it);
 }
 
+/*
+PARAMETROS: const container& adjList, lista de adyacencia que se utilizará para inicializar la lista de adyacencia del grafo.
+MÉTODO: Verifica si la lista de adyacencia es la misma que la lista de adyacencia del grafo.
+        Si no lo es, se elimina la lista de adyacencia y se asigna la lista de adyacencia adjList a la lista de adyacencia del grafo.
+ORDER: O(V+E), donde V es el número de vértices y E es el número de aristas en adjList.
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::loadGraph(const container& adjList){
     if(*(this->adjacencyList) == &adjList){
@@ -132,6 +205,13 @@ void Graph<vertContainer, adjContainer, T>::loadGraph(const container& adjList){
     this -> adjacencyList = *new container(adjList);
 }
 
+/*
+PARAMETROS: int vertices, 
+            int connections, 
+MÉTODO: Se elimina la lista de adyacencia y se crea una nueva lista de adyacencia con vertices vértices y connections aristas.
+ORDER: 
+RETORNA: 
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::loadGraph(int vertices, int connections){
     delete adjacencyList;
@@ -141,6 +221,12 @@ void Graph<vertContainer, adjContainer, T>::loadGraph(int vertices, int connecti
     }
 }
 
+/*
+PARAMETROS: void.
+MÉTODO: Por cada vértice en la lista de adyacencia, se imprimen sus aristas. Si esta vacía, se imprime un corchete vacío.
+ORDER: O(V+E), donde V es el número de vértices del grafo y E es el número de aristas.
+RETORNA: void.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::print(){
     std::cout<<"Impresión de la lista de adyacencia: \n";
@@ -160,6 +246,12 @@ void Graph<vertContainer, adjContainer, T>::print(){
     std::cout<<"\n";
 }
 
+/*
+PARAMETROS: 
+MÉTODO: 
+ORDER: 
+RETORNA: 
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::BFS(int index){
     if(index < 0 || index >= adjacencyList.size()){
@@ -185,6 +277,12 @@ void Graph<vertContainer, adjContainer, T>::BFS(int index){
     std::cout<<"\n";
 }
 
+/*
+PARAMETROS: 
+MÉTODO: 
+ORDER: 
+RETORNA: 
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::DFS(int index){
     if(index < 0 || index > adjacencyList.size()){
@@ -211,6 +309,12 @@ void Graph<vertContainer, adjContainer, T>::DFS(int index){
     std::cout<<"\n";
 }
 
+/*
+PARAMETROS: 
+MÉTODO: 
+ORDER: 
+RETORNA: 
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool Graph<vertContainer, adjContainer, T>::empty(){
     return adjacencyList.size() == 0;
