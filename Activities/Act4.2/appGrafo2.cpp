@@ -95,7 +95,7 @@ using vecGraph = Graph<std::vector, std::vector, T>; // Alias template
 
 int main()
 {
-    vecGraph<int> testGraphContainer({{1,2},{0,2,3},{0,1,4},{1,4},{2,3}}), testGraphContainer2({{1},{2},{0}}), testGraphContainer3({{1},{2},{3},{0},{4}});
+    vecGraph<int> testGraphContainer({{1,2},{0,2,3},{0,1,4},{1,4},{2,3}}), testGraphContainer2({{1},{2},{0}}), testGraphContainer3({{1},{2},{3},{0},{0}});
 
     // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
     Graph<> functionTestGraph;

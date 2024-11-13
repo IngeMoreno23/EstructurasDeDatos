@@ -13,9 +13,6 @@ bool canDFS(int vertex, int parent, vertContainer<adjContainer<T>>& graph, std::
 template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
 bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m);
 
-template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
-bool bipartiteGraph(vertContainer<adjContainer<T>>& graph);
-
 template<typename weight_type>
 struct arch{
     weight_type weight;
