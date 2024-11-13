@@ -5,8 +5,6 @@
 #include <stdexcept>
 #include <algorithm>
 #include <set>
-#include <iterator>  // para std::next
-#include "..\List\SimpleLL.hpp"
 
 template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
 bool canDFS(int vertex, int parent, vertContainer<adjContainer<T>>& graph, std::vector<bool>& isVisited);
