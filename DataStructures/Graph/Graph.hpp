@@ -491,7 +491,7 @@ bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m){
 }
 
 
-// Es una alternativa costosa para los grafos dirigidos, pero ha sido modificada para que no guarde ciclos.
+// Es una alternativa costosa para los grafos dirigidos. 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 struct JohnsonCycleDetector{
     private:
@@ -501,8 +501,8 @@ struct JohnsonCycleDetector{
         int V; // Tamaño de la lista de adyacencia
 
     public:
-        std::set<int> cycles;
-        std::set<std::vector<int>> cycles; 
+        std::set<int> cycles; // Usualmente se almacenan ciclos únicos, pero para la implementación solo guardaré el tamaño de los ciclos.
+        // std::set<std::vector<int>> cycles; // Usualmente se visualiza así
         JohnsonCycleDetector(vertContainer<adjContainer<T>>& adjacencyList){
             this -> V = adjacencyList.size();
             B.resize(V); // Se cambia el tamaño a la cantidad de nodos que tiene la lista.
@@ -521,10 +521,10 @@ struct JohnsonCycleDetector{
             blocked[v] = true;  // Bloquea el vértice en caso de que no se contenga un ciclo.
 
             for(int w: adjacencyList[v]){
-                if(w == start){
-                    stack.push_back(start); 
+                if(w == start){ // Si ha regresado al nodo inicial, se agrega el ciclo al set de ciclos. Se comentaron las líneas del algoritmo que no se requieren en esta implementación, pues no se necesitan visualizar los ciclos, solo requiero la cantidad de vértices en ellos
+                    // stack.push_back(start); 
                     cycles.insert(stack.size());
-                    stack.pop_back();
+                    // stack.pop_back();
                     hasCycle = true; 
                 } else if(!blocked[w]){
                     if (findCyclesFrom(w, start, adjacencyList)){
@@ -557,8 +557,30 @@ struct JohnsonCycleDetector{
             B[u].clear();
         }
 
-
+        void printCycles() {
+            for (const auto& cycle : cycles) {
+                std::cout << "Cycle found: ";
+                for (int node : cycle) {
+                    std::cout << node << " ";
+                }
+                std::cout << "(Length: " << cycle.size() << ")" << std::endl;
+            }
+        }
 };
+
+// Esto es mucho más complicado para grafos dirigidos. Para los no dirigidos, ambas conexiones se mantienen, y no puede suceder que se comience a mitad de una cadena. No obstante, para grafos dirigidos, el begin 0, puede eventualmente ser apuntado por otro vértice que no se encuentra después del cero, sino antes. Por ende, es necesario realizar backtracking para colorear de acorde al color contrario al de la cadena (si es un vecino). Pero puede tener varios vecinos cuyos nodos sean coloreados de tal manera que, para  
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
+    JohnsonCycleDetector detectCycles(adjacencyList);
+    for(const auto& cycle:detectCycles.cycles){
+        if((cycle) % 2 == 1){
+            return false;
+        }
+    }
+    return true;
+}
+
+
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 inline bool bipartiteGraphHelper(vertContainer<adjContainer<T>>& adjacencyList, 
