@@ -1,9 +1,30 @@
-#include <vector>
 #include <iostream>
+#include <vector>
 #include <stack>
 #include <queue>
 #include <stdexcept>
 #include <algorithm>
+#include <set>
+#include <iterator>  // para std::next
+#include "..\List\SimpleLL.hpp"
+
+template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
+bool canDFS(int vertex, int parent, vertContainer<adjContainer<T>>& graph, std::vector<bool>& isVisited);
+
+template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
+bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m);
+
+template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
+bool bipartiteGraph(vertContainer<adjContainer<T>>& graph);
+
+template<typename weight_type>
+struct arch{
+    weight_type weight;
+    int destination;
+};
+
+template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
+using container = vertContainer<adjContainer<T>>;
 
 // Se requiere poner template en cada uno y <typename...> para las plantillas anidadas. Por default, se utiliza std::vector. Coloco el último T porque es posible que se implemente con structs, para guardar el índice al que apunta
 template <
@@ -17,6 +38,7 @@ class Graph{
     public:
         using container = vertContainer<adjContainer<T>>;
         using iterator_type = decltype(std::declval<adjContainer<T>>().begin()); // Obtiene el tipo de dato que regresa .begin, que debe ser un apuntador. Pero quizá no todas las TAD tengan el nombre ::iterator, dentro de sus funcionalidades.
+
         container adjacencyList;
 
         Graph(bool _directed = true);
@@ -45,11 +67,6 @@ class Graph{
 
         bool empty();
         void clear();
-
-        bool isTree();
-        bool isTree(std::vector<T>& topologicVector);
-        
-        bool bipartiteGraph();
 
         void topologicalSort();
         void topologicalSortRec(int v, std::vector<bool>& visited, std::stack<T>& stack);
@@ -394,10 +411,6 @@ void Graph<vertContainer, adjContainer, T>::clear(){
 }
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-bool Graph<vertContainer, adjContainer, T>::isTree(){
-}
-
-template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void Graph<vertContainer, adjContainer, T>::topologicalSort(){
     std::vector<bool> visited(adjacencyList.size(), false);
     std::stack<T> vertexOrdered;
@@ -422,6 +435,139 @@ void Graph<vertContainer, adjContainer, T>::topologicalSortRec(int v, std::vecto
             topologicalSortRec(i, visited, vertexOrdered);
         }
     }
-
     vertexOrdered.push(v);
+}
+
+/*
+PARAMETROS: int vertex, vértice actual.
+            int parent, vértice de la recursión anterior, padre directo.
+            vertContainer<adjContainer<T>>& graph, 
+            std::vector<bool>& isVisited, 
+MÉTODO: Si la lista de adyacencia está vacía, no hace nada. Si no, la limpia asignando una lista de vértices vacia.
+ORDER: O(V+E),  donde V es el número de vértices y E es el número de aristas en adjList.
+RETORNA: bool. true si no encuentra ciclos, false si encuentra ciclos.
+*/
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+bool canDFS(int vertex, int parent, vertContainer<adjContainer<T>>& graph, std::vector<bool>& isVisited){
+
+    isVisited[vertex] = true;
+
+    for(int v : graph[vertex]){
+        if(!isVisited[v]){
+            if(!canDFS(v, vertex, graph, isVisited))
+                return false;
+        } else { // Si ya esta visitado y su padre no es el de la llamada recursiva sino otro, es un ciclo.
+            if(v != parent)
+                return false;
+        }
+    }
+    return true;
+}
+
+/*
+PARAMETROS: vertContainer<adjContainer<T>>& graph, grafo al que se verificara la existencia de un árbol.
+            int n, número de vertices.
+            int m, número de aristas.
+MÉTODO: Si la lista de adyacencia está vacía, no 1 menos que el número de vértices. Que no haya ciclos en el grafo,
+        y que todos sus nodos hayan sido visitados sin ciclos.hace nada. Si no, la limpia asignando una lista de vértices vacia.
+ORDER: O(V+E),  donde V es el número de vértic tiene estructura de árbolde aristas no tiene estructura de árbolORNA: bool. true si no encuentra ciclos, false si encuentra ciclos.
+*/
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m){
+    if(n-1 != m)
+        return false;
+
+    std::vector<bool> isVisited(n, false);
+    
+    if(!canDFS(0, -1, graph, isVisited))
+        return false;
+
+    for(bool v : isVisited){
+        if(!v)
+            return false;
+    }
+
+    return true;
+}
+
+
+
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+struct JohnsonCycleDetector{
+    private:
+        std::vector<std::vector<int>> B;
+        std::vector<bool> blocked;
+        std::vector<int> stack; 
+        int V; // Tamaño de la lista de adyacencia
+
+    public:
+        std::set<int> cycles; // Usualmente se almacenan ciclos únicos, pero para la implementación solo guardaré el tamaño de los ciclos.
+        // std::set<std::vector<int>> cycles; // Usualmente se visualiza así
+        JohnsonCycleDetector(vertContainer<adjContainer<T>>& adjacencyList){
+            this -> V = adjacencyList.size();
+            B.resize(V); // Se cambia el tamaño a la cantidad de nodos que tiene la lista.
+            blocked.resize(V, false); 
+            for (int i = 0; i < V; ++i) {
+                std::fill(blocked.begin(), blocked.end(), false); // Reset a los nodos bloqueados, tanto en blocked como en B.
+                for (auto& list : B) {
+                    list.clear();
+                }
+                findCyclesFrom(i, i, adjacencyList); // Encuentra los ciclos a partir de i, 
+            }
+        }
+        bool findCyclesFrom(int v, int start, vertContainer<adjContainer<T>>& adjacencyList){ // v es el vértice actual 
+            bool hasCycle = false; 
+            stack.push_back(v); // Agrega el vértice al stack que almacena ciclos.
+            blocked[v] = true;  // Bloquea el vértice en caso de que no se contenga un ciclo.
+
+            for(int w: adjacencyList[v]){
+                if(w == start){ // Si ha regresado al nodo inicial, se agrega el ciclo al set de ciclos. Se comentaron las líneas del algoritmo que no se requieren en esta implementación, pues no se necesitan visualizar los ciclos, solo requiero la cantidad de vértices en ellos
+                    // stack.push_back(start); 
+                    cycles.insert(stack.size());
+                    // stack.pop_back();
+                    hasCycle = true; 
+                } else if(!blocked[w]){
+                    if (findCyclesFrom(w, start, adjacencyList)){
+                        hasCycle = true;
+                    }
+                }
+            }
+            if(hasCycle){ // Se desbloquea el nodo si sí se encontró un ciclo. En caso de no encontrarlo, se bloquean todos los nodos que no tienen ciclo. 
+                unblock(v);
+            } else{
+                for(int w: adjacencyList[v]){
+                    if (find(B[w].begin(), B[w].end(), v) == B[w].end()) {
+                        B[w].push_back(v);
+                    }
+                }
+            }
+
+            stack.pop_back();
+            return hasCycle;
+
+        }
+
+        void unblock(int u) {
+            blocked[u] = false;
+            for (int w : B[u]) {
+                if (blocked[w]) {
+                    unblock(w);
+                }
+            }
+            B[u].clear();
+        }
+
+
+};
+
+// Esto es mucho más complicado para grafos dirigidos. Para los no dirigidos, ambas conexiones se mantienen, y no puede suceder que se comience a mitad de una cadena. No obstante, para grafos dirigidos, el begin 0, puede eventualmente ser apuntado por otro vértice que no se encuentra después del cero, sino antes. Por ende, es necesario realizar backtracking.
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
+    JohnsonCycleDetector detectCycles(adjacencyList);
+    for(const auto& cycle:detectCycles.cycles){
+        if((cycle) % 2 == 1){
+            return false;
+        }
+    }
+    return true;
 }

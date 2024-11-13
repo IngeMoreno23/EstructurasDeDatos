@@ -1,0 +1,188 @@
+
+/*
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+int cycleDetect(vertContainer<adjContainer<T>>& adjacencyList, std::vector<int>& blocked){
+    visited[current] = true; 
+
+    for(int& neighbor:adjacencyList[current]){
+        if(neighbor == current) continue;
+        
+        if(!visited[neighbor]){
+            distance[neighbor] = distance[current] + 1;
+            if(DFSCycle(adjacencyList, visited, neighbor, distance)){
+                return true;
+            }
+        } else{
+            if ((distance[current] - distance[neighbor] + 1) % 2 == 1){
+                return true;
+            } // Revisa la distancia del ciclo
+        }
+    }
+    return false;
+}
+*/
+
+/*
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+inline int detectLoop(vertContainer<adjContainer<T>>& adjacencyList, std::vector<int>& visited, int current){
+    
+    for(int i = 0; slow != fast || slow != ; slow++, fast +=2){
+        
+        if(visited[vertex] != -1) {
+            continue;
+        }
+        if(slow != fast){
+            adjslow++;
+            fast += 2;
+        } else{
+            int counter = 0; 
+            slow = fast = adjacencyList.begin() + current;
+            do{
+                slow++;
+                counter++;
+            }while (slow != fast);
+            return counter;
+        }
+    }
+    return -1;
+}
+*/
+
+/*
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+inline bool bipartiteGraphHelper(vertContainer<adjContainer<T>>& adjacencyList, 
+                                std::vector<bool>& visited, 
+                                std::unordered_set<int>& setA, 
+                                std::unordered_set<int>& setB, 
+                                std::unordered_set<int> *currentSet, 
+                                bool isSetA, 
+                                int current){
+
+    for(const auto& vertex:adjacencyList[current]){
+        if(visited[vertex]) {
+            if((!isSetA && setA.count(vertex)) || (isSetA && setB.count(vertex))) {
+                return false;
+            }
+            continue;
+        }
+        visited[vertex] = true;
+        if(!(currentSet -> insert(vertex).second))
+            return false;
+        if(!bipartiteGraphHelper(adjacencyList, visited, setA, setB, (isSetA) ? &setB : &setA, !isSetA, vertex))
+            return false;
+    }
+    return true;
+}
+
+// Esto es mucho más complicado para grafos dirigidos. Para los no dirigidos, ambas conexiones se mantienen, y no puede suceder que se comience a mitad de una cadena. No obstante, para grafos dirigidos, el begin 0, puede eventualmente ser apuntado por otro vértice que no se encuentra después del cero, sino antes. Por ende, es necesario realizar backtracking.
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
+    std::vector<bool> visited(adjacencyList.size(), false), visitedCopy = visited;
+    std::unordered_set<int> setA, setB, setACopy, setBCopy;
+
+    int i = 0; 
+    for(const auto& adjList:adjacencyList){    
+        if(visited[i]){
+            i++;
+            continue;
+        }
+        visited[i] = true;
+        setACopy = setA;
+        setBCopy = setB;
+        visitedCopy = visited;
+
+        if(!setA.insert(i).second){
+            return false;
+        }
+        if(!bipartiteGraphHelper(adjacencyList, visited, setA, setB, &setB, false, i)){
+            setA = setACopy; 
+            setB = setBCopy;
+            visited = visitedCopy;
+            if(!setB.insert(i).second)
+                return false;
+            if (!bipartiteGraphHelper(adjacencyList, visited, setA, setB, &setA, true, i))
+                return false;
+        }
+        i++;
+    }
+    return true;
+}
+
+*/ 
+
+
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+struct JohnsonCycleDetector{
+    private:
+        std::vector<std::vector<int>> B;
+        std::vector<bool> blocked;
+        std::vector<int> stack; 
+        int V; // Tamaño de la lista de adyacencia
+
+    public:
+        std::set<std::vector<int>> cycles; // Se almacenan ciclos únicos
+
+        JohnsonCycleDetector(vertContainer<adjContainer<T>>& adjacencyList){
+            this -> V = adjacencyList.size();
+            B.resize(V); // Se cambia el tamaño a la cantidad de nodos que tiene la lista.
+            blocked.resize(V, false); 
+            for (int i = 0; i < V; ++i) {
+                std::fill(blocked.begin(), blocked.end(), false); // Reset a los nodos bloqueados, tanto en blocked como en B.
+                for (auto& list : B) {
+                    list.clear();
+                }
+                findCyclesFrom(i, i, adjacencyList); // Encuentra los ciclos a partir de i, 
+            }
+        }
+        bool findCyclesFrom(int v, int start, vertContainer<adjContainer<T>>& adjacencyList){ // v es el vértice actual 
+            bool hasCycle = false; 
+            stack.push_back(v); // Agrega el vértice al stack que almacena ciclos.
+            blocked[v] = true;  // Bloquea el vértice en caso de que no se contenga un ciclo.
+
+            for(int w: adjacencyList[v]){
+                if(w == start){
+                    stack.push_back(start); 
+                    cycles.insert(stack);
+                    stack.pop_back();
+                    hasCycle = true; 
+                } else if(!blocked[w]){
+                    if (findCyclesFrom(w, start, adjacencyList)){
+                        hasCycle = true;
+                    }
+                }
+            }
+            if(hasCycle){ // Se desbloquea el nodo si sí se encontró un ciclo. En caso de no 
+                unblock(v);
+            } else{
+                for(int w: adjacencyList[v]){
+                    if (find(B[w].begin(), B[w].end(), v) == B[w].end()) {
+                        B[w].push_back(v);
+                    }
+                }
+            }
+
+            stack.pop_back();
+            return hasCycle;
+
+        }
+        void unblock(int u) {
+            blocked[u] = false;
+            for (int w : B[u]) {
+                if (blocked[w]) {
+                    unblock(w);
+                }
+            }
+            B[u].clear();
+        }
+
+    void printCycles() {
+        for (const auto& cycle : cycles) {
+            std::cout << "Cycle found: ";
+            for (int node : cycle) {
+                std::cout << node << " ";
+            }
+            std::cout << "(Length: " << cycle.size() << ")" << std::endl;
+        }
+    }
+
+};
