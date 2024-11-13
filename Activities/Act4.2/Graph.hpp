@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <set>
+#include <unordered_set>
 
 template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
 bool canDFS(int vertex, int parent, vertContainer<adjContainer<T>>& graph, std::vector<bool>& isVisited);
@@ -488,84 +489,51 @@ bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m){
     return true;
 }
 
-
-
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-struct JohnsonCycleDetector{
-    private:
-        std::vector<std::vector<int>> B;
-        std::vector<bool> blocked;
-        std::vector<int> stack; 
-        int V; // Tamaño de la lista de adyacencia
+inline bool bipartiteGraphHelper(vertContainer<adjContainer<T>>& adjacencyList, 
+                                std::vector<bool>& visited, 
+                                std::unordered_set<int>& setA, 
+                                std::unordered_set<int>& setB, 
+                                std::unordered_set<int> *currentSet, 
+                                bool isSetA, 
+                                int current){
 
-    public:
-        std::set<int> cycles; // Usualmente se almacenan ciclos únicos, pero para la implementación solo guardaré el tamaño de los ciclos.
-        // std::set<std::vector<int>> cycles; // Usualmente se visualiza así
-        JohnsonCycleDetector(vertContainer<adjContainer<T>>& adjacencyList){
-            this -> V = adjacencyList.size();
-            B.resize(V); // Se cambia el tamaño a la cantidad de nodos que tiene la lista.
-            blocked.resize(V, false); 
-            for (int i = 0; i < V; ++i) {
-                std::fill(blocked.begin(), blocked.end(), false); // Reset a los nodos bloqueados, tanto en blocked como en B.
-                for (auto& list : B) {
-                    list.clear();
-                }
-                findCyclesFrom(i, i, adjacencyList); // Encuentra los ciclos a partir de i, 
+    for(const auto& vertex:adjacencyList[current]){
+        if(visited[vertex]) {
+            if((!isSetA && setA.count(vertex)) || (isSetA && setB.count(vertex))) {
+                return false;
             }
+            continue;
         }
-        bool findCyclesFrom(int v, int start, vertContainer<adjContainer<T>>& adjacencyList){ // v es el vértice actual 
-            bool hasCycle = false; 
-            stack.push_back(v); // Agrega el vértice al stack que almacena ciclos.
-            blocked[v] = true;  // Bloquea el vértice en caso de que no se contenga un ciclo.
+        visited[vertex] = true;
+        if(!(currentSet -> insert(vertex).second))
+            return false;
+        if(!bipartiteGraphHelper(adjacencyList, visited, setA, setB, (isSetA) ? &setB : &setA, !isSetA, vertex))
+            return false;
+    }
+    return true;
+}
 
-            for(int w: adjacencyList[v]){
-                if(w == start){ // Si ha regresado al nodo inicial, se agrega el ciclo al set de ciclos. Se comentaron las líneas del algoritmo que no se requieren en esta implementación, pues no se necesitan visualizar los ciclos, solo requiero la cantidad de vértices en ellos
-                    // stack.push_back(start); 
-                    cycles.insert(stack.size());
-                    // stack.pop_back();
-                    hasCycle = true; 
-                } else if(!blocked[w]){
-                    if (findCyclesFrom(w, start, adjacencyList)){
-                        hasCycle = true;
-                    }
-                }
-            }
-            if(hasCycle){ // Se desbloquea el nodo si sí se encontró un ciclo. En caso de no encontrarlo, se bloquean todos los nodos que no tienen ciclo. 
-                unblock(v);
-            } else{
-                for(int w: adjacencyList[v]){
-                    if (find(B[w].begin(), B[w].end(), v) == B[w].end()) {
-                        B[w].push_back(v);
-                    }
-                }
-            }
-
-            stack.pop_back();
-            return hasCycle;
-
-        }
-
-        void unblock(int u) {
-            blocked[u] = false;
-            for (int w : B[u]) {
-                if (blocked[w]) {
-                    unblock(w);
-                }
-            }
-            B[u].clear();
-        }
-
-
-};
-
-// Esto es mucho más complicado para grafos dirigidos. Para los no dirigidos, ambas conexiones se mantienen, y no puede suceder que se comience a mitad de una cadena. No obstante, para grafos dirigidos, el begin 0, puede eventualmente ser apuntado por otro vértice que no se encuentra después del cero, sino antes. Por ende, es necesario realizar backtracking.
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
-    JohnsonCycleDetector detectCycles(adjacencyList);
-    for(const auto& cycle:detectCycles.cycles){
-        if((cycle) % 2 == 1){
+    std::vector<bool> visited(adjacencyList.size(), false);
+    std::unordered_set<int> setA, setB;
+
+    int i = 0; 
+    for(const auto& adjList:adjacencyList){    
+        if(visited[i]){
+            i++;
+            continue;
+        }
+        visited[i] = true;
+
+        if(!setA.insert(i).second){
             return false;
         }
+        if(!bipartiteGraphHelper(adjacencyList, visited, setA, setB, &setB, false, i)){
+            return false;
+        }
+        i++;
     }
     return true;
 }
