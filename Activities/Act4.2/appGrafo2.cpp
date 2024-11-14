@@ -96,17 +96,16 @@ void loadGraph(int n, int m, Graph<vertContainer, adjContainer, T>& graph){
 */
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void topologicalSortRec(vertContainer<adjContainer<T>>& adjacencyList, int v, std::vector<bool>& visited, std::stack<T>& vertexOrdered, int& m){
-    if(m <= 0){
-        return; 
-    }
     visited[v] = true;
     for(const auto& neighbor:adjacencyList[v]){
         if(!visited[neighbor]){ 
             topologicalSortRec(adjacencyList, neighbor, visited, vertexOrdered, m);
+            if(vertexOrdered.size() > m){
+                break;
+            }
         }
     }
     vertexOrdered.push(v);
-    m--;
 }
 
 /*
@@ -126,13 +125,13 @@ void topologicalSort(vertContainer<adjContainer<T>>& adjacencyList, int n, int m
     std::vector<bool> visited(adjacencyList.size(), false);
     std::stack<T> vertexOrdered;
 
-    for(int v = n; v < adjacencyList.size(); v++){
+    for(int v = n; v < adjacencyList.size() && m > 0; v++){
         if(!visited[v]){
             topologicalSortRec(adjacencyList, v, visited, vertexOrdered, m);
         }
     }
 
-    for(int i = 0; i < m || !vertexOrdered.empty(); i++){
+    for(int i = 0; i < m && !vertexOrdered.empty(); i++){
         std::cout<<vertexOrdered.top()<<" ";
         vertexOrdered.pop();
     }
@@ -288,36 +287,64 @@ bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
 template <typename T>
 using vecGraph = Graph<std::vector, std::vector, T>; // Alias template 
 
-int main()
+int main()    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
 {
     vecGraph<int> testGraphContainer({{1,2},{0,2,3},{0,1,4},{1,4},{2,3}}), testGraphContainer2({{1},{2},{0}}), testGraphContainer3({{1},{2},{3},{0},{0}});
+    vecGraph<int> loadedGraph;
 
-    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
-    Graph<> functionTestGraph;
-    int n = 0, m = 0;
-    while(std::cout<<"Mostrar a partir del vértice: " && !aceptaEnteros(n)){
-        std::cout<<"\nSolo enteros positivos. ";
+    std::cout<<"Carga tu grafo.\n";
+    try{
+        int vertices = 0, conexiones = 0;
+        std::cout<<"Ingresa la cantidad de vértices: ";
+        while(!aceptaEnteros(vertices)){
+            std::cout<<"\nEntrada inválida. Ingrese un entero: ";
+        }
+        std::cout<<"Ingresa la cantidad de arcos: ";
+        while(!aceptaEnteros(conexiones)){
+            std::cout<<"\nEntrada inválida. Ingrese un entero: ";
+        }
+        std::cout<<"\n";
+        loadGraph(vertices,conexiones,loadedGraph);
+        loadedGraph.print();
+    } catch(std::invalid_argument& ex){
+        std::cout<<"Error al intentar cargar grafo: "<<ex.what()<<"\n";
     }
-    while(std::cout<<"Cantidad de arcos: " && !aceptaEnteros(m)){
-        std::cout<<"\nSolo enteros positivos. ";
-    }
-    std::cout<<std::endl;
-
-    topologicalSort(testGraphContainer.adjacencyList, n, m);
-    std::cout<<"\nEs bipartito: ";
-    std::cout<<bipartiteGraph(testGraphContainer2.adjacencyList);
-    std::cout<<"\nEs bipartito: ";
-    std::cout<<bipartiteGraph(testGraphContainer3.adjacencyList);
-    std::cout<<"\nEs bipartito: ";
-    std::cout<<bipartiteGraph(testGraphContainer.adjacencyList);
     std::cout<<"\n";
 
-    int w = 0, x = 0;
-    while(std::cout<<"A partir del vértice: " && !aceptaEnteros(w)){
-        std::cout<<"\nSolo enteros positivos. ";
+    try{
+        int n = 0, m = 0;
+        while(std::cout<<"Mostrar a partir del vértice: " && !aceptaEnteros(n)){
+            std::cout<<"\nSolo enteros. ";
+        }
+        while(std::cout<<"Cantidad de arcos: " && !aceptaEnteros(m)){
+            std::cout<<"\nSolo enteros. ";
+        }
+        topologicalSort(testGraphContainer.adjacencyList, n, m);
+    }catch(std::exception& ex){
+        std::cout<<"Error. "<<ex.what();
     }
-    while(std::cout<<"Cantidad de arcos: " && !aceptaEnteros(x)){
-        std::cout<<"\nSolo enteros positivos. ";
+
+    try{
+        std::cout<<"\nEs bipartito: "<<bipartiteGraph(loadedGraph.adjacencyList);
+    } catch(std::exception& ex){
+        std::cout<<"Error. "<< ex.what()<<"\n";
     }
-    std::cout<<"\nEs arbol: "<<isTree(testGraphContainer.adjacencyList, w, x);
+
+    std::cout<<"\nEs bipartito: "<<bipartiteGraph(testGraphContainer2.adjacencyList);
+    std::cout<<"\nEs bipartito: "<<bipartiteGraph(testGraphContainer3.adjacencyList);
+    std::cout<<"\nEs bipartito: "<<bipartiteGraph(testGraphContainer.adjacencyList);
+    std::cout<<"\n\n";
+
+    try{
+        int w = 0, x = 0;
+        while(std::cout<<"A partir del vértice: " && !aceptaEnteros(w)){
+            std::cout<<"\nSolo enteros positivos. ";
+        }
+        while(std::cout<<"Arcos: " && !aceptaEnteros(x)){
+            std::cout<<"\nSolo enteros positivos. ";
+        }
+        std::cout<<"Es arbol: "<<isTree(testGraphContainer.adjacencyList, w, x);
+    } catch(std::exception& ex){
+        std::cout<<"Error. "<<ex.what();
+    }
 }
