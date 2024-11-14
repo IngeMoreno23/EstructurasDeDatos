@@ -262,21 +262,68 @@ struct JohnsonCycleDetector{
 
 };
 
-/*
-> PARÁMETROS: adjacencyList(estructura de datos con estructuras de dato dentro, en este caso un vector de vectores de enteros). n (entero, cantidad e vértices), m (entero, cantidad de arcos)
-> MÉTODO: Aplica el algoritmo de Johnson para detectar ciclos. Si detecta un ciclo de longitud impar, no es bipartito (porque no se pueden dividir en dos sets sin elementos repetidos)
-> ORDEN: O((V + E)(C + 1)). V = número de vértices. E = número de aristas/arcos. C = número de ciclos elementales.
-> RETORNO: valor booleano, que determina si es bipartito o no. 
-*/
+
+
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+inline bool bipartiteGraphHelper(vertContainer<adjContainer<T>>& adjacencyList, 
+                                std::vector<bool>& visited, 
+                                std::unordered_set<int>& setA, 
+                                std::unordered_set<int>& setB, 
+                                std::unordered_set<int> *currentSet, 
+                                bool isSetA, 
+                                int current){
+
+    for(const auto& vertex:adjacencyList[current]){
+        if(visited[vertex]) {
+            if((!isSetA && setA.count(vertex)) || (isSetA && setB.count(vertex))) {
+                return false;
+            }
+            continue;
+        }
+        visited[vertex] = true;
+        if(!(currentSet -> insert(vertex).second))
+            return false;
+        if(!bipartiteGraphHelper(adjacencyList, visited, setA, setB, (isSetA) ? &setB : &setA, !isSetA, vertex))
+            return false;
+    }
+    return true;
+}
+
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList, int n, int m){
+    
     if (n < 0 || m < 0){
         throw(std::out_of_range("Parámetros fuera de rango"));
     }
+
+    std::vector<bool> visited(adjacencyList.size(), false);
+    std::unordered_set<int> setA, setB;
+
+    int i = 0; 
+    for(const auto& adjList:adjacencyList){    
+        if(visited[i]){
+            i++;
+            continue;
+        }
+        visited[i] = true;
+
+        if(!setA.insert(i).second){
+            return false;
+        }
+        if(!bipartiteGraphHelper(adjacencyList, visited, setA, setB, &setB, false, i)){
+            return false;
+        }
+        i++;
+    }
+    return true;
+
+    /*
     JohnsonCycleDetector detectCycles(adjacencyList);
     return !detectCycles.oddCycle;
-}
+    */    
+}       
 
+    
 template <typename T>
 using vecGraph = Graph<std::vector, std::vector, T>; // Alias template 
 
