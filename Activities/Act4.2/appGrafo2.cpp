@@ -169,9 +169,6 @@ ORDER: O(V+E),  donde V es el número de vértic tiene estructura de árbolde ar
 */
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m){
-    if(n >= graph.size()){
-        throw(std::invalid_argument("Parámetro inválido"));
-    }
     if (n < 0 || m < 0){
         throw(std::out_of_range("Parámetros fuera de rango"));
     }
