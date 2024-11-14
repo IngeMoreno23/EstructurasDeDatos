@@ -113,9 +113,6 @@ void topologicalSortRec(vertContainer<adjContainer<T>>& adjacencyList, int v, st
 */
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void topologicalSort(vertContainer<adjContainer<T>>& adjacencyList, int n, int m){
-    if(n >= adjacencyList.size()){
-        throw(std::invalid_argument("Parámetro inválido"));
-    }
     if (n < 0 || m < 0){
         throw(std::out_of_range("Parámetros fuera de rango"));
     }
