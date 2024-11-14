@@ -280,6 +280,13 @@ struct JohnsonCycleDetector{
 */
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
+    for(const auto& list:adjacencyList){ // Checa si algún vértice en un grafo (no cargado con loadGraph) apunta a uno que no esté contenido.
+        for(const auto& vertex:list){
+            if(vertex >= adjacencyList.size()){
+                throw(std::out_of_range("Uno o más vértices contienen arcos a vértices inexistentes"));
+            }
+        }
+    }
     JohnsonCycleDetector detectCycles(adjacencyList);
     return detectCycles.oddCycle;
 }
@@ -289,7 +296,7 @@ using vecGraph = Graph<std::vector, std::vector, T>; // Alias template
 
 int main()    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
 {
-    vecGraph<int> testGraphContainer({{1,2},{0,2,3},{0,1,4},{1,4},{2,3}}), testGraphContainer2({{1},{2},{0}}), testGraphContainer3({{1},{2},{3},{0},{0}});
+    vecGraph<int> testGraphContainer({{1,2},{0,2,3},{0,1,4},{1,4},{2,3}}), errorGraph({{2},{4},{5}}), testGraphContainer2({{1},{2},{0}}), testGraphContainer3({{1},{2},{3},{0},{0}});
     vecGraph<int> loadedGraph;
 
     std::cout<<"Carga tu grafo.\n";
@@ -324,13 +331,20 @@ int main()    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
         std::cout<<"Error. "<<ex.what();
     }
 
+
+    try{
+        std::cout<<"\nEs bipartito: "<<bipartiteGraph(errorGraph.adjacencyList);
+    } catch(std::exception& ex){
+        std::cout<<"Error. "<< ex.what()<<"\n";
+    }
+
+
     try{
         std::cout<<"\nEs bipartito: "<<bipartiteGraph(loadedGraph.adjacencyList);
     } catch(std::exception& ex){
         std::cout<<"Error. "<< ex.what()<<"\n";
     }
 
-    std::cout<<"\nEs bipartito: "<<bipartiteGraph(testGraphContainer2.adjacencyList);
     std::cout<<"\nEs bipartito: "<<bipartiteGraph(testGraphContainer3.adjacencyList);
     std::cout<<"\nEs bipartito: "<<bipartiteGraph(testGraphContainer.adjacencyList);
     std::cout<<"\n\n";
