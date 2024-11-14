@@ -263,19 +263,15 @@ struct JohnsonCycleDetector{
 };
 
 /*
-> PARÁMETROS: adjacencyList(estructura de datos con estructuras de dato dentro, en este caso un vector de vectores de enteros)
+> PARÁMETROS: adjacencyList(estructura de datos con estructuras de dato dentro, en este caso un vector de vectores de enteros). n (entero, cantidad e vértices), m (entero, cantidad de arcos)
 > MÉTODO: Aplica el algoritmo de Johnson para detectar ciclos. Si detecta un ciclo de longitud impar, no es bipartito (porque no se pueden dividir en dos sets sin elementos repetidos)
 > ORDEN: O((V + E)(C + 1)). V = número de vértices. E = número de aristas/arcos. C = número de ciclos elementales.
 > RETORNO: valor booleano, que determina si es bipartito o no. 
 */
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
-    for(const auto& list:adjacencyList){ // Checa si algún vértice en un grafo (no cargado con loadGraph) apunta a uno que no esté contenido.
-        for(const auto& vertex:list){
-            if(vertex >= adjacencyList.size()){
-                throw(std::out_of_range("Uno o más vértices contienen arcos a vértices inexistentes"));
-            }
-        }
+bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList, int n, int m){
+    if (n < 0 || m < 0){
+        throw(std::out_of_range("Parámetros fuera de rango"));
     }
     JohnsonCycleDetector detectCycles(adjacencyList);
     return !detectCycles.oddCycle;
@@ -318,7 +314,7 @@ int main()    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
     std::cout<<"\n";
 
     try{
-        std::cout<<"El grafo cargado es bipartito: "<<bipartiteGraph(loadedGraph.adjacencyList);
+        std::cout<<"El grafo cargado es bipartito: "<<bipartiteGraph(loadedGraph.adjacencyList, vertices, conexiones);
     } catch(std::exception& ex){
         std::cout<<"Error. "<< ex.what();
     }
