@@ -250,12 +250,12 @@ struct JohnsonCycleDetector{
                 }
             }
 
-            stack.pop_back();
+            stack.pop_back(); // Se extrae un vértice de la pila que guarda el recorrido actual.
             return hasCycle;
 
         }
 
-        void unblock(int u) {
+        void unblock(int u) { // Desbloquea todos los vértices asociados a u.
             blocked[u] = false;
             for (int w : B[u]) {
                 if (blocked[w]) {
