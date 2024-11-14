@@ -308,6 +308,7 @@ int main()    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
     }
     std::cout<<"\n";
 
+    // PROBAR CON EL GRAFO CARGADO
     try{
         std::cout<<"Ordenamiento topológico: ";
         topologicalSort(loadedGraph.adjacencyList, vertices, conexiones);
@@ -316,9 +317,8 @@ int main()    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
     }
     std::cout<<"\n";
 
-    // PROBAR CON EL GRAFO CARGADO
     try{
-        std::cout<<"\nEl grafo cargado es bipartito: "<<bipartiteGraph(loadedGraph.adjacencyList);
+        std::cout<<"El grafo cargado es bipartito: "<<bipartiteGraph(loadedGraph.adjacencyList);
     } catch(std::exception& ex){
         std::cout<<"Error. "<< ex.what();
     }
