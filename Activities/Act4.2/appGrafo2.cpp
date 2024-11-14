@@ -130,7 +130,9 @@ void topologicalSort(vertContainer<adjContainer<T>>& adjacencyList, int n, int m
             topologicalSortRec(adjacencyList, v, visited, vertexOrdered, m);
         }
     }
-
+    if(m > vertexOrdered.size()){
+        std::cout<<"Cantidad de arcos excede los vértices a mostrar. Se mostrará el orden topológico del grafo: ";
+    }
     for(int i = 0; i < m && !vertexOrdered.empty(); i++){
         std::cout<<vertexOrdered.top()<<" ";
         vertexOrdered.pop();
@@ -326,28 +328,26 @@ int main()    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
         while(std::cout<<"Cantidad de arcos: " && !aceptaEnteros(m)){
             std::cout<<"\nSolo enteros. ";
         }
+        std::cout<<"Ordenamiento topológico: ";
         topologicalSort(testGraphContainer.adjacencyList, n, m);
     }catch(std::exception& ex){
         std::cout<<"Error. "<<ex.what();
     }
+    std::cout<<"\n";
 
-
-    try{
+    try{ // Intentando con un grafo con vértices fuera de rango
         std::cout<<"\nEs bipartito: "<<bipartiteGraph(errorGraph.adjacencyList);
     } catch(std::exception& ex){
-        std::cout<<"Error. "<< ex.what()<<"\n";
+        std::cout<<"Error. "<< ex.what();
     }
-
-
+    std::cout<<"\n";
+    // PROBAR CON EL GRAFO CARGADO
     try{
-        std::cout<<"\nEs bipartito: "<<bipartiteGraph(loadedGraph.adjacencyList);
+        std::cout<<"\nEl grafo cargado es bipartito: "<<bipartiteGraph(loadedGraph.adjacencyList);
     } catch(std::exception& ex){
-        std::cout<<"Error. "<< ex.what()<<"\n";
+        std::cout<<"Error. "<< ex.what();
     }
-
-    std::cout<<"\nEs bipartito: "<<bipartiteGraph(testGraphContainer3.adjacencyList);
-    std::cout<<"\nEs bipartito: "<<bipartiteGraph(testGraphContainer.adjacencyList);
-    std::cout<<"\n\n";
+    std::cout<<"\n";
 
     try{
         int w = 0, x = 0;
@@ -357,7 +357,7 @@ int main()    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
         while(std::cout<<"Arcos: " && !aceptaEnteros(x)){
             std::cout<<"\nSolo enteros positivos. ";
         }
-        std::cout<<"Es arbol: "<<isTree(testGraphContainer.adjacencyList, w, x);
+        std::cout<<"El grafo cargado es arbol: "<<isTree(loadedGraph.adjacencyList, w, x);
     } catch(std::exception& ex){
         std::cout<<"Error. "<<ex.what();
     }
