@@ -89,27 +89,24 @@ void loadGraph(int n, int m, Graph<vertContainer, adjContainer, T>& graph){
 }
 
 /*
-> PARÁMETROS: adjacencyList (lista de adyacencia con los vértices y sus respectivas conexiones), V (el vértice a partir del cual se desea realizar el dfs), visited (vector con los vértices ya visitados), vertexOrdered (stack que guarda los datos en orden topológico), m (entero que indica cuantos arcos se quieren mostrar).
+> PARÁMETROS: adjacencyList (lista de adyacencia con los vértices y sus respectivas conexiones), V (el vértice a partir del cual se desea realizar el dfs), visited (vector con los vértices ya visitados), vertexOrdered (stack que guarda los datos en orden topológico).
 > MÉTODO: Realiza un recorrido DFS recursivo por cada vértice no visitado. Hasta que llega al último vértice al que puede a partir del vértice inicial especificado, lo agrega a la pila y se regresa al vértice pasado para explorar los vértices vecinos aún no visitados.
 > ORDEN: O(V + E)
 > RETORNO: void.
 */
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-void topologicalSortRec(vertContainer<adjContainer<T>>& adjacencyList, int v, std::vector<bool>& visited, std::stack<T>& vertexOrdered, int& m){
+void topologicalSortRec(vertContainer<adjContainer<T>>& adjacencyList, int v, std::vector<bool>& visited, std::stack<T>& vertexOrdered){
     visited[v] = true;
     for(const auto& neighbor:adjacencyList[v]){
         if(!visited[neighbor]){ 
-            topologicalSortRec(adjacencyList, neighbor, visited, vertexOrdered, m);
-            if(vertexOrdered.size() > m){
-                break;
-            }
+            topologicalSortRec(adjacencyList, neighbor, visited, vertexOrdered);
         }
     }
     vertexOrdered.push(v);
 }
 
 /*
-> PARÁMETROS: adjacencyList (lista de adyacencia con los vértices y sus respectivas conexiones), n (entero que indica a partir de qué vértice se quiere empezar), m (entero que indica cuantos arcos se quieren mostrar).
+> PARÁMETROS: adjacencyList (lista de adyacencia con los vértices y sus respectivas conexiones), n (entero que indica a cuántos vértices tiene la lista), m (entero que indica cuantos arcos tiene la lista de adyacencia).
 > MÉTODO: Realiza un recorrido DFS recursivo por cada vértice no visitado. Imprime la pila con los vértices en orden topológico.
 > ORDEN: O(V + E)
 > RETORNO: void.
@@ -125,15 +122,12 @@ void topologicalSort(vertContainer<adjContainer<T>>& adjacencyList, int n, int m
     std::vector<bool> visited(adjacencyList.size(), false);
     std::stack<T> vertexOrdered;
 
-    for(int v = n; v < adjacencyList.size() && m > 0; v++){
+    for(int v = 0; v < adjacencyList.size(); v++){
         if(!visited[v]){
-            topologicalSortRec(adjacencyList, v, visited, vertexOrdered, m);
+            topologicalSortRec(adjacencyList, v, visited, vertexOrdered);
         }
     }
-    if(m > vertexOrdered.size()){
-        std::cout<<"Cantidad de arcos excede los vértices a mostrar. Se mostrará el orden topológico del grafo: ";
-    }
-    for(int i = 0; i < m && !vertexOrdered.empty(); i++){
+    for(int i = 0; !vertexOrdered.empty(); i++){
         std::cout<<vertexOrdered.top()<<" ";
         vertexOrdered.pop();
     }
@@ -290,7 +284,7 @@ bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
         }
     }
     JohnsonCycleDetector detectCycles(adjacencyList);
-    return detectCycles.oddCycle;
+    return !detectCycles.oddCycle;
 }
 
 template <typename T>
@@ -302,8 +296,8 @@ int main()    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
     vecGraph<int> loadedGraph;
 
     std::cout<<"Carga tu grafo.\n";
+    int vertices = 0, conexiones = 0;
     try{
-        int vertices = 0, conexiones = 0;
         std::cout<<"Ingresa la cantidad de vértices: ";
         while(!aceptaEnteros(vertices)){
             std::cout<<"\nEntrada inválida. Ingrese un entero: ";
@@ -321,26 +315,13 @@ int main()    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
     std::cout<<"\n";
 
     try{
-        int n = 0, m = 0;
-        while(std::cout<<"Mostrar a partir del vértice: " && !aceptaEnteros(n)){
-            std::cout<<"\nSolo enteros. ";
-        }
-        while(std::cout<<"Cantidad de arcos: " && !aceptaEnteros(m)){
-            std::cout<<"\nSolo enteros. ";
-        }
         std::cout<<"Ordenamiento topológico: ";
-        topologicalSort(testGraphContainer.adjacencyList, n, m);
+        topologicalSort(loadedGraph.adjacencyList, vertices, conexiones);
     }catch(std::exception& ex){
         std::cout<<"Error. "<<ex.what();
     }
     std::cout<<"\n";
 
-    try{ // Intentando con un grafo con vértices fuera de rango
-        std::cout<<"\nEs bipartito: "<<bipartiteGraph(errorGraph.adjacencyList);
-    } catch(std::exception& ex){
-        std::cout<<"Error. "<< ex.what();
-    }
-    std::cout<<"\n";
     // PROBAR CON EL GRAFO CARGADO
     try{
         std::cout<<"\nEl grafo cargado es bipartito: "<<bipartiteGraph(loadedGraph.adjacencyList);
@@ -350,14 +331,7 @@ int main()    // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
     std::cout<<"\n";
 
     try{
-        int w = 0, x = 0;
-        while(std::cout<<"A partir del vértice: " && !aceptaEnteros(w)){
-            std::cout<<"\nSolo enteros positivos. ";
-        }
-        while(std::cout<<"Arcos: " && !aceptaEnteros(x)){
-            std::cout<<"\nSolo enteros positivos. ";
-        }
-        std::cout<<"El grafo cargado es arbol: "<<isTree(loadedGraph.adjacencyList, w, x);
+        std::cout<<"El grafo cargado es arbol: "<<isTree(loadedGraph.adjacencyList, vertices, conexiones);
     } catch(std::exception& ex){
         std::cout<<"Error. "<<ex.what();
     }
