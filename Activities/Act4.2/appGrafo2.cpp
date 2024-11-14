@@ -88,7 +88,202 @@ void loadGraph(int n, int m, Graph<vertContainer, adjContainer, T>& graph){
     }
 }
 
+/*
+> PARÁMETROS: adjacencyList (lista de adyacencia con los vértices y sus respectivas conexiones), V (el vértice a partir del cual se desea realizar el dfs), visited (vector con los vértices ya visitados), vertexOrdered (stack que guarda los datos en orden topológico), m (entero que indica cuantos arcos se quieren mostrar).
+> MÉTODO: Realiza un recorrido DFS recursivo por cada vértice no visitado. Hasta que llega al último vértice al que puede a partir del vértice inicial especificado, lo agrega a la pila y se regresa al vértice pasado para explorar los vértices vecinos aún no visitados.
+> ORDEN: O(V + E)
+> RETORNO: void.
+*/
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+void topologicalSortRec(vertContainer<adjContainer<T>>& adjacencyList, int v, std::vector<bool>& visited, std::stack<T>& vertexOrdered, int& m){
+    if(m <= 0){
+        return; 
+    }
+    visited[v] = true;
+    for(const auto& neighbor:adjacencyList[v]){
+        if(!visited[neighbor]){ 
+            topologicalSortRec(adjacencyList, neighbor, visited, vertexOrdered, m);
+        }
+    }
+    vertexOrdered.push(v);
+    m--;
+}
 
+/*
+> PARÁMETROS: adjacencyList (lista de adyacencia con los vértices y sus respectivas conexiones), n (entero que indica a partir de qué vértice se quiere empezar), m (entero que indica cuantos arcos se quieren mostrar).
+> MÉTODO: Realiza un recorrido DFS recursivo por cada vértice no visitado. Imprime la pila con los vértices en orden topológico.
+> ORDEN: O(V + E)
+> RETORNO: void.
+*/
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+void topologicalSort(vertContainer<adjContainer<T>>& adjacencyList, int n, int m){
+    if(n >= adjacencyList.size()){
+        throw(std::invalid_argument("Parámetro inválido"));
+    }
+    if (n < 0 || m < 0){
+        throw(std::out_of_range("Parámetros fuera de rango"));
+    }
+    std::vector<bool> visited(adjacencyList.size(), false);
+    std::stack<T> vertexOrdered;
+
+    for(int v = n; v < adjacencyList.size(); v++){
+        if(!visited[v]){
+            topologicalSortRec(adjacencyList, v, visited, vertexOrdered, m);
+        }
+    }
+
+    for(int i = 0; i < m || !vertexOrdered.empty(); i++){
+        std::cout<<vertexOrdered.top()<<" ";
+        vertexOrdered.pop();
+    }
+}
+
+/*
+PARAMETROS: int vertex, vértice actual.
+            int parent, vértice de la recursión anterior, padre directo.
+            vertContainer<adjContainer<T>>& graph, 
+            std::vector<bool>& isVisited, 
+MÉTODO: Si la lista de adyacencia está vacía, no hace nada. Si no, la limpia asignando una lista de vértices vacia.
+ORDER: O(V+E),  donde V es el número de vértices y E es el número de aristas en adjList.
+RETORNA: bool. true si no encuentra ciclos, false si encuentra ciclos.
+*/
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+bool canDFS(int vertex, int parent, vertContainer<adjContainer<T>>& graph, std::vector<bool>& isVisited){
+
+    isVisited[vertex] = true;
+
+    for(int v : graph[vertex]){
+        if(!isVisited[v]){
+            if(!canDFS(v, vertex, graph, isVisited))
+                return false;
+        } else { // Si ya esta visitado y su padre no es el de la llamada recursiva sino otro, es un ciclo.
+            if(v != parent)
+                return false;
+        }
+    }
+    return true;
+}
+
+/*
+PARAMETROS: vertContainer<adjContainer<T>>& graph, grafo al que se verificara la existencia de un árbol.
+            int n, número de vertices.
+            int m, número de aristas.
+MÉTODO: Si la lista de adyacencia está vacía, no 1 menos que el número de vértices. Que no haya ciclos en el grafo,
+        y que todos sus nodos hayan sido visitados sin ciclos.hace nada. Si no, la limpia asignando una lista de vértices vacia.
+ORDER: O(V+E),  donde V es el número de vértic tiene estructura de árbolde aristas no tiene estructura de árbolORNA: bool. true si no encuentra ciclos, false si encuentra ciclos.
+*/
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m){
+    if(n >= graph.size()){
+        throw(std::invalid_argument("Parámetro inválido"));
+    }
+    if (n < 0 || m < 0){
+        throw(std::out_of_range("Parámetros fuera de rango"));
+    }
+    if(n-1 != m)
+        return false;
+
+    std::vector<bool> isVisited(n, false);
+    
+    if(!canDFS(0, -1, graph, isVisited))
+        return false;
+
+    for(bool v : isVisited){
+        if(!v)
+            return false;
+    }
+
+    return true;
+}
+
+// Es una alternativa un poco costosa pero muy efectiva para los grafos dirigidos que tienen varias conexiones a ciclos existentes, pues con este no se tienen problemas al colorear o al guardar en conjuntos.
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+struct JohnsonCycleDetector{
+    private:
+        std::vector<std::vector<int>> B; // Guarda la trayectoria de los grafos para bloquearlos o desbloquearlos.
+        std::vector<bool> blocked; // vectores bloqueados (no son parte de ciclos)
+        std::vector<int> stack;  // Guarda el recorrido, potencialmente un ciclo.
+        int V; // Tamaño de la lista de adyacencia
+
+    public:
+        bool oddCycle;
+        // std::set<std::vector<int>> cycles; // Aquí se guardan los ciclos encontrados, pero para este proceso no se requiere la estructura de datos.
+        JohnsonCycleDetector(vertContainer<adjContainer<T>>& adjacencyList){
+            oddCycle = false; 
+            this -> V = adjacencyList.size();
+            B.resize(V); // Se cambia el tamaño a la cantidad de vértices que tiene el grafo.
+            blocked.resize(V, false); 
+
+            for (int i = 0; i < V; ++i) {
+                std::fill(blocked.begin(), blocked.end(), false); // Reset a los vértices bloqueados, tanto en blocked como en B.
+                for (auto& list : B) {
+                    list.clear();
+                }
+                findCyclesFrom(i, i, adjacencyList);
+            }
+        }
+        // Encuentra los ciclos a partir de start. Parámetros: 
+        bool findCyclesFrom(int v, int start, vertContainer<adjContainer<T>>& adjacencyList){ // v es el vértice actual 
+            bool hasCycle = false; 
+            stack.push_back(v); // Agrega el vértice al stack que almacena ciclos.
+            blocked[v] = true;  // Bloquea el vértice en caso de que no se contenga un ciclo.
+
+            for(int w: adjacencyList[v]){
+                if(w == start){ 
+                    /*  // Si ha regresado al vértice inicial, originalmente se agrega el ciclo al set de ciclos, pero en esta modificación, solo se revisa si el ciclo tiene longitud impar. Se comentaron las líneas del algoritmo que no se requieren en esta implementación, pues no se necesitan visualizar los ciclos, solo requiero la cantidad de vértices en ellos
+                    stack.push_back(start); 
+                    cycles.insert(stack);
+                    stack.pop_back();
+                    */
+                    if (stack.size() % 2 == 1){
+                        oddCycle = true;
+                    }
+                    hasCycle = true; 
+                } else if(!blocked[w]){
+                    if (findCyclesFrom(w, start, adjacencyList)){
+                        hasCycle = true;
+                    }
+                }
+            }
+            if(hasCycle){ // Se desbloquea el vértice si sí se encontró un ciclo. En caso de no encontrarlo, se bloquean todos los vértice en la trayectoria recorrida que no tienen ciclo. 
+                unblock(v);
+            } else{
+                for(int w: adjacencyList[v]){
+                    if (find(B[w].begin(), B[w].end(), v) == B[w].end()) {
+                        B[w].push_back(v);
+                    }
+                }
+            }
+
+            stack.pop_back();
+            return hasCycle;
+
+        }
+
+        void unblock(int u) {
+            blocked[u] = false;
+            for (int w : B[u]) {
+                if (blocked[w]) {
+                    unblock(w);
+                }
+            }
+            B[u].clear();
+        }
+
+
+};
+
+/*
+> PARÁMETROS: adjacencyList(estructura de datos con estructuras de dato dentro, en este caso un vector de vectores de enteros)
+> MÉTODO: Aplica el algoritmo de Johnson para detectar ciclos. Si detecta un ciclo de longitud impar, no es bipartito (porque no se pueden dividir en dos sets sin elementos repetidos)
+> ORDEN: O((V + E)(C + 1)). V = número de vértices. E = número de aristas/arcos. C = número de ciclos elementales.
+> RETORNO: valor booleano, que determina si es bipartito o no. 
+*/
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
+    JohnsonCycleDetector detectCycles(adjacencyList);
+    return detectCycles.oddCycle;
+}
 
 template <typename T>
 using vecGraph = Graph<std::vector, std::vector, T>; // Alias template 
@@ -99,10 +294,30 @@ int main()
 
     // PRUEBA DE FUNCIONALIDADES DE LOS MÉTODOS IMPLEMENTADOS.
     Graph<> functionTestGraph;
+    int n = 0, m = 0;
+    while(std::cout<<"Mostrar a partir del vértice: " && !aceptaEnteros(n)){
+        std::cout<<"\nSolo enteros positivos. ";
+    }
+    while(std::cout<<"Cantidad de arcos: " && !aceptaEnteros(m)){
+        std::cout<<"\nSolo enteros positivos. ";
+    }
+    std::cout<<std::endl;
 
-    testGraphContainer.topologicalSort();
+    topologicalSort(testGraphContainer.adjacencyList, n, m);
     std::cout<<"\nEs bipartito: ";
     std::cout<<bipartiteGraph(testGraphContainer2.adjacencyList);
     std::cout<<"\nEs bipartito: ";
     std::cout<<bipartiteGraph(testGraphContainer3.adjacencyList);
+    std::cout<<"\nEs bipartito: ";
+    std::cout<<bipartiteGraph(testGraphContainer.adjacencyList);
+    std::cout<<"\n";
+
+    int w = 0, x = 0;
+    while(std::cout<<"A partir del vértice: " && !aceptaEnteros(w)){
+        std::cout<<"\nSolo enteros positivos. ";
+    }
+    while(std::cout<<"Cantidad de arcos: " && !aceptaEnteros(x)){
+        std::cout<<"\nSolo enteros positivos. ";
+    }
+    std::cout<<"\nEs arbol: "<<isTree(testGraphContainer.adjacencyList, w, x);
 }

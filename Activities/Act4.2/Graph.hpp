@@ -13,12 +13,6 @@ bool canDFS(int vertex, int parent, vertContainer<adjContainer<T>>& graph, std::
 template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
 bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m);
 
-template<typename weight_type>
-struct arch{
-    weight_type weight;
-    int destination;
-};
-
 template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
 using container = vertContainer<adjContainer<T>>;
 
@@ -406,34 +400,6 @@ void Graph<vertContainer, adjContainer, T>::clear(){
     adjacencyList = container(); // Esto es posible porque el contenedor, en su sobrecarga de asignación, ya tiene un proceso que elimina los datos actuales y cambia a los datos nuevos. No necesito eliminar el contenedor, dentro de su implementación se hace todo esto.
 }
 
-template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-void Graph<vertContainer, adjContainer, T>::topologicalSort(){
-    std::vector<bool> visited(adjacencyList.size(), false);
-    std::stack<T> vertexOrdered;
-
-    for(int v = 0; v < adjacencyList.size(); v++){
-        if(!visited[v]){
-            topologicalSortRec(v, visited, vertexOrdered);
-        }
-    }
-
-    while(!vertexOrdered.empty()){
-        std::cout<<vertexOrdered.top()<<" ";
-        vertexOrdered.pop();
-    }
-}
-
-template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-void Graph<vertContainer, adjContainer, T>::topologicalSortRec(int v, std::vector<bool>& visited, std::stack<T>& vertexOrdered){
-    visited[v] = true;
-    for(int i = 0; i < adjacencyList[v].size(); i++){
-        if(!visited[i]){ 
-            topologicalSortRec(i, visited, vertexOrdered);
-        }
-    }
-    vertexOrdered.push(v);
-}
-
 /*
 PARAMETROS: int vertex, vértice actual.
             int parent, vértice de la recursión anterior, padre directo.
@@ -443,6 +409,7 @@ MÉTODO: Si la lista de adyacencia está vacía, no hace nada. Si no, la limpia 
 ORDER: O(V+E),  donde V es el número de vértices y E es el número de aristas en adjList.
 RETORNA: bool. true si no encuentra ciclos, false si encuentra ciclos.
 */
+/*
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool canDFS(int vertex, int parent, vertContainer<adjContainer<T>>& graph, std::vector<bool>& isVisited){
 
@@ -459,6 +426,7 @@ bool canDFS(int vertex, int parent, vertContainer<adjContainer<T>>& graph, std::
     }
     return true;
 }
+*/
 
 /*
 PARAMETROS: vertContainer<adjContainer<T>>& graph, grafo al que se verificara la existencia de un árbol.
@@ -468,6 +436,7 @@ MÉTODO: Si la lista de adyacencia está vacía, no 1 menos que el número de v�
         y que todos sus nodos hayan sido visitados sin ciclos.hace nada. Si no, la limpia asignando una lista de vértices vacia.
 ORDER: O(V+E),  donde V es el número de vértic tiene estructura de árbolde aristas no tiene estructura de árbolORNA: bool. true si no encuentra ciclos, false si encuentra ciclos.
 */
+/*
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m){
     if(n-1 != m)
@@ -485,8 +454,8 @@ bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m){
 
     return true;
 }
-
-
+*/
+/*
 // Es una alternativa costosa para los grafos dirigidos. 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 struct JohnsonCycleDetector{
@@ -555,7 +524,8 @@ struct JohnsonCycleDetector{
 
 
 };
-
+*/
+/*
 // Esto es mucho más complicado para grafos dirigidos. Para los no dirigidos, ambas conexiones se mantienen, y no puede suceder que se comience a mitad de una cadena. No obstante, para grafos dirigidos, el begin 0, puede eventualmente ser apuntado por otro vértice que no se encuentra después del cero, sino antes. Por ende, es necesario realizar backtracking para colorear de acorde al color contrario al de la cadena (si es un vecino). Pero puede tener varios vecinos cuyos nodos sean coloreados de tal manera que, para  
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
@@ -567,3 +537,44 @@ bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
     }
     return true;
 }
+*/
+
+
+/*
+PARÁMETROS: ninguno.
+> MÉTODO: Realiza un recorrido DFS recursivo por cada vértice no visitado. Imprime la pila con los vértices en orden topológico.
+> ORDEN: O()
+> RETORNO: void.
+*/
+/*
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+void Graph<vertContainer, adjContainer, T>::topologicalSort(){
+    std::vector<bool> visited(adjacencyList.size(), false);
+    std::stack<T> vertexOrdered;
+
+    for(int v = 0; v < adjacencyList.size(); v++){
+        if(!visited[v]){
+            topologicalSortRec(v, visited, vertexOrdered);
+        }
+    }
+}
+*/
+
+/*
+PARÁMETROS: V (el vértice a partir del cual se desea realizar el dfs), visited (vector con los vértices ya visitados), vertexOrdered (stack que guarda los datos en orden topológico).
+> MÉTODO: Realiza un recorrido DFS recursivo por cada vértice no visitado. Hasta que llega al último vértice al que puede a partir del vértice inicial especificado, lo agrega a la pila y se regresa al vértice pasado para explorar los vértices vecinos aún no visitados.
+> ORDEN: O(V)
+> RETORNO: void.
+*/
+/*
+template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
+void Graph<vertContainer, adjContainer, T>::topologicalSortRec(int v, std::vector<bool>& visited, std::stack<T>& vertexOrdered){
+    visited[v] = true;
+    for(const auto& neighbor:adjacencyList[v]){
+        if(!visited[neighbor]){ 
+            topologicalSortRec(neighbor, visited, vertexOrdered);
+        }
+    }
+    vertexOrdered.push(v);
+}
+*/
