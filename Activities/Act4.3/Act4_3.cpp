@@ -9,7 +9,6 @@ Rodolfo Blas Romero Valdez - A01741665
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <unordered_map>
 
 #include "..\..\DataStructures\List\DoubleLL.hpp"
 #include "..\..\DataStructures\Tree\SplayTree\SplayTree.hpp"
@@ -60,15 +59,16 @@ int main(){
     }
 
     // VISUALIZACIÓN DE GRAFO.
-    int columnMax = 3, columnCount = 1; // Solo para que se visualicen varias ips en una misma línea
+    int columnMax = 3, columnCount = 0; // Solo para que se visualicen varias ips en una misma línea
     for(const auto& vertex:adj){
-        std::cout<<vertex<<" ";
+        std::cout<<vertex<<"   ";
         if(columnCount == columnMax){
             std::cout<<"\n";
-            columnCount = 1;
+            columnCount = 0;
         }
         columnCount++;
     }
+    std::cout<<"\n\n";
 
     // ORDENAMIENTO DE LOS DATOS
     ordenaMerge(adj, adj.size());
@@ -76,7 +76,7 @@ int main(){
     // DESPLIEGUE POR CANTIDAD DE ACCESOS
     int showIp = 5;
     auto it =adj.rbegin();
-    for(auto it = adj.rbegin(); it != adj.rend() && showIp != 0; ++it, --showIp){
+    for(auto it = adj.rbegin(); it != adj.rend() && showIp != 0; ++it, showIp--){
         std::cout<<*it<<"\n";
     }
     std::cout<<"\n";
