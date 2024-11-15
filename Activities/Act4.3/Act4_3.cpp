@@ -55,6 +55,7 @@ int main(){
         location = std::find(adj.begin(), adj.end(), ipOrDest.second);
         if(location != adj.end()){
             location -> fanOut++;
+            std::cout<<"";
         }
     }
 

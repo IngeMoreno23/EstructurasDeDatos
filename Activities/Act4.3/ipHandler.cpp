@@ -96,7 +96,6 @@ struct IpFreq{
             adjacencyList= std::vector<std::string>();
         }
         void addConnection(std::string _ip){
-            fanOut++;
             adjacencyList.push_back(_ip);
         }
         bool operator>(const IpFreq& other){
@@ -116,9 +115,6 @@ struct IpFreq{
         }
         void operator+(int addition){
             fanOut+=addition;
-        }
-        void operator++(){
-            fanOut++;
         }
         
         // Por alguna razón, si getData no regresa T por referencia, y como parámetros de la sobrecarga de << es const, (que creo que lleva a recibir un valor temporal), no se imprime nada.
