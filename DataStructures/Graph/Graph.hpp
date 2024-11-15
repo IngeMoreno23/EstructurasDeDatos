@@ -14,9 +14,6 @@ bool canDFS(int vertex, int parent, vertContainer<adjContainer<T>>& graph, std::
 template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
 bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m);
 
-template <template <typename...> class vertContainer = std::vector, template <typename...> class adjContainer = std::vector, typename T = int>
-bool bipartiteGraph(vertContainer<adjContainer<T>>& graph);
-
 template<typename weight_type>
 struct arch{
     weight_type weight;
@@ -107,19 +104,6 @@ Graph<vertContainer, adjContainer, T>::Graph(const Graph& otherGraph, bool _dire
     
     adjacencyList = container(otherGraph.adjacencyList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
 }
-
-/*
-PARAMETROS: const Graph& otherGraph, otro grafo que se utilizará para inicializar la lista de adyacencia del grafo.
-MÉTODO: Reemplaza la lista de adyacencia actual con la lista de adyacencia de otherGraph.
-ORDER: O(V+E), donde V es el número de vértices y E es el número de aristas en otherGraph.
-RETORNA: const Graph<vertContainer, adjContainer, T>&, una referencia al grafo actual.
-*/
-/*
-template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-const Graph<vertContainer, adjContainer, T>& Graph<vertContainer, adjContainer, T>::operator=(const Graph& otherGraph){
-    adjacencyList = container(otherGraph.adjacencyList);  // ESTO CONFÍA EN QUE LA ESTRUCTURA DE DATOS UTILIZADA TIENE SOBRECARGADO EL OPERADOR DE ASIGNACIÓN.
-}
-*/
 
 /*
 PARAMETROS: int v, el número de vértices del grafo.
@@ -489,98 +473,6 @@ bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m){
 
     return true;
 }
-
-
-// Es una alternativa costosa para los grafos dirigidos. 
-template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-struct JohnsonCycleDetector{
-    private:
-        std::vector<std::vector<int>> B;
-        std::vector<bool> blocked;
-        std::vector<int> stack; 
-        int V; // Tamaño de la lista de adyacencia
-
-    public:
-        std::set<int> cycles; // Usualmente se almacenan ciclos únicos, pero para la implementación solo guardaré el tamaño de los ciclos.
-        // std::set<std::vector<int>> cycles; // Usualmente se visualiza así
-        JohnsonCycleDetector(vertContainer<adjContainer<T>>& adjacencyList){
-            this -> V = adjacencyList.size();
-            B.resize(V); // Se cambia el tamaño a la cantidad de nodos que tiene la lista.
-            blocked.resize(V, false); 
-            for (int i = 0; i < V; ++i) {
-                std::fill(blocked.begin(), blocked.end(), false); // Reset a los nodos bloqueados, tanto en blocked como en B.
-                for (auto& list : B) {
-                    list.clear();
-                }
-                findCyclesFrom(i, i, adjacencyList); // Encuentra los ciclos a partir de i, 
-            }
-        }
-        bool findCyclesFrom(int v, int start, vertContainer<adjContainer<T>>& adjacencyList){ // v es el vértice actual 
-            bool hasCycle = false; 
-            stack.push_back(v); // Agrega el vértice al stack que almacena ciclos.
-            blocked[v] = true;  // Bloquea el vértice en caso de que no se contenga un ciclo.
-
-            for(int w: adjacencyList[v]){
-                if(w == start){ // Si ha regresado al nodo inicial, se agrega el ciclo al set de ciclos. Se comentaron las líneas del algoritmo que no se requieren en esta implementación, pues no se necesitan visualizar los ciclos, solo requiero la cantidad de vértices en ellos
-                    // stack.push_back(start); 
-                    cycles.insert(stack.size());
-                    // stack.pop_back();
-                    hasCycle = true; 
-                } else if(!blocked[w]){
-                    if (findCyclesFrom(w, start, adjacencyList)){
-                        hasCycle = true;
-                    }
-                }
-            }
-            if(hasCycle){ // Se desbloquea el nodo si sí se encontró un ciclo. En caso de no encontrarlo, se bloquean todos los nodos que no tienen ciclo. 
-                unblock(v);
-            } else{
-                for(int w: adjacencyList[v]){
-                    if (find(B[w].begin(), B[w].end(), v) == B[w].end()) {
-                        B[w].push_back(v);
-                    }
-                }
-            }
-
-            stack.pop_back();
-            return hasCycle;
-
-        }
-
-        void unblock(int u) {
-            blocked[u] = false;
-            for (int w : B[u]) {
-                if (blocked[w]) {
-                    unblock(w);
-                }
-            }
-            B[u].clear();
-        }
-
-        void printCycles() {
-            for (const auto& cycle : cycles) {
-                std::cout << "Cycle found: ";
-                for (int node : cycle) {
-                    std::cout << node << " ";
-                }
-                std::cout << "(Length: " << cycle.size() << ")" << std::endl;
-            }
-        }
-};
-
-// Esto es mucho más complicado para grafos dirigidos. Para los no dirigidos, ambas conexiones se mantienen, y no puede suceder que se comience a mitad de una cadena. No obstante, para grafos dirigidos, el begin 0, puede eventualmente ser apuntado por otro vértice que no se encuentra después del cero, sino antes. Por ende, es necesario realizar backtracking para colorear de acorde al color contrario al de la cadena (si es un vecino). Pero puede tener varios vecinos cuyos nodos sean coloreados de tal manera que, para  
-template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
-bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList){
-    JohnsonCycleDetector detectCycles(adjacencyList);
-    for(const auto& cycle:detectCycles.cycles){
-        if((cycle) % 2 == 1){
-            return false;
-        }
-    }
-    return true;
-}
-
-
 
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 inline bool bipartiteGraphHelper(vertContainer<adjContainer<T>>& adjacencyList, 

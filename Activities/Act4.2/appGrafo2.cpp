@@ -89,7 +89,10 @@ void loadGraph(int n, int m, Graph<vertContainer, adjContainer, T>& graph){
 }
 
 /*
-> PARÁMETROS: adjacencyList (lista de adyacencia con los vértices y sus respectivas conexiones), V (el vértice a partir del cual se desea realizar el dfs), visited (vector con los vértices ya visitados), vertexOrdered (stack que guarda los datos en orden topológico).
+> PARÁMETROS: adjacencyList (lista de adyacencia con los vértices y sus respectivas conexiones), 
+            V (el vértice a partir del cual se desea realizar el dfs), 
+            visited (vector con los vértices ya visitados), 
+            vertexOrdered (stack que guarda los datos en orden topológico).
 > MÉTODO: Realiza un recorrido DFS recursivo por cada vértice no visitado. Hasta que llega al último vértice al que puede a partir del vértice inicial especificado, lo agrega a la pila y se regresa al vértice pasado para explorar los vértices vecinos aún no visitados.
 > ORDEN: O(V + E)
 > RETORNO: void.
@@ -106,14 +109,16 @@ void topologicalSortRec(vertContainer<adjContainer<T>>& adjacencyList, int v, st
 }
 
 /*
-> PARÁMETROS: adjacencyList (lista de adyacencia con los vértices y sus respectivas conexiones), n (entero que indica a cuántos vértices tiene la lista), m (entero que indica cuantos arcos tiene la lista de adyacencia).
+> PARÁMETROS: adjacencyList (lista de adyacencia con los vértices y sus respectivas conexiones), 
+            n (entero que indica a cuántos vértices tiene la lista), 
+            m (entero que indica cuantos arcos tiene la lista de adyacencia).
 > MÉTODO: Realiza un recorrido DFS recursivo por cada vértice no visitado. Imprime la pila con los vértices en orden topológico.
 > ORDEN: O(V + E)
 > RETORNO: void.
 */
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 void topologicalSort(vertContainer<adjContainer<T>>& adjacencyList, int n, int m){
-    if (n < 0 || m < 0){
+    if (n <= 0 || m < 0){
         throw(std::out_of_range("Parámetros fuera de rango"));
     }
     std::vector<bool> visited(adjacencyList.size(), false);
@@ -166,7 +171,8 @@ ORDER: O(V+E),  donde V es el número de vértic tiene estructura de árbolde ar
 */
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool isTree(vertContainer<adjContainer<T>>& graph, int n, int m){
-    if (n < 0 || m < 0){
+
+    if (n <= 0 || m < 0){
         throw(std::out_of_range("Parámetros fuera de rango"));
     }
     if(n-1 != m)
@@ -262,8 +268,19 @@ struct JohnsonCycleDetector{
 
 };
 
-
-
+/*
+> PARÁMETROS: adjacencyList (lista de adyacencia con arcos para cada nodo), 
+              visited (vector de bool, indica qué vértices han sido visitados), 
+              setA (set de ints, almacena los vértices del primer color), 
+              setB (set de ints, almacena los vértices del segundo color), 
+              currentSet (puntero tipo set, apunta al conjunto actual donde se insertará el siguiente vértice),
+              isSetA (bool, indica si el vértice actual pertenece al setA),
+              current (entero, indica el vértice actual siendo procesado).
+> MÉTODO: Función auxiliar recursiva que implementa DFS para colorear los vértices en dos conjuntos.
+          Verifica que cada vértice adyacente pertenezca al conjunto opuesto del vértice actual.
+> ORDEN: O(V + E) donde V es el número de vértices y E el número de aristas
+> RETORNO: bool - true si el subgrafo procesado es bipartito, false en caso contrario.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 inline bool bipartiteGraphHelper(vertContainer<adjContainer<T>>& adjacencyList, 
                                 std::vector<bool>& visited, 
@@ -289,10 +306,23 @@ inline bool bipartiteGraphHelper(vertContainer<adjContainer<T>>& adjacencyList,
     return true;
 }
 
+
+/*
+> PARÁMETROS: adjacencyList (lista de adyacencia con los nodos y sus arcos),
+              n (entero, número de vértices),
+              m (entero, número de aristas).
+> MÉTODO: Verifica si un grafo es bipartito utilizando DFS. Divide los vértices en dos conjuntos
+          setA y setB, de manera que todas las aristas conecten vértices de diferentes
+          conjuntos. Inicia un nuevo DFS para cada vértice no visitado.
+> ORDEN: O(V + E) donde V es el número de vértices y E el número de aristas
+> RETORNO: bool - true si el grafo es bipartito, false en caso contrario.
+*/
 template <template <typename...> class vertContainer, template <typename...> class adjContainer, typename T>
 bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList, int n, int m){
-    
-    if (n < 0 || m < 0){
+    if(adjacencyList.size() == 0){
+        throw(std::invalid_argument("Grafo vacío"));
+    }
+    if (n <= 0 || m < 0){
         throw(std::out_of_range("Parámetros fuera de rango"));
     }
 
@@ -317,7 +347,7 @@ bool bipartiteGraph(vertContainer<adjContainer<T>>& adjacencyList, int n, int m)
     }
     return true;
 
-    /*
+    /* // Implementación descartada
     JohnsonCycleDetector detectCycles(adjacencyList);
     return !detectCycles.oddCycle;
     */    

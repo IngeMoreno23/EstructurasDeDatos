@@ -9,7 +9,7 @@ template <typename T>
 void ordenaMerge(std::vector<T> &v, int n){
     if (n == 1) return;
     int mitad = n / 2;
-    std::vector<int> v1, v2;
+    std::vector<T> v1, v2;
     for (int i = 0; i < mitad; i++) v1.push_back(v[i]);
     for (int i = mitad; i < n; i++) v2.push_back(v[i]);
     ordenaMerge(v1, mitad);
