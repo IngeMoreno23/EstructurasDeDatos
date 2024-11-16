@@ -43,7 +43,7 @@ int main(){
         adj.push_back(IpFreq(myLine));
     }
 
-    // ADICIÓN DE ARCOS Y BÚSQUEDA DE INFORMACIÓN (para agregar los fanouts)
+    // ADICIÓN DE ARCOS Y BÚSQUEDA DE INFORMACIÓN (para agregar los fanIns)
     std::pair<std::string, std::string> ipOrDest;
     for(int i = 0; i < connections; i++){
         std::getline(myBitacora, myLine);
@@ -54,7 +54,7 @@ int main(){
         }
         location = std::find(adj.begin(), adj.end(), ipOrDest.second);
         if(location != adj.end()){
-            location -> fanOut++;
+            location -> fanIn++;
             std::cout<<"";
         }
     }

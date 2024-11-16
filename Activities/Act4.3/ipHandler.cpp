@@ -86,40 +86,40 @@ void ordenaMerge(std::vector<T> &v, int n){
 
 struct IpFreq{
     public:
-        int fanOut;
+        int fanIn;
         std::vector<std::string> adjacencyList;
         std::string ip; 
 
-        IpFreq(int frequency, std::vector<std::string> ips):fanOut(frequency),adjacencyList(ips){}
-        IpFreq():fanOut(0), ip(""){}
-        IpFreq(std::string _ip):fanOut(0),ip(_ip){
+        IpFreq(int frequency, std::vector<std::string> ips):fanIn(frequency),adjacencyList(ips){}
+        IpFreq():fanIn(0), ip(""){}
+        IpFreq(std::string _ip):fanIn(0),ip(_ip){
             adjacencyList= std::vector<std::string>();
         }
         void addConnection(std::string _ip){
             adjacencyList.push_back(_ip);
         }
         bool operator>(const IpFreq& other){
-            return (fanOut != other.fanOut) ? fanOut > other.fanOut : ip > other.ip;
+            return (fanIn != other.fanIn) ? fanIn > other.fanIn : ip > other.ip;
         }
         bool operator == (const std::string& _ip){
             return ip == _ip;
         }
         bool operator<(const IpFreq& other){
-            return (fanOut != other.fanOut) ? fanOut < other.fanOut : ip > other.ip;        
+            return (fanIn != other.fanIn) ? fanIn < other.fanIn : ip > other.ip;        
         }
-        bool operator==(const IpFreq& other){ // Este se utiliza en std::find(). Me gustaría también sobrecargar para que compare los fanOut, pero no puedo porque los std::find no funcionarían.
+        bool operator==(const IpFreq& other){ // Este se utiliza en std::find(). Me gustaría también sobrecargar para que compare los fanIn, pero no puedo porque los std::find no funcionarían.
             return ip == other.ip;
         }
         bool operator!=(const IpFreq& other){
             return ip != other.ip;
         }
         void operator+(int addition){
-            fanOut+=addition;
+            fanIn+=addition;
         }
         
         // Por alguna razón, si getData no regresa T por referencia, y como parámetros de la sobrecarga de << es const, (que creo que lleva a recibir un valor temporal), no se imprime nada.
         friend std::ostream& operator<<(std::ostream& os, const IpFreq& ipFreq){ // Se tuvo que agregar const para que aceptara tanto objetos temporales como persistentes. Para la impresión, se usa getData, que regresa un valor temporal. Al intentar ingresarlo a la función, que acepta por referencia, arroja un error de compilación. Por ende, se cambia a const que acepta ambos valores, y no copia ipFreq.
-            os <<"IP: " << ipFreq.ip << " FanOut: " << ipFreq.fanOut;
+            os <<"IP: " << ipFreq.ip << " fanIn: " << ipFreq.fanIn;
             return os;
         }
 };
