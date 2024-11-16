@@ -1,4 +1,3 @@
-#include "parameterConfiguration.cpp"
 #include <string>
 #include <sstream>
 #include <vector>

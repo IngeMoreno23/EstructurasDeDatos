@@ -2,22 +2,17 @@
 Cristian Ricardo Luque Arámbula - A01741850
 Oliver Moreno Ibarra - A01742930
 Rodolfo Blas Romero Valdez - A01741665
-Última modificación: 28/10/2024
+Última modificación: 15/11/2024
 */
 
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <string>   
 #include <sstream>
 
 #include "..\..\DataStructures\List\DoubleLL.hpp"
-#include "..\..\DataStructures\Tree\SplayTree\SplayTree.hpp"
 #include "..\..\DataStructures\Graph\Graph.hpp"
 #include "ipHandler.cpp"
-
-template <typename T>
-using vecGraph = Graph<std::vector, std::vector, T>; // Alias template 
-
 
 int main(){
     // LECTURA DE DATOS 
@@ -27,7 +22,6 @@ int main(){
         return 1;
     }
 
-    vecGraph<std::string> ipComm;
     std::string myLine;
     std::stringstream sstr;
 
