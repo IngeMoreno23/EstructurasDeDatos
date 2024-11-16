@@ -85,18 +85,21 @@ void ordenaMerge(std::vector<T> &v, int n){
 }
 
 struct IpFreq{
+    enum class compareBy{FANIN, FANOUT};
     public:
         int fanIn;
+        int fanOut;
         std::vector<std::string> adjacencyList;
         std::string ip; 
 
-        IpFreq(int frequency, std::vector<std::string> ips):fanIn(frequency),adjacencyList(ips){}
-        IpFreq():fanIn(0), ip(""){}
-        IpFreq(std::string _ip):fanIn(0),ip(_ip){
+        IpFreq(int frequency, std::vector<std::string> ips):fanIn(frequency),adjacencyList(ips),fanOut(0){}
+        IpFreq():fanIn(0), ip(""),fanOut(0){}
+        IpFreq(std::string _ip):fanIn(0),ip(_ip),fanOut(0){
             adjacencyList= std::vector<std::string>();
         }
         void addConnection(std::string _ip){
             adjacencyList.push_back(_ip);
+            fanOut++;
         }
         bool operator>(const IpFreq& other){
             return (fanIn != other.fanIn) ? fanIn > other.fanIn : ip > other.ip;
@@ -119,7 +122,7 @@ struct IpFreq{
         
         // Por alguna razón, si getData no regresa T por referencia, y como parámetros de la sobrecarga de << es const, (que creo que lleva a recibir un valor temporal), no se imprime nada.
         friend std::ostream& operator<<(std::ostream& os, const IpFreq& ipFreq){ // Se tuvo que agregar const para que aceptara tanto objetos temporales como persistentes. Para la impresión, se usa getData, que regresa un valor temporal. Al intentar ingresarlo a la función, que acepta por referencia, arroja un error de compilación. Por ende, se cambia a const que acepta ambos valores, y no copia ipFreq.
-            os <<"IP: " << ipFreq.ip << " fanIn: " << ipFreq.fanIn;
+            os <<"IP: " << ipFreq.ip << " fanIn: " << ipFreq.fanIn << " fanOut: " << ipFreq.fanOut;
             return os;
         }
 };

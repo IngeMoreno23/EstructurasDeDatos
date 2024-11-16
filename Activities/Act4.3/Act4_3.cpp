@@ -76,10 +76,20 @@ int main(){
     
     // DESPLIEGUE POR CANTIDAD DE ACCESOS
     int showIp = 5;
-    auto it =adj.rbegin();
     for(auto it = adj.rbegin(); it != adj.rend() && showIp != 0; ++it, showIp--){
         std::cout<<*it<<"\n";
     }
     std::cout<<"\n";
+
+    std::sort(adj.begin(), adj.end(), [](const IpFreq& a, const IpFreq& b) {
+        return (a.fanOut != b.fanOut) ? a.fanOut < b.fanOut : a.ip < b.ip;
+    });
+    
+    showIp = 5;
+    for(auto it = adj.rbegin(); it != adj.rend() && showIp != 0; ++it, showIp--){
+        std::cout<<*it<<"\n";
+    }
+    std::cout<<"\n";
+
 
 }
