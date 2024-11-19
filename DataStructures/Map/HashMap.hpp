@@ -1,6 +1,5 @@
 #include <iostream>
 #include <stdexcept>
-#include "..\Queue\Queue.hpp"
 
 int isPrime(int n)
 {
@@ -20,20 +19,20 @@ int isPrime(int n)
     return true;
 }
 
-template <class U>
+template <class _key, class _value>
 struct mapElement{
     public: 
-        int index;
+        _key key;
         int state;
-        U value;
+        _value value;
         
-        mapElement():index(-1), state(-1), value(U()){};
+        mapElement():index(_key()), state(-1), value(_value()){};
 };
 
-template <class T = int> 
+template <class _key = int, class _value = int> 
 class HashMap{
     private: 
-        mapElement<T> *map;
+        mapElement<_key, _value> *map;
         int tableSize;
     public:
         HashMap();
@@ -41,18 +40,19 @@ class HashMap{
 
         const HashMap& operator=(HashMap& otherHashMap);
         bool operator == (HashMap& otherHashMap);
-        int hash(T& element);
-        void insert(T& element);
+        virtual int hash(_key& element);
+        void insert(_key& element);
         void show();
 };
 
-template <class T>
-HashMap<T>::HashMap():tableSize(101){ // Número primo 
-    map = new T[tableSize];
+
+template <class _key, class _value> 
+HashMap<_key, _value>::HashMap():tableSize(101){ // Número primo 
+    map = new mapElement[tableSize];
 }
 
-template <class T>
-HashMap<T>::HashMap(int _tableSize){
+template <class _key, class _value> 
+HashMap<_key, _value>::HashMap(int _tableSize){
     if(isPrime(_tableSize)){
         tableSize = _tableSize;
     } else if (_tableSize % 2 == 0){
@@ -65,27 +65,25 @@ HashMap<T>::HashMap(int _tableSize){
 }
 
 // Se supone que este método es implementado por el objeto en particular que se almacena en el mapa.  
-template <class T>
-int HashMap<T>::hash(T& element){
+template <class _key, class _value> 
+int HashMap<_key, _value>::hash(_key& element){
 /*
 ESTE MÉTODO SE IMPLEMENTA CUANDO SE GUARDAN OBJETOS NO PRIMITIVOS.
 */
 }
 
-template <>
-int HashMap<int>::hash(int& element){
-    return element % tableSize;
-}
-
-template <class T>
-void HashMap<T>::insert(T& element){
+template <class _key, class _value> 
+void HashMap<_key, _value>::insert(_key& element){
     int index = hash(element); // se obtiene el índice a partir de la función hash
-    for(int i = 0; (map + hash(index)) -> state == -1 && i <= tableSize; i++){ // NO sé cual de las dos condiciones sea más costosa en assembly. !(hash(index) + 1) o hash(index) == -1
+
+    for(int i = 0; map[index].state == -1 && i <= tableSize; i++){ // NO sé cual de las dos condiciones sea más costosa en assembly. !(hash(index) + 1) o hash(index) == -1
         index = (index + 1) % tableSize; 
     }
     
-    if((map + index) -> state != 1){
-        map -> state = 1;
+    if(map[index].state != 1){
+        map[index].index = index;
+        map[index].state = 1;
+        map[index].key = element;
     }
 
 }
