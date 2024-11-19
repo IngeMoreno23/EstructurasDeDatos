@@ -54,7 +54,7 @@ int main(){
     }
 
     // VISUALIZACIÓN DE GRAFO.
-    int columnMax = 3, columnCount = 0; // Solo para que se visualicen varias ips en una misma línea
+    int columnMax = 3, columnCount = 1; // Solo para que se visualicen varias ips en una misma línea
     for(const auto& vertex:adj){
         std::cout<<vertex<<"   ";
         if(columnCount == columnMax){
