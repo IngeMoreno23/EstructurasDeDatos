@@ -24,7 +24,7 @@ template <class U>
 struct mapElement{
     public: 
         int index;
-        int state
+        int state;
         U value;
         
         mapElement():index(-1), state(-1), value(U()){};
@@ -39,7 +39,7 @@ class HashMap{
         HashMap();
         HashMap(int _tableSize);
 
-        const HashMap& operator=();
+        const HashMap& operator=(HashMap& otherHashMap);
         bool operator == (HashMap& otherHashMap);
         int hash(T& element);
         void insert(T& element);
