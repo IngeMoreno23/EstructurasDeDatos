@@ -80,7 +80,7 @@ int HashMap<int>::hash(int& element){
 template <class T>
 void HashMap<T>::insert(T& element){
     int index = hash(element); // se obtiene el índice a partir de la función hash
-    for(int i = 0; hash(map + index) -> state == -1 && i <= tableSize; i++){ // NO sé cual de las dos condiciones sea más costosa en assembly. !(hash(index) + 1) o hash(index) == -1
+    for(int i = 0; (map + hash(index)) -> state == -1 && i <= tableSize; i++){ // NO sé cual de las dos condiciones sea más costosa en assembly. !(hash(index) + 1) o hash(index) == -1
         index = (index + 1) % tableSize; 
     }
     
