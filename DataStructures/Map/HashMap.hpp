@@ -12,12 +12,11 @@ int isPrime(int n)
         return false;
     }
 
-    for(int i = 2; i * i < n; i += 2){
+    for(int i = 3; i * i <= n; i += 2){
         if(n % i == 0){
             return false;
         }
     }
-
     return true;
 }
 
@@ -28,40 +27,45 @@ struct mapElement{
         int state
         U value;
     
-        mapElement
 };
 
-template <class T = mapElement<class U>, class U> 
+template <class T> 
 class HashMap{
     private: 
-        T *map;
-        int capacity;
+        mapElement<T> *map;
+        int tableSize;
     public:
         HashMap();
-        HashMap(int _capacity);
-        void hash(int _index);
-        insert(U);
+        HashMap(int _tableSize);
+        int hash(int _index);
+        int insert(T& element);
+        void show();
 };
 
-template <class T, class U>
-HashMap<T, U>::HashMap():capacity(11){
-    map = new T[capacity];
+template <class T>
+HashMap<T>::HashMap():tableSize(101){ // Número impar 
+    map = new T[tableSize];
 }
 
-template <class T, class U>
-HashMap<T,U>::HashMap(int _capacity){
-    if(isPrime(_capacity)){
-        capacity = _capacity;
-    } else if (_capacity % 2 == 0){
-        _capacity ++;
+template <class T>
+HashMap<T>::HashMap(int _tableSize){
+    if(isPrime(_tableSize)){
+        tableSize = _tableSize;
+    } else if (_tableSize % 2 == 0){
+        _tableSize ++;
     }
-    while (!isPrime(_capacity)){
-        _capacity += 2;
+    while (!isPrime(_tableSize)){
+        _tableSize += 2;
     }
-    capacity = _capacity;
+    tableSize = _tableSize;
 }
 
-template <class T, class U>
-void HashMap<T,U>::hash(int _index){
+template <class T>
+int HashMap<T>::hash(int _index){
 
+}
+
+template <class T>
+int HashMap<T>::insert(T& element){
+    while(hash)
 }
