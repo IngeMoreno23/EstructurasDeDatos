@@ -26,10 +26,11 @@ struct mapElement{
         int index;
         int state
         U value;
-    
+        
+        mapElement():index(-1), state(-1), value(U()){};
 };
 
-template <class T> 
+template <class T = int> 
 class HashMap{
     private: 
         mapElement<T> *map;
@@ -37,13 +38,16 @@ class HashMap{
     public:
         HashMap();
         HashMap(int _tableSize);
-        int hash(int _index);
-        int insert(T& element);
+
+        const HashMap& operator=();
+        bool operator == (HashMap& otherHashMap);
+        int hash(T& element);
+        void insert(T& element);
         void show();
 };
 
 template <class T>
-HashMap<T>::HashMap():tableSize(101){ // Número impar 
+HashMap<T>::HashMap():tableSize(101){ // Número primo 
     map = new T[tableSize];
 }
 
@@ -60,12 +64,28 @@ HashMap<T>::HashMap(int _tableSize){
     tableSize = _tableSize;
 }
 
+// Se supone que este método es implementado por el objeto en particular que se almacena en el mapa.  
 template <class T>
-int HashMap<T>::hash(int _index){
+int HashMap<T>::hash(T& element){
+/*
+ESTE MÉTODO SE IMPLEMENTA CUANDO SE GUARDAN OBJETOS NO PRIMITIVOS.
+*/
+}
 
+template <>
+int HashMap<int>::hash(int& element){
+    return element % tableSize;
 }
 
 template <class T>
-int HashMap<T>::insert(T& element){
-    while(hash)
+void HashMap<T>::insert(T& element){
+    int index = hash(element); // se obtiene el índice a partir de la función hash
+    for(int i = 0; hash(map + index) -> state == -1 && i <= tableSize; i++){ // NO sé cual de las dos condiciones sea más costosa en assembly. !(hash(index) + 1) o hash(index) == -1
+        index = (index + 1) % tableSize; 
+    }
+    
+    if((map + index) -> state != 1){
+        map -> state = 1;
+    }
+
 }
