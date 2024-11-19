@@ -26,7 +26,7 @@ struct mapElement{
         int state;
         _value value;
         
-        mapElement():index(_key()), state(-1), value(_value()){};
+        mapElement():key(_key()), state(-1), value(_value()){};
 };
 
 template <class _key = int, class _value = int> 
