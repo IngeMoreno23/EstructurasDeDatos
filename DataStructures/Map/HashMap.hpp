@@ -46,7 +46,7 @@ class HashMap{
         const HashMap& operator=(HashMap& otherHashMap);
         _value& operator [](const _key& key);
         virtual int hash(const _key& key);
-        void insert(_key& key, _value& value);
+        void insert(const _key& key, const _value& value);
         void show();
         void eliminate(const _key& key);
 
@@ -83,7 +83,7 @@ ESTE MÉTODO SE IMPLEMENTA CUANDO SE GUARDAN OBJETOS NO PRIMITIVOS. En este caso
 }
 
 template <class _key, class _value> 
-void HashMap<_key, _value>::insert(_key& key, _value& value){
+void HashMap<_key, _value>::insert(const _key& key, const _value& value){
     int index = hash(key); // se obtiene el índice a partir de la función hash
 
     for(int i = 0; map[index].state == 1 && i < tableSize; index = (index + 1) % tableSize, i++){}
@@ -107,7 +107,7 @@ void HashMap<_key, _value>::eliminate(const _key& key){
         map[index].state = 0;
         map[index].value = _value();
     } else {
-        throw(std::exception("No such value exists"));
+        throw(std::logic_error("No such value exists"));
     }
 }
 

@@ -9,4 +9,7 @@ int main(){
     intHashMap.show();
     intHashMap[13] = 4;
     intHashMap.show();
+
+    intHashMap.insert(3,4);
+    intHashMap.show();
 }
