@@ -100,7 +100,7 @@ template <class _key, class _value>
 void HashMap<_key, _value>::eliminate(const _key& key){
     int index = hash(key); // se obtiene el índice a partir de la función hash
 
-    for(int i = 0; (map[index].key != key || map[index].state != -1) && i <= tableSize; index = (index + 1) % tableSize, i++){} // NO sé cual de las dos condiciones sea más costosa en assembly. !(hash(index) + 1) o hash(index) == -1
+    for(int i = 0; (map[index].key != key && map[index].state != -1) && i <= tableSize; index = (index + 1) % tableSize, i++){} // NO sé cual de las dos condiciones sea más costosa en assembly. !(hash(index) + 1) o hash(index) == -1
     
     if(map[index].key == key && map[index].state == 1){
         map[index].key = _key();
