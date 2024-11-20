@@ -7,5 +7,6 @@ int main(){
     intHashMap.show();
     intHashMap[2] = 10;
     intHashMap.show();
-
+    intHashMap[13] = 4;
+    intHashMap.show();
 }
