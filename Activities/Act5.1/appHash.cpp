@@ -2,14 +2,25 @@
 #include "..\..\DataStructures\Map\HashMap.hpp"
 
 int main(){
+
+    // Caso prueba 1: constructor con parámetros (tamaño de la tabla)
     HashMap<> intHashMap(10);
     std::cout<<"Tamaño "<<intHashMap.capacity()<<"\n";
     intHashMap.show();
-    intHashMap[2] = 10;
+
+    // Caso prueba 2: hash()
+    intHashMap[13] = 10;
     intHashMap.show();
-    intHashMap[13] = 4;
+
+    // Caso prueba 3: hash() con reacomodo lineal
+    intHashMap[2] = 4;
+    intHashMap.show();
+
+    // Caso prueba 4: insert(), con recorrido sobre una celda eliminada
+    intHashMap.eliminate(2);
     intHashMap.show();
 
     intHashMap.insert(3,4);
     intHashMap.show();
+    return 0;
 }

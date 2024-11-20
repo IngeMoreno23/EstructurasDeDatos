@@ -7,6 +7,9 @@ bool isPrime(int n)
         throw(std::invalid_argument("No se aceptan valores negativos"));
     }
 
+    if(n == 2)
+        return true;
+    
     if(n == 0 || n == 1 || n % 2 == 0){ // Esta parte del código busca quitar el 0 y el 1 de las opciones, así como todos los números pares. Porque la siguiente comprobación, no los toma en cuenta, puesto que no es necesario.
         return false;
     }
@@ -73,7 +76,12 @@ HashMap<_key, _value>::HashMap(int _tableSize){
 
 }
 
-// Se supone que este método es implementado por el objeto en particular que se almacena en el mapa.  
+/*
+PARÁMETROS: _key& key, llave a encontrar el hash.
+MÉTODO: Regresa el hash de la llave `key` con el método modular.
+ORDEN: O(1).
+RETURN: int, hash (índice base) de la llave.
+*/
 template <class _key, class _value> 
 int HashMap<_key, _value>::hash(const _key& key){
     return key % tableSize;
@@ -82,20 +90,39 @@ ESTE MÉTODO SE IMPLEMENTA CUANDO SE GUARDAN OBJETOS NO PRIMITIVOS. En este caso
 */
 }
 
+/*
+PARÁMETROS: _key& key, llave donde se insertará valor.
+            _value& value, valor asociado a la llave.
+MÉTODO: Usa la busqueda con el hash de la llave, e inserta el valor en la tabla hash hasta encontrar un espacio vacío.
+        Si la tabla hash está llena, no inserta el valor.
+        Si la llave ya existe, actualiza el valor asociado a la llave.
+ORDEN: Mejor caso O(1). Peor caso O(n), donde n es la capacidad de la tabla hash `tableSize`.
+RETURN: int, el tamaño de la tabla hash.
+*/
 template <class _key, class _value> 
 void HashMap<_key, _value>::insert(const _key& key, const _value& value){
     int index = hash(key); // se obtiene el índice a partir de la función hash
 
-    for(int i = 0; map[index].state == 1 && i < tableSize; index = (index + 1) % tableSize, i++){}
+    for(int i = 0; map[index].state != -1 && i < tableSize; index = (index + 1) % tableSize, i++){
+        if(map[index].key == key) { // Verifica si la llave ya existe
+            map[index].value = value;
+            return;
+        }
+    }
     
     if(map[index].state != 1){
         map[index].value = value;
         map[index].state = 1;
         map[index].key = key;
     }
-
 }
 
+/*
+PARÁMETROS: void.
+MÉTODO: Busca el valor asociado a la llave `key` en la tabla hash. Si no lo encuentra, lo inserta. 
+ORDEN: Mejor caso O(1). Peor caso O(n), donde n es la capacidad de la tabla hash `tableSize`.
+RETURN: int, el tamaño de la tabla hash.
+*/
 template <class _key, class _value> 
 void HashMap<_key, _value>::eliminate(const _key& key){
     int index = hash(key); // se obtiene el índice a partir de la función hash
@@ -113,8 +140,8 @@ void HashMap<_key, _value>::eliminate(const _key& key){
 
 /*
 PARÁMETROS: void.
-MÉTODO: Imprime cada indice del array "map" que contiene los elementos insertados o vacios de la tabla hasg
-ORDEN: O(n), donde n es el la capacidad de la tabla hash (tableSize).
+MÉTODO: Imprime cada indice del array `map` que contiene los elementos insertados o vacios de la tabla hasg
+ORDEN: O(n), donde n es el la capacidad de la tabla hash `tableSize`.
 RETURN: void.
 */
 template <class _key, class _value> 
@@ -129,7 +156,7 @@ void HashMap<_key, _value>::show(){
 
 /*
 PARÁMETROS: void.
-MÉTODO: Retorna la el atributo "tableSize" de la tabla hash. 
+MÉTODO: Retorna la el atributo `tableSize` de la tabla hash. 
 ORDEN: O(1).
 RETURN: int, el tamaño de la tabla hash.
 */
@@ -138,6 +165,12 @@ int HashMap<_key, _value>::capacity(){
     return tableSize;
 }
 
+/*
+PARÁMETROS: const _key& key, la llave a buscar en la tabla hash.
+MÉTODO: Busca el valor asociado a la llave `key` en la tabla hash. Si no lo encuentra, lo inserta como valor default. 
+ORDEN: Mejor caso O(1). Peor caso O(n), donde n es la capacidad de la tabla hash `tableSize`.
+RETURN: int, el tamaño de la tabla hash.
+*/
 template <class _key, class _value> 
 _value& HashMap<_key, _value>::operator[](const _key& key){
     int index = hash(key);
