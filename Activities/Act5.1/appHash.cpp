@@ -27,7 +27,8 @@ int main(){
     intHashMap.show();
 
     for(int i = 0; i < 15; i++){
-        intHashMap[i] = i;
+        intHashMap[i] = rand();
+        intHashMap.show();
     }
     
     intHashMap.show();
