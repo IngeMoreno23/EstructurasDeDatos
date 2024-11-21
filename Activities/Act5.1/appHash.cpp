@@ -28,7 +28,6 @@ int main(){
 
     for(int i = 0; i < 15; i++){
         intHashMap[i] = i;
-        intHashMap.show();
     }
     
     intHashMap.show();

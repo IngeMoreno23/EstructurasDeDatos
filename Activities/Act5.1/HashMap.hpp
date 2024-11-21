@@ -183,12 +183,11 @@ RETURN: int, el tamaño de la tabla hash.
 template <class _key, class _value> 
 _value& HashMap<_key, _value>::operator[](const _key& key){
     int index = hash(key), i = 0;
-    for(; (map[index].key != key && map[index].state == 1) && i < tableSize; index = (index + 1) % tableSize, i++){}
-
     if(float(size)/float(tableSize) > 0.75){
         redimension(2*tableSize);
     }
-    
+
+    for(; (map[index].key != key && map[index].state == 1) && i < tableSize; index = (index + 1) % tableSize, i++){}
     if(map[index].key != key && map[index].state != 1){ // Si no lo encuentra, marca como encontrado, porque muy posiblemente, al valor que se regresa se asigne otro. Y si no se le asigna otro, no debería usarse esta función sino find.
         map[index].key=key;
         map[index].state = 1;
