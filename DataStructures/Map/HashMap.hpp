@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdexcept>
+#include <utility>
 
 bool isPrime(int n)
 {
@@ -41,7 +42,7 @@ template <class _key = int, class _value = int>
 class HashMap{
     private: 
         mapElement<_key, _value> *map;
-        int tableSize;
+        size_t tableSize, size;
     public:
         HashMap();
         HashMap(int _tableSize);
@@ -53,16 +54,18 @@ class HashMap{
         void show();
         void eliminate(const _key& key);
 
+        void redimension(size_t newCapacity);
+
         int capacity();
 };
 
 template <class _key, class _value> 
-HashMap<_key, _value>::HashMap():tableSize(101){ // Número primo 
+HashMap<_key, _value>::HashMap():tableSize(101), size(0){ // Número primo
     map = new mapElement[tableSize];
 }
 
 template <class _key, class _value> 
-HashMap<_key, _value>::HashMap(int _tableSize){
+HashMap<_key, _value>::HashMap(int _tableSize): size(0){
     if(isPrime(_tableSize)){
         tableSize = _tableSize;
     } else if (_tableSize % 2 == 0){
@@ -86,7 +89,7 @@ template <class _key, class _value>
 int HashMap<_key, _value>::hash(const _key& key){
     return key % tableSize;
 /*
-ESTE MÉTODO SE IMPLEMENTA CUANDO SE GUARDAN OBJETOS NO PRIMITIVOS. En este caso 
+ESTE MÉTODO SE IMPLEMENTA CUANDO SE GUARDAN OBJETOS NO PRIMITIVOS. En este caso son enteros así que todo bien.
 */
 }
 
@@ -101,7 +104,7 @@ RETURN: int, el tamaño de la tabla hash.
 */
 template <class _key, class _value> 
 void HashMap<_key, _value>::insert(const _key& key, const _value& value){
-    int index = hash(key); // se obtiene el índice a partir de la función hash
+    int index = hash(key), i = 0; // se obtiene el índice a partir de la función hash
 
     for(int i = 0; map[index].state != -1 && i < tableSize; index = (index + 1) % tableSize, i++){
         if(map[index].key == key) { // Verifica si la llave ya existe
@@ -109,12 +112,18 @@ void HashMap<_key, _value>::insert(const _key& key, const _value& value){
             return;
         }
     }
-    
+
     if(map[index].state != 1){
         map[index].value = value;
         map[index].state = 1;
         map[index].key = key;
+        size++;
     }
+
+    if(float(size)/float(tableSize) > 0.75){
+        redimension(2*tableSize);
+    }
+    
 }
 
 /*
@@ -173,15 +182,31 @@ RETURN: int, el tamaño de la tabla hash.
 */
 template <class _key, class _value> 
 _value& HashMap<_key, _value>::operator[](const _key& key){
-    int index = hash(key);
+    int index = hash(key), i = 0;
+    for(; (map[index].key != key && map[index].state == 1) && i < tableSize; index = (index + 1) % tableSize, i++){}
 
-    for(int i = 0; (map[index].key != key && map[index].state == 1) && i < tableSize; index = (index + 1) % tableSize, i++){}
-    
-    
     if(map[index].key != key && map[index].state != 1){ // Si no lo encuentra, marca como encontrado, porque muy posiblemente, al valor que se regresa se asigne otro. Y si no se le asigna otro, no debería usarse esta función sino find.
         map[index].key=key;
         map[index].state = 1;
+        size++;
     }
 
+    if(float(size)/float(tableSize) > 0.75){
+        redimension(2*tableSize);
+    }
+    
     return map[index].value;
+
+}
+
+template <class _key, class _value>
+void HashMap<_key, _value>::redimension(size_t newCapacity){
+    mapElement<_key,_value> *pastMap = map;
+    map = new mapElement<_key,_value>[newCapacity];
+    
+    for(int i = 0; i < tableSize; i++){
+        map[i] = std::move(pastMap[i]);
+    }
+    tableSize = newCapacity;
+    delete[] pastMap;    
 }

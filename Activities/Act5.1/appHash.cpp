@@ -1,5 +1,5 @@
 #include <iostream>
-#include "..\..\DataStructures\Map\HashMap.hpp"
+#include "HashMap.hpp"
 
 int main(){
 
@@ -21,6 +21,16 @@ int main(){
     intHashMap.show();
 
     intHashMap.insert(3,4);
+    intHashMap.show();
+
+    intHashMap.insert(3,6);
+    intHashMap.show();
+
+    for(int i = 0; i < 15; i++){
+        intHashMap[i] = i;
+        intHashMap.show();
+    }
+    
     intHashMap.show();
     return 0;
 }
