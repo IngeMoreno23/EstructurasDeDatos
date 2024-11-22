@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <stdexcept>
 #include <utility>
@@ -50,7 +52,6 @@ class HashMap{
 
         const HashMap& operator=(const HashMap& otherHashMap);
         _value& operator [](const _key& key);
-        virtual int hash(const _key& key);
         void insert(const _key& key, const _value& value);
         void show();
         void eliminate(const _key& key);
@@ -58,7 +59,7 @@ class HashMap{
         void redimension(size_t newCapacity);
 
         int capacity();
-        friend void ordenaMerge(const HashMap<_key, _value>& , int n);
+        friend void ordenaMerge(const HashMap<_key, _value>& hashM);
 
         int getIndex(const _key& key);
 
@@ -121,8 +122,16 @@ int HashMap<_key, _value>::hash(const _key& key){
         return key;
     } else if(constexpr(std::is_same<_key, std::string>::value)){
         int hash = 0;
-        for(int i = 0; i < key.size(); i++){
-            hash += key[i];
+        std::string currentOctet = "";
+        // std::string ip con formato "XXX.XXX.XXX.XXX"
+        for(int i = 0; i < key.length(); i++){
+            if(key[i] == '.'){
+                // Primero hacemos un shift de 4 bits a la izquierda y luego hacemos un OR con los bits b_5, b_4, b_3, b_2
+                hash = hash << 4 | ((60 & std::stoi(currentOctet)) >> 2); // mask 60 = 0011 1100
+                currentOctet = "";
+            } else {
+                currentOctet += key[i];
+            }
         }
         return hash;
     } else {
@@ -292,6 +301,7 @@ const HashMap<_key, _value>& HashMap<_key, _value>::operator=(const HashMap<_key
 }
 
 
+/*
 template <class _key, class _value>
 HashMap<_key, _value>::Iterator::Iterator(mapElement<_key, _value> *mapElem): current(mapElem){}
 
@@ -335,3 +345,49 @@ template <class _key, class _value>
 bool HashMap<_key, _value>::Iterator::operator!=(const Iterator& otro) const{
 
 }
+
+*/
+
+
+
+template <class _key, class _value>
+void ordenaMerge(const HashMap<_key, _value>& hash){
+    ordenaMerge(hash.map, hash.tableSize - 1);
+}
+
+
+// PARAMETROS: Vector de enteros v y el tamaño del vector n
+// METODO: Esta función es recursiva donde se divide el vector en 2 partes iguales, formando un arbol binario hasta llegar a un vector de 1.
+// Posteriormente se compara cada elemento de las 2 partes inferiores del arbol binario y se ordenan de menor a mayor en un vector auxiliar.
+// ORDEN: O(nlog(n)). 
+// RETURN: Regresa el vector v con los valores ordenados de menor a mayor.
+template <typename T>
+void ordenaMerge(T *arr, int inicio, int final){
+    if (final - inicio <= 1) return;
+    int mitad = inicio + (final-inicio) / 2;
+   
+    int sizeIzq = mitad - inicio, sizeDer = final - mitad; 
+    T *arr1 = new T[sizeIzq], *arr2= new T[sizeDer];
+
+    for (int i = 0; i < sizeIzq; i++) arr1[i] = arr[i + inicio];
+    for (int i = 0; i < sizeDer; i++) arr2[i] = arr[i + mitad];
+
+    ordenaMerge(arr1, inicio, mitad);
+    ordenaMerge(arr2, mitad, final); 
+
+    int i = 0, j = 0, k = inicio;
+    while (i < sizeIzq && j < sizeDer) {
+        if (arr1[i] < arr2[j]) {
+            arr[k++] = arr1[i++];
+        } else {
+            arr[k++] = arr2[j++];
+        }
+    }
+
+    while (i < sizeIzq) arr[k++] = arr1[i++];
+    while (j < sizeDer) arr[k++] = arr2[j++];
+
+    delete[] arr1;
+    delete[] arr2;
+}
+

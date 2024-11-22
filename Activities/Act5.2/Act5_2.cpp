@@ -13,10 +13,6 @@ Rodolfo Blas Romero Valdez - A01741665
 #include "HashMap.hpp"
 #include "ipHandler.cpp"
 
-size_t ipHash(std::string ip){
-
-    return 0;
-}
 
 
 int main(){
@@ -52,6 +48,7 @@ int main(){
         adj[ipOrDest.second].fanIn++;
     }
 
+    /*
     // VISUALIZACIÓN DE HASH.
     int columnMax = 3, columnCount = 1; // Solo para que se visualicen varias ips en una misma línea
     for(const auto& vertex:adj){
@@ -64,6 +61,7 @@ int main(){
     }
     std::cout<<"\n\n";
 
+    */
     // ORDENAMIENTO DE LOS DATOS
     ordenaMerge(adj);
 

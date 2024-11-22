@@ -47,48 +47,6 @@ int operator>( std::string& a,  std::string& b){
     return 0;
 }
 
-
-template <class _key, class _value>
-void ordenaMerge(const HashMap<_key, _value>& hash){
-    ordenaMerge(hash.map, hash.tableSize - 1);
-}
-
-
-// PARAMETROS: Vector de enteros v y el tamaño del vector n
-// METODO: Esta función es recursiva donde se divide el vector en 2 partes iguales, formando un arbol binario hasta llegar a un vector de 1.
-// Posteriormente se compara cada elemento de las 2 partes inferiores del arbol binario y se ordenan de menor a mayor en un vector auxiliar.
-// ORDEN: O(nlog(n)). 
-// RETURN: Regresa el vector v con los valores ordenados de menor a mayor.
-template <typename T>
-void ordenaMerge(T *arr, int inicio, int final){
-    if (final - inicio <= 1) return;
-    int mitad = inicio + (final-inicio) / 2;
-   
-    int sizeIzq = mitad - inicio, sizeDer = final - mitad; 
-    T *arr1 = new T[sizeIzq], *arr2= new T[sizeDer];
-
-    for (int i = 0; i < sizeIzq; i++) arr1[i] = arr[i + inicio];
-    for (int i = 0; i < sizeDer; i++) arr2[i] = arr[i + mitad];
-
-    ordenaMerge(arr1, inicio, mitad);
-    ordenaMerge(arr2, mitad, final); 
-
-    int i = 0, j = 0, k = inicio;
-    while (i < sizeIzq && j < sizeDer) {
-        if (arr1[i] < arr2[j]) {
-            arr[k++] = arr1[i++];
-        } else {
-            arr[k++] = arr2[j++];
-        }
-    }
-
-    while (i < sizeIzq) arr[k++] = arr1[i++];
-    while (j < sizeDer) arr[k++] = arr2[j++];
-
-    delete[] arr1;
-    delete[] arr2;
-}
-
 struct IpFreq{
     enum class compareBy{FANIN, FANOUT};
     public:

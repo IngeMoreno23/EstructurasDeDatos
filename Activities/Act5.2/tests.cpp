@@ -2,12 +2,12 @@
     
 int main(){
 
-    HashMap<int, int> map(myHash);
-    map.insert("0.", 10);
-    map.insert(2, 20);
-    map.insert(11, 30);
+    HashMap<std::string, int> map(65536);
+    map.insert("0.0.0.0", 10);
+    // Si insertamos en el octeto 0011 1100, seria en decimal 60
+    // El hash dará 60 % tableSize
+    map.insert("0.0.0.60", 20);
 
-    map.show();
 
     return 0;
 }
