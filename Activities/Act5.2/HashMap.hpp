@@ -118,9 +118,9 @@ HashMap<_key, _value>::HashMap(int _tableSize): size(0){
 
 template <class _key, class _value>
 int HashMap<_key, _value>::hash(const _key& key){
-    if(constexpr(std::is_same<_key, int>::value)){
+    if constexpr(std::is_same<_key, int>::value){
         return key;
-    } else if(constexpr(std::is_same<_key, std::string>::value)){
+    } else if constexpr(std::is_same<_key, std::string>::value){
         int hash = 0;
         std::string currentOctet = "";
         // std::string ip con formato "XXX.XXX.XXX.XXX"
