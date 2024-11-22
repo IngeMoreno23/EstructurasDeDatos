@@ -351,8 +351,8 @@ bool HashMap<_key, _value>::Iterator::operator!=(const Iterator& otro) const{
 
 
 template <class _key, class _value>
-void ordenaMerge(const HashMap<_key, _value>& hash){
-    ordenaMerge(hash.map, hash.tableSize - 1);
+void ordenaMerge(const HashMap<_key, _value>& hashM){
+    ordenaMerge(hashM.map, hashM.tableSize - 1);
 }
 
 
