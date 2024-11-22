@@ -118,20 +118,10 @@ RETURN: int, el tamaño de la tabla hash.
 */
 template <class _key, class _value> 
 void HashMap<_key, _value>::insert(const _key& key, const _value& value){
+    int index = hash(key); // se obtiene el índice a partir de la función hash
 
-    if(float(size)/float(tableSize) > 0.75){
-        redimension(2*tableSize);
-    }
-
-    int index = hash(key), i = 0; // se obtiene el índice a partir de la función hash
+    for(int i = 0; map[index].state == 1 && i < tableSize; index = (index + 1) % tableSize, i++){}
     
-    for(int i = 0; map[index].state != -1 && i < tableSize; index = (index + 1) % tableSize, i++){
-        if(map[index].key == key) { // Verifica si la llave ya existe
-            map[index].value = value;
-            return;
-        }
-    }
-
     if(map[index].state != 1){
         map[index].value = value;
         map[index].state = 1;
