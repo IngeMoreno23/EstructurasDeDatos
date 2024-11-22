@@ -59,16 +59,30 @@ class HashMap{
         int capacity();
 };
 
+/*
+PARÁMETROS: void.
+MÉTODO: Inicializa una tabla hash con tamaño de 23.
+ORDEN: O(1).
+RETURN: void.
+*/
 template <class _key, class _value> 
-HashMap<_key, _value>::HashMap():tableSize(101), size(0){ // Número primo
-    map = new mapElement[tableSize];
+HashMap<_key, _value>::HashMap():tableSize(23), size(0){ // Número primo
+    map = new mapElement<_key, _value>[tableSize];
 }
 
+/*
+PARÁMETROS: `int _tableSize`.
+MÉTODO: Inicializa una tabla hash con el tamaño de `_tableSize` vacío. Si `_tableSize` no es primo, busca el primer primo que le sigue.
+ORDEN: O(k), donde k es la diferencia entre `_tableSize` y su siguiente primo.
+RETURN: void.
+*/
 template <class _key, class _value> 
 HashMap<_key, _value>::HashMap(int _tableSize): size(0){
-    if(isPrime(_tableSize)){
-        tableSize = _tableSize;
-    } else if (_tableSize % 2 == 0){
+    if(_tableSize < 0){
+        throw(std::invalid_argument("negative argument for capacity constructor"));
+    }
+
+    if (_tableSize % 2 == 0){
         _tableSize ++;
     }
     while (!isPrime(_tableSize)){
@@ -206,16 +220,23 @@ _value& HashMap<_key, _value>::operator[](const _key& key){
 
 }
 
+/*
+PARÁMETROS: `size_t newCapacity `.
+MÉTODO: Redimenciona `map` con el nuevo tamaño, y por cada elemento ocupado en la lista pasada, los inserta en el nuevo `map`. 
+ORDEN: O(n), donde n es `size`.
+RETURN: void.
+*/
 template <class _key, class _value>
 void HashMap<_key, _value>::redimension(size_t newCapacity){
     mapElement<_key,_value> *pastMap = map;
     map = new mapElement<_key,_value>[newCapacity];
 
     /* Rehashing*/
+    int pastSize = tableSize;
     tableSize = newCapacity;
     size = 0;
-    for(int i = 0; i < tableSize / 2; i++){
-        if(pastMap[i].state != -1)
+    for(int i = 0; i < pastSize; i++){
+        if(pastMap[i].state == 1)
             insert(pastMap[i].key, pastMap[i].value);
     }
     delete[] pastMap;    
