@@ -6,16 +6,10 @@
 
 bool isPrime(int n)
 {
-    if(n < 0){
-        throw(std::invalid_argument("No se aceptan valores negativos"));
-    }
-
-    if(n == 2)
-        return true;
+    if(n < 2) return false;
+    if(n == 2) return true;
     
-    if(n == 0 || n == 1 || n % 2 == 0){ // Esta parte del código busca quitar el 0 y el 1 de las opciones, así como todos los números pares. Porque la siguiente comprobación, no los toma en cuenta, puesto que no es necesario.
-        return false;
-    }
+    if(n % 2 == 0) return false;
 
     for(int i = 3; i * i <= n; i += 2){
         if(n % i == 0){
@@ -44,6 +38,9 @@ struct mapElement{
         bool operator == (const mapElement<_key,_value>& otherMap){
             return value == otherMap.value;
         }
+        bool operator <= (const mapElement<_key,_value>& otherMap){
+            return value < otherMap.value || value == otherMap.value ;
+        }
         bool operator<(const mapElement<_key,_value>& otherMap){
             return value < otherMap.value;
         }
@@ -62,6 +59,7 @@ class HashMap{
     public:
         HashMap();
         HashMap(int _tableSize);
+        ~HashMap();
 
         const HashMap& operator=(const HashMap& otherHashMap);
         _value& operator [](const _key& key);
@@ -72,27 +70,8 @@ class HashMap{
         void redimension(size_t newCapacity);
 
         int capacity();
-        template <class K, class V>
-        friend void ordenaMerge(const HashMap<K, V>& hashM);
-
         int getIndex(const _key& key);
 
-        class Iterator{
-            private:
-                mapElement<_key, _value> *current;
-            public:
-                Iterator(mapElement<_key, _value> *currentNode);
-
-                mapElement<_key, _value>& operator*();
-                Iterator& operator++();
-                Iterator& operator--();
-                Iterator& operator+(unsigned int transIndex);
-                Iterator& operator-(unsigned int transIndex);
-                bool operator!=(const Iterator& otro) const;
-        };
-
-        Iterator begin();
-        Iterator end();
 };
 
 /*
@@ -106,6 +85,10 @@ HashMap<_key, _value>::HashMap():tableSize(23), size(0){ // Número primo
     map = new mapElement<_key, _value>[tableSize];
 }
 
+template <class _key, class _value> 
+HashMap<_key, _value>::~HashMap(){
+    delete[] map;
+}
 /*
 PARÁMETROS: `int _tableSize`.
 MÉTODO: Inicializa una tabla hash con el tamaño de `_tableSize` vacío. Si `_tableSize` no es primo, busca el primer primo que le sigue.
@@ -163,9 +146,6 @@ RETURN: int, hash (índice base) de la llave.
 template <class _key, class _value> 
 int HashMap<_key, _value>::getIndex(const _key& key){
     return hash(key) % tableSize;
-/*
-ESTE MÉTODO SE IMPLEMENTA CUANDO SE GUARDAN OBJETOS NO PRIMITIVOS. En este caso son enteros así que todo bien.
-*/
 }
 
 /*
@@ -263,7 +243,7 @@ RETURN: int, el tamaño de la tabla hash.
 template <class _key, class _value> 
 _value& HashMap<_key, _value>::operator[](const _key& key){
 
-    if(float(size)/float(tableSize) > 0.75){
+    if(size * 4 > tableSize * 3){
         redimension(2*tableSize);
     }
 
@@ -314,93 +294,4 @@ const HashMap<_key, _value>& HashMap<_key, _value>::operator=(const HashMap<_key
     }
 }
 
-
-/*
-template <class _key, class _value>
-HashMap<_key, _value>::Iterator::Iterator(mapElement<_key, _value> *mapElem): current(mapElem){}
-
-template <class _key, class _value>
-class HashMap<_key, _value>::Iterator HashMap<_key, _value>::begin() {
-    size_t i = 0;
-    while(map[i++].state != 1 && i < tableSize);
-    return map[i].state == 1 ? Iterator(*map[i]) : end();
-}
-
-template <class _key, class _value>
-class HashMap<_key, _value>::Iterator HashMap<_key, _value>::end() {
-    return Iterator(*map[tableSize - 1]);
-}
-
-
-template <class _key, class _value>
-class HashMap<_key, _value>::Iterator& HashMap<_key, _value>::Iterator::operator++()
-{
-
-}
-
-template <class _key, class _value>
-class HashMap<_key, _value>::Iterator& HashMap<_key, _value>::Iterator::operator--()
-{
-
-}
-
-template <class _key, class _value>
-class HashMap<_key, _value>::Iterator& HashMap<_key, _value>::Iterator::operator-(unsigned int transIndex){
-
-}
-
-template <class _key, class _value>
-class HashMap<_key, _value>::Iterator& HashMap<_key, _value>::Iterator::operator+(unsigned int transIndex){
-
-}
-
-
-template <class _key, class _value>
-bool HashMap<_key, _value>::Iterator::operator!=(const Iterator& otro) const{
-
-}
-
-*/
-
-
-template <class K, class V>
-void ordenaMerge(const HashMap<K, V>& hashM){
-    ordenaMerge(hashM.map, 0, hashM.tableSize - 1);
-}
-
-
-// PARAMETROS: Vector de enteros v y el tamaño del vector n
-// METODO: Esta función es recursiva donde se divide el vector en 2 partes iguales, formando un arbol binario hasta llegar a un vector de 1.
-// Posteriormente se compara cada elemento de las 2 partes inferiores del arbol binario y se ordenan de menor a mayor en un vector auxiliar.
-// ORDEN: O(nlog(n)). 
-// RETURN: Regresa el vector v con los valores ordenados de menor a mayor.
-template <typename T>
-void ordenaMerge(T *arr, int inicio, int final){
-    if (final - inicio <= 1) return;
-    int mitad = inicio + (final-inicio) / 2;
-   
-    int sizeIzq = mitad - inicio, sizeDer = final - mitad; 
-    T *arr1 = new T[sizeIzq], *arr2= new T[sizeDer];
-
-    for (int i = 0; i < sizeIzq; i++) arr1[i] = arr[i + inicio];
-    for (int i = 0; i < sizeDer; i++) arr2[i] = arr[i + mitad];
-
-    ordenaMerge(arr1, inicio, mitad);
-    ordenaMerge(arr2, mitad, final); 
-
-    int i = 0, j = 0, k = inicio;
-    while (i < sizeIzq && j < sizeDer) {
-        if (arr1[i] < arr2[j]) {
-            arr[k++] = arr1[i++];
-        } else {
-            arr[k++] = arr2[j++];
-        }
-    }
-
-    while (i < sizeIzq) arr[k++] = arr1[i++];
-    while (j < sizeDer) arr[k++] = arr2[j++];
-
-    delete[] arr1;
-    delete[] arr2;
-}
 
