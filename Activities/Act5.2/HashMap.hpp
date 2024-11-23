@@ -38,7 +38,20 @@ struct mapElement{
             os <<"["<< mapElement.key<<"] = "<<mapElement.value<<"  State: "<<mapElement.state;
             return os;
         }
+        bool operator>(const mapElement<_key,_value>& otherMap){
+            return value > otherMap.value;
+        }
+        bool operator == (const mapElement<_key,_value>& otherMap){
+            return value == otherMap.value;
+        }
+        bool operator<(const mapElement<_key,_value>& otherMap){
+            return value < otherMap.value;
+        }
+        bool operator!=(const mapElement<_key,_value>& otherMap){
+            return value != otherMap.value;
+        }
 };
+
 
 template <class _key = int, class _value = int> 
 class HashMap{
@@ -59,7 +72,8 @@ class HashMap{
         void redimension(size_t newCapacity);
 
         int capacity();
-        friend void ordenaMerge(const HashMap<_key, _value>& hashM);
+        template <class K, class V>
+        friend void ordenaMerge(const HashMap<K, V>& hashM);
 
         int getIndex(const _key& key);
 
@@ -349,10 +363,9 @@ bool HashMap<_key, _value>::Iterator::operator!=(const Iterator& otro) const{
 */
 
 
-
-template <class _key, class _value>
-void ordenaMerge(const HashMap<_key, _value>& hashM){
-    ordenaMerge(hashM.map, hashM.tableSize - 1);
+template <class K, class V>
+void ordenaMerge(const HashMap<K, V>& hashM){
+    ordenaMerge(hashM.map, 0, hashM.tableSize - 1);
 }
 
 
