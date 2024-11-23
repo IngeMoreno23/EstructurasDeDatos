@@ -112,34 +112,36 @@ HashMap<_key, _value>::HashMap(int _tableSize): size(0){
 }
 
 
-
+/*
+PARÁMETROS: _key& key, llave a encontrar el hash.
+MÉTODO: Regresa el hash de la llave `key` dependiendo del tipo de dato.
+ORDEN: O(1).
+RETURN: int, hash de la llave.
+*/
 template <class _key, class _value>
-int HashMap<_key, _value>::hash(const _key& key){
-    if constexpr(std::is_same<_key, int>::value){
-        return key;
-    } else if constexpr(std::is_same<_key, std::string>::value){
+int HashMap<_key, _value>::hash(const _key& key) {
+    if constexpr (std::is_same<_key, int>::value) {
+        return key; 
+    } else if constexpr (std::is_same<_key, std::string>::value) {
         int hash = 0;
-        std::string currentOctet = "";
-        // std::string ip con formato "XXX.XXX.XXX.XXX"
-        for(int i = 0; i < key.length(); i++){
-            if(key[i] == '.'){
-                // Primero hacemos un shift de 4 bits a la izquierda y luego hacemos un OR con los bits b_5, b_4, b_3, b_2
-                hash = hash << 4 | ((60 & std::stoi(currentOctet)) >> 2); // mask 60 = 0011 1100
-                currentOctet = "";
-            } else {
-                currentOctet += key[i];
-            }
+        std::stringstream ss(key);
+        std::string octet;
+
+        while (std::getline(ss, octet, '.')) {
+            int octetValue = std::stoi(octet);
+            hash = (hash << 4) | ((octetValue & 60) >> 2); // Procesar el octeto.
         }
+
         return hash;
     } else {
-        throw(std::invalid_argument("No se puede hacer hash de este tipo de dato"));
+        static_assert(false, "No se puede hacer hash de este tipo de dato");
     }
 }
 
 
 /*
 PARÁMETROS: _key& key, llave a encontrar el hash.
-MÉTODO: Regresa el hash de la llave `key` con el método modular.
+MÉTODO: Regresa el índice base de la llave `key` con el método modular.
 ORDEN: O(1).
 RETURN: int, hash (índice base) de la llave.
 */
@@ -283,6 +285,12 @@ void HashMap<_key, _value>::redimension(size_t newCapacity){
     delete[] pastMap;    
 }
 
+/*
+PARÁMETROS: const HashMap<_key, _value>& otherHash, tabla hash a copiar.
+MÉTODO: Itera sobre la tabla hash `otherHash` y copia los elementos en estado `ocupado` en la tabla hash actual.
+ORDEN: O(n), donde n es la cantidad de elementos de la tabla hash `size`.
+RETURN: const HashMap<_key, _value>&, tabla hash a donde copiar.
+*/
 template <class _key, class _value>
 const HashMap<_key, _value>& HashMap<_key, _value>::operator=(const HashMap<_key, _value>& otherHash){
     delete[] map;

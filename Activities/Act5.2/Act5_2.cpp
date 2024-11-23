@@ -1,8 +1,8 @@
-/*  Act3.4
+/*  Act5.2
 Cristian Ricardo Luque Arámbula - A01741850
 Oliver Moreno Ibarra - A01742930
 Rodolfo Blas Romero Valdez - A01741665
-Última modificación: 20/11/2024
+Última modificación: 22/11/2024
 */
 
 #include <iostream>
@@ -48,4 +48,6 @@ int main(){
     adj["224.182.134.50"].visualize();
     adj["36.66.160.248"].visualize();
     adj["1.111.91.45"].visualize();
+    adj["4.75.133.118"].visualize();
+    adj["201.172.10.75"].visualize();
 }

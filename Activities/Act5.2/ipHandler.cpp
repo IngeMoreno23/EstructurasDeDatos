@@ -58,9 +58,9 @@ struct IpFreq{
         }
 
         void visualize(){
-            std::cout<<"Ip: "<< ip<< " || || FanIn: "<< fanIn<<" || || FanOut: "<<fanOut<<"\n";
+            std::cout<<"> Ip: "<< ip<< " || || FanIn: "<< fanIn<<" || || FanOut: "<<fanOut<<"\n";
             for(const auto& ip:destIps){
-                std::cout<<ip<<" ";
+                std::cout<<"- "<<ip<<"\n";
             }
             std::cout<<"\n";
         }
